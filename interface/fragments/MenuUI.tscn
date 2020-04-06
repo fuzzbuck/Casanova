@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=14 format=2]
 
 [sub_resource type="Shader" id=1]
 code = "shader_type canvas_item;
@@ -14,6 +14,17 @@ void fragment(){
 
 [sub_resource type="ShaderMaterial" id=2]
 shader = SubResource( 1 )
+
+[sub_resource type="StreamTexture" id=11]
+flags = 4
+load_path = "res://.import/logo.png-63be3467a3db720a8e6f4c8e2d3c8259.stex"
+
+[sub_resource type="DynamicFontData" id=12]
+font_path = "res://assets/fonts/JosefinSans-LightItalic.ttf"
+
+[sub_resource type="DynamicFont" id=13]
+size = 26
+font_data = SubResource( 12 )
 
 [sub_resource type="StyleBoxEmpty" id=3]
 
@@ -52,29 +63,74 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="TopButtons" type="MarginContainer" parent="."]
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_left = 1.948
-margin_top = 1.94803
-margin_right = 1.948
-margin_bottom = 1.948
-custom_constants/margin_right = 1550
-custom_constants/margin_top = 36
-custom_constants/margin_left = 36
-custom_constants/margin_bottom = 468
+[node name="TopCenter" type="VBoxContainer" parent="."]
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = -280.0
+margin_top = 38.0
+margin_right = 280.0
+margin_bottom = 140.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Container" type="VBoxContainer" parent="TopButtons"]
-margin_left = 36.0
-margin_top = 36.0
-margin_right = 370.0
-margin_bottom = 432.0
+[node name="LogoContainer" type="CenterContainer" parent="TopCenter"]
+margin_top = 50.0
+margin_right = 560.0
+margin_bottom = 140.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
-[node name="Play" type="Button" parent="TopButtons/Container"]
-margin_right = 334.0
+[node name="Logo" type="TextureRect" parent="TopCenter/LogoContainer"]
+margin_right = 560.0
+margin_bottom = 140.0
+texture = SubResource( 11 )
+
+[node name="Label" type="Label" parent="TopCenter"]
+margin_top = 144.0
+margin_right = 560.0
+margin_bottom = 171.0
+custom_fonts/font = SubResource( 13 )
+text = "build 1 v0.1 indev"
+align = 1
+valign = 1
+
+[node name="Menu" type="MarginContainer" parent="."]
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_top = -624.0
+custom_constants/margin_right = 36
+custom_constants/margin_top = 0
+custom_constants/margin_left = 36
+custom_constants/margin_bottom = 16
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Menu"]
+margin_left = 36.0
+margin_right = 1884.0
+margin_bottom = 608.0
+custom_constants/separation = 50
+
+[node name="LeftContainer" type="VBoxContainer" parent="Menu/HBoxContainer"]
+margin_right = 234.0
+margin_bottom = 608.0
+alignment = 1
+
+[node name="TopButtons" type="VBoxContainer" parent="Menu/HBoxContainer/LeftContainer"]
+margin_top = 143.0
+margin_right = 234.0
+margin_bottom = 320.0
+
+[node name="Play" type="Button" parent="Menu/HBoxContainer/LeftContainer/TopButtons"]
+margin_right = 234.0
 margin_bottom = 105.0
 custom_styles/hover = SubResource( 3 )
 custom_styles/pressed = SubResource( 4 )
@@ -86,9 +142,9 @@ custom_colors/font_color = Color( 0.972549, 0.870588, 0.494118, 1 )
 text = "Play"
 align = 0
 
-[node name="Settings" type="Button" parent="TopButtons/Container"]
+[node name="Settings" type="Button" parent="Menu/HBoxContainer/LeftContainer/TopButtons"]
 margin_top = 109.0
-margin_right = 334.0
+margin_right = 234.0
 margin_bottom = 177.0
 custom_styles/hover = SubResource( 3 )
 custom_styles/pressed = SubResource( 4 )
@@ -100,30 +156,15 @@ custom_colors/font_color = Color( 0.972549, 0.870588, 0.494118, 1 )
 text = "Settings"
 align = 0
 
-[node name="BottomButtons" type="MarginContainer" parent="."]
-anchor_top = 1.0
-anchor_bottom = 1.0
-margin_top = -900.0
-margin_right = 1920.0
-custom_constants/margin_right = 1550
-custom_constants/margin_top = 468
-custom_constants/margin_left = 36
-custom_constants/margin_bottom = 36
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="Container" type="VBoxContainer" parent="BottomButtons"]
-margin_left = 36.0
-margin_top = 468.0
-margin_right = 370.0
-margin_bottom = 864.0
+[node name="BottomButtons" type="VBoxContainer" parent="Menu/HBoxContainer/LeftContainer"]
+margin_top = 324.0
+margin_right = 234.0
+margin_bottom = 464.0
 alignment = 2
 
-[node name="About" type="Button" parent="BottomButtons/Container"]
-margin_top = 256.0
-margin_right = 334.0
-margin_bottom = 324.0
+[node name="About" type="Button" parent="Menu/HBoxContainer/LeftContainer/BottomButtons"]
+margin_right = 234.0
+margin_bottom = 68.0
 custom_styles/hover = SubResource( 3 )
 custom_styles/pressed = SubResource( 4 )
 custom_styles/focus = SubResource( 5 )
@@ -134,10 +175,10 @@ custom_colors/font_color = Color( 0.972549, 0.870588, 0.494118, 1 )
 text = "About"
 align = 0
 
-[node name="Exit" type="Button" parent="BottomButtons/Container"]
-margin_top = 328.0
-margin_right = 334.0
-margin_bottom = 396.0
+[node name="Exit" type="Button" parent="Menu/HBoxContainer/LeftContainer/BottomButtons"]
+margin_top = 72.0
+margin_right = 234.0
+margin_bottom = 140.0
 custom_styles/hover = SubResource( 3 )
 custom_styles/pressed = SubResource( 4 )
 custom_styles/focus = SubResource( 5 )
@@ -147,19 +188,3 @@ custom_fonts/font = SubResource( 10 )
 custom_colors/font_color = Color( 0.972549, 0.870588, 0.494118, 1 )
 text = "Exit"
 align = 0
-
-[node name="Disclaimer" type="CenterContainer" parent="."]
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-margin_left = -20.0
-margin_top = -20.0
-margin_right = 20.0
-margin_bottom = 20.0
-
-[node name="Label" type="Label" parent="Disclaimer"]
-margin_top = 13.0
-margin_right = 106.0
-margin_bottom = 27.0
-text = "{MENU IN W.I.P}"
