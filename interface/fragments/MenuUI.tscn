@@ -1,0 +1,165 @@
+[gd_scene load_steps=11 format=2]
+
+[sub_resource type="Shader" id=1]
+code = "shader_type canvas_item;
+
+void fragment(){
+	
+	vec3 color1 = vec3(0.109, 0.078, 0.141);
+	vec3 color2 = vec3(0.047, 0.129, 0.180);
+	
+	vec3 color = mix(color1, color2, UV.x);
+    COLOR = vec4(color.r, color.g, color.b, 1);
+}"
+
+[sub_resource type="ShaderMaterial" id=2]
+shader = SubResource( 1 )
+
+[sub_resource type="StyleBoxEmpty" id=3]
+
+[sub_resource type="StyleBoxEmpty" id=4]
+
+[sub_resource type="StyleBoxEmpty" id=5]
+
+[sub_resource type="StyleBoxEmpty" id=6]
+
+[sub_resource type="StyleBoxEmpty" id=7]
+
+[sub_resource type="DynamicFontData" id=8]
+font_path = "res://assets/fonts/Bathrind.otf"
+
+[sub_resource type="DynamicFont" id=9]
+size = 100
+font_data = SubResource( 8 )
+
+[sub_resource type="DynamicFont" id=10]
+size = 64
+font_data = SubResource( 8 )
+
+[node name="Control" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Gradient" type="ColorRect" parent="."]
+material = SubResource( 2 )
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color( 0, 0, 0, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="TopButtons" type="MarginContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 1.948
+margin_top = 1.94803
+margin_right = 1.948
+margin_bottom = 1.948
+custom_constants/margin_right = 1550
+custom_constants/margin_top = 36
+custom_constants/margin_left = 36
+custom_constants/margin_bottom = 468
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Container" type="VBoxContainer" parent="TopButtons"]
+margin_left = 36.0
+margin_top = 36.0
+margin_right = 370.0
+margin_bottom = 432.0
+
+[node name="Play" type="Button" parent="TopButtons/Container"]
+margin_right = 334.0
+margin_bottom = 105.0
+custom_styles/hover = SubResource( 3 )
+custom_styles/pressed = SubResource( 4 )
+custom_styles/focus = SubResource( 5 )
+custom_styles/disabled = SubResource( 6 )
+custom_styles/normal = SubResource( 7 )
+custom_fonts/font = SubResource( 9 )
+custom_colors/font_color = Color( 0.972549, 0.870588, 0.494118, 1 )
+text = "Play"
+align = 0
+
+[node name="Settings" type="Button" parent="TopButtons/Container"]
+margin_top = 109.0
+margin_right = 334.0
+margin_bottom = 177.0
+custom_styles/hover = SubResource( 3 )
+custom_styles/pressed = SubResource( 4 )
+custom_styles/focus = SubResource( 5 )
+custom_styles/disabled = SubResource( 6 )
+custom_styles/normal = SubResource( 7 )
+custom_fonts/font = SubResource( 10 )
+custom_colors/font_color = Color( 0.972549, 0.870588, 0.494118, 1 )
+text = "Settings"
+align = 0
+
+[node name="BottomButtons" type="MarginContainer" parent="."]
+anchor_top = 1.0
+anchor_bottom = 1.0
+margin_top = -900.0
+margin_right = 1920.0
+custom_constants/margin_right = 1550
+custom_constants/margin_top = 468
+custom_constants/margin_left = 36
+custom_constants/margin_bottom = 36
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Container" type="VBoxContainer" parent="BottomButtons"]
+margin_left = 36.0
+margin_top = 468.0
+margin_right = 370.0
+margin_bottom = 864.0
+alignment = 2
+
+[node name="About" type="Button" parent="BottomButtons/Container"]
+margin_top = 256.0
+margin_right = 334.0
+margin_bottom = 324.0
+custom_styles/hover = SubResource( 3 )
+custom_styles/pressed = SubResource( 4 )
+custom_styles/focus = SubResource( 5 )
+custom_styles/disabled = SubResource( 6 )
+custom_styles/normal = SubResource( 7 )
+custom_fonts/font = SubResource( 10 )
+custom_colors/font_color = Color( 0.972549, 0.870588, 0.494118, 1 )
+text = "About"
+align = 0
+
+[node name="Exit" type="Button" parent="BottomButtons/Container"]
+margin_top = 328.0
+margin_right = 334.0
+margin_bottom = 396.0
+custom_styles/hover = SubResource( 3 )
+custom_styles/pressed = SubResource( 4 )
+custom_styles/focus = SubResource( 5 )
+custom_styles/disabled = SubResource( 6 )
+custom_styles/normal = SubResource( 7 )
+custom_fonts/font = SubResource( 10 )
+custom_colors/font_color = Color( 0.972549, 0.870588, 0.494118, 1 )
+text = "Exit"
+align = 0
+
+[node name="Disclaimer" type="CenterContainer" parent="."]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -20.0
+margin_top = -20.0
+margin_right = 20.0
+margin_bottom = 20.0
+
+[node name="Label" type="Label" parent="Disclaimer"]
+margin_top = 13.0
+margin_right = 106.0
+margin_bottom = 27.0
+text = "{MENU IN W.I.P}"
