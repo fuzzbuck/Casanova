@@ -2,7 +2,7 @@ using Casanova.core;
 using Godot;
 using Godot.Collections;
 
-namespace Casanova.@interface.fragments
+namespace Casanova.ui.fragments
 {
 	public class ButtonsContainer : VBoxContainer
 	{
@@ -25,10 +25,8 @@ namespace Casanova.@interface.fragments
 			for (var i = 0; i < buttons.Count; i++)
 			{
 				Button button = buttons[i];
-				Interface.uiElements.menuButtonGroup.Add(button);
+				Vars.uiHandler.buttonGroup.Add(button);
 			}
-
-			Vars.load();
 		}
 	
 	}

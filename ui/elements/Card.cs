@@ -1,6 +1,6 @@
 using Godot;
 
-namespace Casanova.@interface.elements
+namespace Casanova.ui.elements
 {
 	public class Card : Panel
 	{

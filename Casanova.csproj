@@ -55,16 +55,16 @@
   <ItemGroup>
     <Compile Include="core\BundleHandler.cs" />
     <Compile Include="core\Vars.cs" />
-    <Compile Include="interface\elements\Card.cs" />
-    <Compile Include="interface\fragments\ButtonsContainer.cs" />
-    <Compile Include="interface\fragments\CardsContainer.cs" />
-    <Compile Include="interface\Interface.cs" />
+    <Compile Include="ui\elements\Card.cs" />
+    <Compile Include="ui\fragments\ButtonsContainer.cs" />
+    <Compile Include="ui\fragments\CardsContainer.cs" />
+    <Compile Include="ui\Interface.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="interface" />
-    <Folder Include="interface\elements" />
-    <Folder Include="interface\fragments" />
+    <Folder Include="ui" />
+    <Folder Include="ui\elements" />
+    <Folder Include="ui\fragments" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

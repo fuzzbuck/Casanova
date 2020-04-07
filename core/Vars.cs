@@ -1,11 +1,11 @@
+using Casanova.ui;
 using Godot;
-using Godot.Collections;
 
 namespace Casanova.core
 {
     public class Vars : Node
     {
-        public static Array<Button> menuButtonGroup = new Array<Button>();
+        public static Interface uiHandler = new Interface();
         public static BundleHandler bundleHandler = new BundleHandler("en");
 
         public class Pals
