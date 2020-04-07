@@ -21,6 +21,10 @@ boot_splash/image="res://assets/sprites/interface/logo.png"
 boot_splash/use_filter=false
 boot_splash/bg_color=Color( 0, 0, 0, 1 )
 
+[autoload]
+
+Vars="*res://core/Vars.cs"
+
 [debug]
 
 settings/stdout/print_fps=true
@@ -32,6 +36,11 @@ window/size/height=900
 window/dpi/allow_hidpi=true
 window/stretch/mode="2d"
 window/stretch/aspect="expand"
+
+[locale]
+
+translations=PoolStringArray( "res://assets/translations/translation.pl.translation", "res://assets/translations/translation.en.translation" )
+locale_filter=[ 1, [ "en", "pl" ] ]
 
 [rendering]
 

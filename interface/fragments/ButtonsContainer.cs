@@ -1,32 +1,35 @@
 using System.Linq;
 using Godot;
 using Godot.Collections;
-using Array = System.Array;
+using Casanova.core;
 
-namespace Casanova.@interface.fragments
+
+public class ButtonsContainer : VBoxContainer
 {
-	public class ButtonsContainer : VBoxContainer
-	{
-		private HBoxContainer _topButtons;
-		private HBoxContainer _botButtons;
+	private VBoxContainer _topButtons;
+	private VBoxContainer _botButtons;
 		
-		private Array<Button> buttons = new Array<Button>();
+	private Array<Button> buttons = new Array<Button>();
 
-		public override void _Ready()
+	public override void _Ready()
+	{
+		_topButtons = GetNode<VBoxContainer>("TopButtons");
+		_botButtons = GetNode<VBoxContainer>("BottomButtons");
+
+		buttons.Add(_topButtons.GetNode("Play") as Button);
+		buttons.Add(_topButtons.GetNode("Settings") as Button);
+			
+		buttons.Add(_botButtons.GetNode("About") as Button);
+		buttons.Add(_botButtons.GetNode("Exit") as Button);
+		
+		for (var i = 0; i < buttons.Count; i++)
 		{
-			_topButtons = GetNode("TopButtons") as HBoxContainer;
-			_botButtons = GetNode("BottomButtons") as HBoxContainer;
-			
-			buttons.Add(_topButtons.Get("Play") as Button);
-			buttons.Add(_topButtons.Get("Settings") as Button);
-			
-			buttons.Add(_botButtons.Get("About") as Button);
-			buttons.Add(_botButtons.Get("Exit") as Button);
-			
-			for(int x=1; x < buttons.Count; x++)
-			{
-				Button button = buttons[x];
-			}
+			Button button = buttons[i];
+			GD.Print(button.Text);
+			Vars.menuButtonGroup.Add(button);
 		}
+
+		Vars.load();
 	}
+	
 }

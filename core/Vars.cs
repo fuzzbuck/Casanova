@@ -1,0 +1,23 @@
+using Godot;
+using Godot.Collections;
+
+namespace Casanova.core
+{
+    public class Vars : Node
+    {
+        public static Array<Button> menuButtonGroup = new Array<Button>();
+        public static BundleHandler bundleHandler = new BundleHandler("en");
+
+        public class Pals
+        {
+            public static Color accent = new Color(248, 248, 126);
+            public static Color highlight = new Color(255, 255, 255);
+        }
+        
+        public static void load()
+        {
+            GD.Print("Applying translation");
+            new BundleHandler("pl").updateBundle("pl");
+        }
+    }
+}

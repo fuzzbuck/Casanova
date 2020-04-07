@@ -53,8 +53,10 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="core\BundleHandler.cs" />
+    <Compile Include="core\Vars.cs" />
+    <Compile Include="interface\elements\Card.cs" />
     <Compile Include="interface\fragments\ButtonsContainer.cs" />
-    <Compile Include="interface\fragments\CardPanel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

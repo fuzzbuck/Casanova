@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public class LeftContainer : VBoxContainer
+public class BottomButtons : VBoxContainer
 {
 	// Declare member variables here. Examples:
 	// private int a = 2;

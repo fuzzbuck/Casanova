@@ -8,11 +8,16 @@
       <e p=".mono\temp\obj" t="ExcludeRecursive" />
       <e p="Casanova.csproj" t="IncludeRecursive" />
       <e p="Casanova.sln" t="IncludeFlat" />
+      <e p="core" t="Include">
+        <e p="BundleHandler.cs" t="Include" />
+        <e p="Vars.cs" t="Include" />
+      </e>
       <e p="interface" t="Include">
-        <e p="elements" t="Include" />
+        <e p="elements" t="Include">
+          <e p="Card.cs" t="Include" />
+        </e>
         <e p="fragments" t="Include">
           <e p="ButtonsContainer.cs" t="Include" />
-          <e p="CardPanel.cs" t="Include" />
         </e>
       </e>
       <e p="packages" t="ExcludeRecursive" />
