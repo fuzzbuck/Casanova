@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using Casanova.core;
+using Casanova.@interface;
 
 public class BundleHandler : Node
 {
@@ -13,9 +14,9 @@ public class BundleHandler : Node
 	{
 		TranslationServer.SetLocale(locale);
 		// update buttons
-		for (var i = 0; i < Vars.menuButtonGroup.Count; i++)
+		for (var i = 0; i < Interface.uiElements.menuButtonGroup.Count; i++)
 		{
-			Button button = Vars.menuButtonGroup[i];
+			Button button = Interface.uiElements.menuButtonGroup[i];
             button.Text = Tr(button.Name.ToUpper());
 		}
 	}

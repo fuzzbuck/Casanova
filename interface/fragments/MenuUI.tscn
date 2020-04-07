@@ -1,13 +1,14 @@
-[gd_scene load_steps=22 format=2]
+[gd_scene load_steps=23 format=2]
 
 [ext_resource path="res://interface/fragments/ButtonsContainer.cs" type="Script" id=1]
+[ext_resource path="res://interface/fragments/CardsContainer.cs" type="Script" id=2]
 
 [sub_resource type="Shader" id=1]
 code = "shader_type canvas_item;
 
 void fragment(){
     
-    vec3 color1 = vec3((1.0+sin(TIME/2.0))/2.5, (1.0+sin(TIME/2.0+45.0))/2.5, (1.0+sin(TIME/2.0+90.0))/2.5);
+    vec3 color1 = vec3((1.0+sin(TIME/2.0))/7f, (1.0+sin(TIME/2.0+45.0))/7f, (1.0+sin(TIME/2.0+90.0))/7f);
     vec3 color2 = vec3(0.047, 0.129, 0.180);
     
     vec3 color = mix(color1, color2, (UV.x + UV.y)/2.0);
@@ -45,14 +46,14 @@ font_path = "res://assets/fonts/Bathrind.otf"
 size = 100
 font_data = SubResource( 11 )
 
-[sub_resource type="Animation" id=20]
+[sub_resource type="Animation" id=13]
 resource_name = "Click"
 
-[sub_resource type="DynamicFont" id=13]
+[sub_resource type="DynamicFont" id=14]
 size = 64
 font_data = SubResource( 11 )
 
-[sub_resource type="StyleBoxFlat" id=14]
+[sub_resource type="StyleBoxFlat" id=15]
 bg_color = Color( 0.6, 0.6, 0.6, 0 )
 border_width_left = 6
 border_width_top = 6
@@ -60,23 +61,23 @@ border_width_right = 6
 border_width_bottom = 6
 border_color = Color( 0.972549, 0.87451, 0.494118, 1 )
 
-[sub_resource type="StreamTexture" id=15]
+[sub_resource type="StreamTexture" id=16]
 flags = 4
 load_path = "res://.import/fireplace.png-94ed3f234bd31702fb7e48a7c0b30bf6.stex"
 
-[sub_resource type="StyleBoxFlat" id=16]
+[sub_resource type="StyleBoxFlat" id=17]
 bg_color = Color( 0.972549, 0.870588, 0.494118, 1 )
 
-[sub_resource type="DynamicFontData" id=17]
+[sub_resource type="DynamicFontData" id=18]
 font_path = "res://assets/fonts/Bathrind.otf"
 
-[sub_resource type="DynamicFont" id=18]
-size = 48
-font_data = SubResource( 17 )
-
 [sub_resource type="DynamicFont" id=19]
+size = 48
+font_data = SubResource( 18 )
+
+[sub_resource type="DynamicFont" id=20]
 size = 22
-font_data = SubResource( 17 )
+font_data = SubResource( 18 )
 
 [node name="Control" type="Control"]
 anchor_right = 1.0
@@ -175,7 +176,7 @@ text = "Play"
 align = 0
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="Menu/Container/ButtonsContainer/TopButtons/Play"]
-anims/Click = SubResource( 20 )
+anims/Click = SubResource( 13 )
 
 [node name="Settings" type="Button" parent="Menu/Container/ButtonsContainer/TopButtons"]
 margin_top = 109.0
@@ -186,7 +187,7 @@ custom_styles/pressed = SubResource( 7 )
 custom_styles/focus = SubResource( 8 )
 custom_styles/disabled = SubResource( 9 )
 custom_styles/normal = SubResource( 10 )
-custom_fonts/font = SubResource( 13 )
+custom_fonts/font = SubResource( 14 )
 custom_colors/font_color = Color( 0.972549, 0.870588, 0.494118, 1 )
 text = "Settings"
 align = 0
@@ -205,7 +206,7 @@ custom_styles/pressed = SubResource( 7 )
 custom_styles/focus = SubResource( 8 )
 custom_styles/disabled = SubResource( 9 )
 custom_styles/normal = SubResource( 10 )
-custom_fonts/font = SubResource( 13 )
+custom_fonts/font = SubResource( 14 )
 custom_colors/font_color = Color( 0.972549, 0.870588, 0.494118, 1 )
 text = "About"
 align = 0
@@ -219,13 +220,12 @@ custom_styles/pressed = SubResource( 7 )
 custom_styles/focus = SubResource( 8 )
 custom_styles/disabled = SubResource( 9 )
 custom_styles/normal = SubResource( 10 )
-custom_fonts/font = SubResource( 13 )
+custom_fonts/font = SubResource( 14 )
 custom_colors/font_color = Color( 0.972549, 0.870588, 0.494118, 1 )
 text = "Exit"
 align = 0
 
 [node name="Cards" type="MarginContainer" parent="."]
-visible = false
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -234,6 +234,7 @@ margin_left = -150.0
 margin_top = -114.686
 margin_right = 150.0
 margin_bottom = 300.314
+script = ExtResource( 2 )
 __meta__ = {
 "_edit_group_": true,
 "_edit_use_anchors_": false
@@ -249,7 +250,7 @@ alignment = 1
 margin_right = 300.0
 margin_bottom = 415.0
 rect_min_size = Vector2( 300, 415 )
-custom_styles/panel = SubResource( 14 )
+custom_styles/panel = SubResource( 15 )
 
 [node name="Icon" type="TextureRect" parent="Cards/Container/CardPanel"]
 modulate = Color( 0.972549, 0.870588, 0.494118, 1 )
@@ -258,7 +259,7 @@ margin_left = 6.0
 margin_top = 6.0
 margin_right = -6.0
 margin_bottom = 205.0
-texture = SubResource( 15 )
+texture = SubResource( 16 )
 expand = true
 stretch_mode = 6
 __meta__ = {
@@ -271,7 +272,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 margin_top = -210.0
 margin_bottom = -3.05176e-05
-custom_styles/panel = SubResource( 16 )
+custom_styles/panel = SubResource( 17 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -289,7 +290,7 @@ __meta__ = {
 [node name="TestTitle" type="Label" parent="Cards/Container/CardPanel/Info/VBoxContainer"]
 margin_right = 300.0
 margin_bottom = 51.0
-custom_fonts/font = SubResource( 18 )
+custom_fonts/font = SubResource( 19 )
 custom_colors/font_color = Color( 0.129412, 0.156863, 0.227451, 1 )
 text = "Test"
 align = 1
@@ -299,7 +300,7 @@ valign = 1
 margin_top = 76.0
 margin_right = 300.0
 margin_bottom = 127.0
-custom_fonts/font = SubResource( 19 )
+custom_fonts/font = SubResource( 20 )
 custom_colors/font_color = Color( 0.113725, 0.152941, 0.243137, 1 )
 text = "Testing grounds to help
 debug & development"

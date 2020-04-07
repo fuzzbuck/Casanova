@@ -57,6 +57,8 @@
     <Compile Include="core\Vars.cs" />
     <Compile Include="interface\elements\Card.cs" />
     <Compile Include="interface\fragments\ButtonsContainer.cs" />
+    <Compile Include="interface\fragments\CardsContainer.cs" />
+    <Compile Include="interface\Interface.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

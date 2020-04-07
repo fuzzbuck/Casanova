@@ -18,7 +18,9 @@
         </e>
         <e p="fragments" t="Include">
           <e p="ButtonsContainer.cs" t="Include" />
+          <e p="CardsContainer.cs" t="Include" />
         </e>
+        <e p="Interface.cs" t="Include" />
       </e>
       <e p="packages" t="ExcludeRecursive" />
       <e p="Properties" t="Include">
