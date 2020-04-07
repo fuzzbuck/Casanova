@@ -17,16 +17,21 @@ _global_script_class_icons={
 
 config/name="Casanova"
 run/main_scene="res://interface/fragments/MenuUI.tscn"
-boot_splash/image="res://icon.png"
+boot_splash/image="res://assets/sprites/interface/logo.png"
 boot_splash/use_filter=false
 boot_splash/bg_color=Color( 0, 0, 0, 1 )
-config/icon="res://icon.png"
+
+[debug]
+
+settings/stdout/print_fps=true
 
 [display]
 
 window/size/width=1920
 window/size/height=900
 window/dpi/allow_hidpi=true
+window/stretch/mode="2d"
+window/stretch/aspect="expand"
 
 [rendering]
 

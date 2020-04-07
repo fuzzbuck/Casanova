@@ -10,7 +10,10 @@
       <e p="Casanova.sln" t="IncludeFlat" />
       <e p="interface" t="Include">
         <e p="elements" t="Include" />
-        <e p="fragments" t="Include" />
+        <e p="fragments" t="Include">
+          <e p="ButtonsContainer.cs" t="Include" />
+          <e p="CardPanel.cs" t="Include" />
+        </e>
       </e>
       <e p="packages" t="ExcludeRecursive" />
       <e p="Properties" t="Include">
