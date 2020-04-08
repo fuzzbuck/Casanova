@@ -15,6 +15,8 @@ namespace Casanova.ui.fragments
 			for (int i = 0; i < container.GetChildCount(); i++)
 			{
 				Panel cardPanel = container.GetChildren()[i] as Panel;
+				//todo: Connect mouse_enter & mouse_exit events to cardPanel & animate
+				
 				VBoxContainer infoBox = cardPanel.GetNode<Panel>("Info").GetNode<VBoxContainer>("VBoxContainer");
 				
 				GD.Print(infoBox.GetChildren()[0]);
