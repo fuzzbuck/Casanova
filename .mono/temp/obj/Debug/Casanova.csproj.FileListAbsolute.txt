@@ -1,1 +1,6 @@
-C:\Users\aspherix\Documents\GodotProjects\Casanova\.mono\temp\obj\Debug\Casanova.csprojResolveAssemblyReference.cache
+C:\Users\aspherix\Documents\GodotProjects\Casanova\.mono\temp\bin\Debug\Casanova.dll
+C:\Users\aspherix\Documents\GodotProjects\Casanova\.mono\temp\bin\Debug\Casanova.pdb
+C:\Users\aspherix\Documents\GodotProjects\Casanova\.mono\temp\obj\Debug\Casanova.csprojAssemblyReference.cache
+C:\Users\aspherix\Documents\GodotProjects\Casanova\.mono\temp\obj\Debug\Casanova.csproj.CoreCompileInputs.cache
+C:\Users\aspherix\Documents\GodotProjects\Casanova\.mono\temp\obj\Debug\Casanova.dll
+C:\Users\aspherix\Documents\GodotProjects\Casanova\.mono\temp\obj\Debug\Casanova.pdb
