@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=2]
+[gd_scene load_steps=24 format=2]
 
 [ext_resource path="res://ui/fragments/CardsContainer.cs" type="Script" id=1]
 [ext_resource path="res://ui/fragments/ButtonsContainer.cs" type="Script" id=2]
@@ -63,7 +63,7 @@ flags = 4
 load_path = "res://.import/fireplace.png-94ed3f234bd31702fb7e48a7c0b30bf6.stex"
 
 [sub_resource type="StyleBoxFlat" id=16]
-bg_color = Color( 0.972549, 0.870588, 0.494118, 1 )
+bg_color = Color( 1, 1, 1, 1 )
 
 [sub_resource type="DynamicFontData" id=17]
 font_path = "res://assets/fonts/Bathrind.otf"
@@ -75,6 +75,62 @@ font_data = SubResource( 17 )
 [sub_resource type="DynamicFont" id=19]
 size = 22
 font_data = SubResource( 17 )
+
+[sub_resource type="Animation" id=20]
+resource_name = "hover"
+length = 0.5
+tracks/0/type = "value"
+tracks/0/path = NodePath("Icon:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.5 ),
+"transitions": PoolRealArray( 0.378929, 0.25 ),
+"update": 0,
+"values": [ Color( 0.972549, 0.87451, 0.494118, 1 ), Color( 1, 1, 1, 1 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Info:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.5 ),
+"transitions": PoolRealArray( 0.5, 0.406126 ),
+"update": 0,
+"values": [ Color( 0.972549, 0.87451, 0.494118, 1 ), Color( 1, 1, 1, 1 ) ]
+}
+
+[sub_resource type="Animation" id=21]
+resource_name = "unhover"
+length = 0.5
+tracks/0/type = "value"
+tracks/0/path = NodePath("Icon:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.5 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 1 ), Color( 0.972549, 0.87451, 0.494118, 1 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Info:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.5 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 1 ), Color( 0.972549, 0.87451, 0.494118, 1 ) ]
+}
 
 [node name="Control" type="Control"]
 anchor_right = 1.0
@@ -247,7 +303,7 @@ rect_min_size = Vector2( 300, 415 )
 custom_styles/panel = SubResource( 14 )
 
 [node name="Icon" type="TextureRect" parent="Cards/Container/CardPanel"]
-modulate = Color( 0.972549, 0.870588, 0.494118, 1 )
+modulate = Color( 0.972549, 0.87451, 0.494118, 1 )
 anchor_right = 1.0
 margin_left = 6.0
 margin_top = 6.0
@@ -261,11 +317,14 @@ __meta__ = {
 }
 
 [node name="Info" type="Panel" parent="Cards/Container/CardPanel"]
+modulate = Color( 0.972549, 0.87451, 0.494118, 1 )
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
+margin_left = 6.0
 margin_top = -210.0
-margin_bottom = -3.05176e-05
+margin_right = -6.0
+margin_bottom = -6.0
 custom_styles/panel = SubResource( 16 )
 __meta__ = {
 "_edit_use_anchors_": false
@@ -282,7 +341,7 @@ __meta__ = {
 }
 
 [node name="TestTitle" type="Label" parent="Cards/Container/CardPanel/Info/VBoxContainer"]
-margin_right = 300.0
+margin_right = 288.0
 margin_bottom = 51.0
 custom_fonts/font = SubResource( 18 )
 custom_colors/font_color = Color( 0.129412, 0.156863, 0.227451, 1 )
@@ -292,7 +351,7 @@ valign = 1
 
 [node name="TestDesc" type="Label" parent="Cards/Container/CardPanel/Info/VBoxContainer"]
 margin_top = 76.0
-margin_right = 300.0
+margin_right = 288.0
 margin_bottom = 127.0
 custom_fonts/font = SubResource( 19 )
 custom_colors/font_color = Color( 0.113725, 0.152941, 0.243137, 1 )
@@ -304,6 +363,10 @@ clip_text = true
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Cards/Container/CardPanel"]
+anims/hover = SubResource( 20 )
+anims/unhover = SubResource( 21 )
 
 [node name="Settings" type="MarginContainer" parent="."]
 anchor_left = 0.5
@@ -317,10 +380,3 @@ margin_bottom = 303.732
 __meta__ = {
 "_edit_use_anchors_": false
 }
-
-[node name="Container" type="VBoxContainer" parent="Settings"]
-margin_right = 300.0
-margin_bottom = 415.0
-
-[node name="CheckboxPanel" type="Panel" parent="Settings/Container"]
-margin_right = 300.0
