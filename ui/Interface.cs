@@ -7,6 +7,7 @@ namespace Casanova.ui
 	{
 		public Array<Button> buttonGroup = new Array<Button>();
 		public Array<Label> labelGroup = new Array<Label>();
+		public Array<AnimationPlayer> cardAnimationGroup = new Array<AnimationPlayer>();
 		public Interface()
 		{
 			

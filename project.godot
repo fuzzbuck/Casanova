@@ -39,8 +39,8 @@ window/stretch/aspect="expand"
 
 [locale]
 
-translations=PoolStringArray( "res://assets/translations/translation.pl.translation", "res://assets/translations/translation.en.translation" )
-locale_filter=[ 1, [ "en", "pl" ] ]
+translations=PoolStringArray( "res://assets/translations/translation.en.translation", "res://assets/translations/translation.hr.translation", "res://assets/translations/translation.pl.translation", "res://assets/translations/translation.sr.translation" )
+locale_filter=[ 0, [  ] ]
 
 [rendering]
 
