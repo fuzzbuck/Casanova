@@ -1,7 +1,7 @@
-id,en,pl,ba-cro,sr
-PLAY,Play,Graj,Igraj,Играј
-SETTINGS,Settings,Opcje,Opcije,Опције
-ABOUT,About,O Projekcie,O Projektu,О Пројекту
-EXIT,Exit,Wyjscie,Izađi,Изађи
-TESTTITLE,Test,Test,Test,Тест
-TESTDESC,Testing grounds,Testowanie funkcji,Testiranje,Тестирање
+id,en,pl,ba-cro,sr,zh_TW
+PLAY,Play,Graj,Igraj,Играј,開始遊戲
+SETTINGS,Settings,Opcje,Opcije,Опције，設定
+ABOUT,About,O Projekcie,O Projektu,О Пројекту，關於
+EXIT,Exit,Wyjscie,Izađi,Изађи，離開
+TESTTITLE,Test,Test,Test,Тест,測試
+TESTDESC,Testing grounds,Testowanie funkcji,Testiranje,Тестирање，測試中
