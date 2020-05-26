@@ -5,7 +5,6 @@ namespace Casanova.core
 {
     public class Vars : Node
     {
-        public static Interface uiHandler = new Interface();
         public static BundleHandler bundleHandler = new BundleHandler("en");
 
         public class Pals
