@@ -29,7 +29,7 @@ namespace Casanova.ui.fragments
 			{
 				Button button = buttons[i];
 				
-				button.Connect("pressed", this, "_onButtonPress", new Array(new[] {i}));
+				button.Connect("button_down", this, "_onButtonPress", new Array(new[] {i}));
 				Interface.ButtonGroup.Add(button);
 			}
 		}

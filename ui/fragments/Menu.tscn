@@ -3,34 +3,67 @@
 [ext_resource path="res://ui/fragments/CardsContainer.cs" type="Script" id=1]
 [ext_resource path="res://ui/fragments/MenuButtonsContainer.cs" type="Script" id=2]
 
-[sub_resource type="Environment" id=24]
+[sub_resource type="Environment" id=1]
 background_mode = 4
 glow_enabled = true
-glow_intensity = 0.45
-glow_strength = 1.02
-glow_bloom = 0.2
-glow_blend_mode = 0
-glow_hdr_threshold = 0.7
+glow_bloom = 1.0
+glow_hdr_threshold = 0.47
+glow_bicubic_upscale = true
 adjustment_enabled = true
 adjustment_brightness = 1.08
 adjustment_contrast = 1.17
 
-[sub_resource type="Shader" id=1]
+[sub_resource type="Shader" id=2]
 code = "shader_type canvas_item;
 
+uniform int OCTAVES = 4;
+
+float rand(vec2 coord){
+	return fract(sin(dot(coord, vec2(56, 78)) * 1000.0) * 1000.0);
+}
+
+float noise(vec2 coord){
+	vec2 i = floor(coord);
+	vec2 f = fract(coord);
+
+	// 4 corners of a rectangle surrounding our point
+	float a = rand(i);
+	float b = rand(i + vec2(1.0, 0.0));
+	float c = rand(i + vec2(0.0, 1.0));
+	float d = rand(i + vec2(1.0, 1.0));
+
+	vec2 cubic = f * f * (3.0 - 2.0 * f);
+
+	return mix(a, b, cubic.x) + (c - a) * cubic.y * (1.0 - cubic.x) + (d - b) * cubic.x * cubic.y;
+}
+
+float fbm(vec2 coord){
+	float value = 0.5;
+	float scale = 0.5;
+
+	for(int i = 0; i < OCTAVES; i++){
+		value += noise(coord) * scale;
+		coord *= 2.0;
+		scale *= 0.5;
+	}
+	return value;
+}
+
+
 void fragment(){
-    
     vec3 color1 = vec3((1.0+sin(TIME/6.0))/7f, (1.0+sin(TIME/6.0+45.0))/9f, (1.0+sin(TIME/6.0+90.0))/6f);
     vec3 color2 = vec3(0.047, 0.129, 0.180);
-    
     vec3 color = mix(color1, color2, (UV.x + UV.y)/2.0);
-    COLOR = vec4(color.r, color.g, color.b, 1);
+	
+	vec2 motion = vec2( fbm((UV * 20.0) + TIME * 0.5) );
+	float final = fbm((UV * 20.0) + motion) / 120.0;
+	
+    COLOR = vec4(color.r + final, color.g + final, color.b + final, 1);
 }"
 
-[sub_resource type="ShaderMaterial" id=2]
-shader = SubResource( 1 )
-
-[sub_resource type="StyleBoxEmpty" id=3]
+[sub_resource type="ShaderMaterial" id=3]
+shader = SubResource( 2 )
+shader_param/OCTAVES = 4
 
 [sub_resource type="StyleBoxEmpty" id=4]
 
@@ -40,29 +73,31 @@ shader = SubResource( 1 )
 
 [sub_resource type="StyleBoxEmpty" id=7]
 
-[sub_resource type="DynamicFontData" id=8]
+[sub_resource type="StyleBoxEmpty" id=8]
+
+[sub_resource type="DynamicFontData" id=9]
 font_path = "res://assets/fonts/Bathrind.otf"
 
-[sub_resource type="DynamicFont" id=9]
-size = 100
-font_data = SubResource( 8 )
-
 [sub_resource type="DynamicFont" id=10]
-size = 64
-font_data = SubResource( 8 )
+size = 100
+font_data = SubResource( 9 )
 
-[sub_resource type="StreamTexture" id=11]
+[sub_resource type="DynamicFont" id=11]
+size = 64
+font_data = SubResource( 9 )
+
+[sub_resource type="StreamTexture" id=12]
 flags = 4
 load_path = "res://.import/logo.png-63be3467a3db720a8e6f4c8e2d3c8259.stex"
 
-[sub_resource type="DynamicFontData" id=12]
+[sub_resource type="DynamicFontData" id=13]
 font_path = "res://assets/fonts/JosefinSans-LightItalic.ttf"
 
-[sub_resource type="DynamicFont" id=13]
+[sub_resource type="DynamicFont" id=14]
 size = 26
-font_data = SubResource( 12 )
+font_data = SubResource( 13 )
 
-[sub_resource type="StyleBoxFlat" id=14]
+[sub_resource type="StyleBoxFlat" id=15]
 bg_color = Color( 0.6, 0.6, 0.6, 0 )
 border_width_left = 6
 border_width_top = 6
@@ -70,25 +105,25 @@ border_width_right = 6
 border_width_bottom = 6
 border_color = Color( 0.972549, 0.87451, 0.494118, 1 )
 
-[sub_resource type="StreamTexture" id=15]
+[sub_resource type="StreamTexture" id=16]
 flags = 4
 load_path = "res://.import/fireplace.png-94ed3f234bd31702fb7e48a7c0b30bf6.stex"
 
-[sub_resource type="StyleBoxFlat" id=16]
+[sub_resource type="StyleBoxFlat" id=17]
 bg_color = Color( 1, 1, 1, 1 )
 
-[sub_resource type="DynamicFontData" id=17]
+[sub_resource type="DynamicFontData" id=18]
 font_path = "res://assets/fonts/Bathrind.otf"
 
-[sub_resource type="DynamicFont" id=18]
-size = 48
-font_data = SubResource( 17 )
-
 [sub_resource type="DynamicFont" id=19]
-size = 22
-font_data = SubResource( 17 )
+size = 48
+font_data = SubResource( 18 )
 
-[sub_resource type="Animation" id=20]
+[sub_resource type="DynamicFont" id=20]
+size = 22
+font_data = SubResource( 18 )
+
+[sub_resource type="Animation" id=21]
 length = 0.25
 tracks/0/type = "value"
 tracks/0/path = NodePath(".:modulate")
@@ -115,7 +150,7 @@ tracks/1/keys = {
 "values": [ -160.0, 0.0 ]
 }
 
-[sub_resource type="Animation" id=21]
+[sub_resource type="Animation" id=22]
 length = 0.25
 tracks/0/type = "value"
 tracks/0/path = NodePath(".:modulate")
@@ -142,7 +177,7 @@ tracks/1/keys = {
 "values": [ 0.0, 30.0 ]
 }
 
-[sub_resource type="Animation" id=22]
+[sub_resource type="Animation" id=23]
 length = 0.5
 tracks/0/type = "value"
 tracks/0/path = NodePath("Icon:modulate")
@@ -169,7 +204,7 @@ tracks/1/keys = {
 "values": [ Color( 0.972549, 0.87451, 0.494118, 1 ), Color( 1, 1, 1, 1 ) ]
 }
 
-[sub_resource type="Animation" id=23]
+[sub_resource type="Animation" id=24]
 length = 0.5
 tracks/0/type = "value"
 tracks/0/path = NodePath("Icon:modulate")
@@ -204,10 +239,10 @@ __meta__ = {
 }
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
-environment = SubResource( 24 )
+environment = SubResource( 1 )
 
 [node name="Gradient" type="ColorRect" parent="."]
-material = SubResource( 2 )
+material = SubResource( 3 )
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 1.85065
@@ -257,12 +292,12 @@ margin_bottom = 177.0
 [node name="Play" type="Button" parent="Menu/Buttons/Container/MenuButtonsContainer/TopButtons"]
 margin_right = 234.0
 margin_bottom = 105.0
-custom_styles/hover = SubResource( 3 )
-custom_styles/pressed = SubResource( 4 )
-custom_styles/focus = SubResource( 5 )
-custom_styles/disabled = SubResource( 6 )
-custom_styles/normal = SubResource( 7 )
-custom_fonts/font = SubResource( 9 )
+custom_styles/hover = SubResource( 4 )
+custom_styles/pressed = SubResource( 5 )
+custom_styles/focus = SubResource( 6 )
+custom_styles/disabled = SubResource( 7 )
+custom_styles/normal = SubResource( 8 )
+custom_fonts/font = SubResource( 10 )
 custom_colors/font_color = Color( 0.972549, 0.87451, 0.494118, 1 )
 text = "Play"
 align = 0
@@ -271,13 +306,14 @@ align = 0
 margin_top = 109.0
 margin_right = 234.0
 margin_bottom = 177.0
-custom_styles/hover = SubResource( 3 )
-custom_styles/pressed = SubResource( 4 )
-custom_styles/focus = SubResource( 5 )
-custom_styles/disabled = SubResource( 6 )
-custom_styles/normal = SubResource( 7 )
-custom_fonts/font = SubResource( 10 )
+custom_styles/hover = SubResource( 4 )
+custom_styles/pressed = SubResource( 5 )
+custom_styles/focus = SubResource( 6 )
+custom_styles/disabled = SubResource( 7 )
+custom_styles/normal = SubResource( 8 )
+custom_fonts/font = SubResource( 11 )
 custom_colors/font_color = Color( 0.972549, 0.870588, 0.494118, 1 )
+disabled = true
 text = "Settings"
 align = 0
 
@@ -290,13 +326,14 @@ alignment = 2
 [node name="About" type="Button" parent="Menu/Buttons/Container/MenuButtonsContainer/BottomButtons"]
 margin_right = 234.0
 margin_bottom = 68.0
-custom_styles/hover = SubResource( 3 )
-custom_styles/pressed = SubResource( 4 )
-custom_styles/focus = SubResource( 5 )
-custom_styles/disabled = SubResource( 6 )
-custom_styles/normal = SubResource( 7 )
-custom_fonts/font = SubResource( 10 )
+custom_styles/hover = SubResource( 4 )
+custom_styles/pressed = SubResource( 5 )
+custom_styles/focus = SubResource( 6 )
+custom_styles/disabled = SubResource( 7 )
+custom_styles/normal = SubResource( 8 )
+custom_fonts/font = SubResource( 11 )
 custom_colors/font_color = Color( 0.972549, 0.870588, 0.494118, 1 )
+disabled = true
 text = "About"
 align = 0
 
@@ -304,12 +341,12 @@ align = 0
 margin_top = 72.0
 margin_right = 234.0
 margin_bottom = 140.0
-custom_styles/hover = SubResource( 3 )
-custom_styles/pressed = SubResource( 4 )
-custom_styles/focus = SubResource( 5 )
-custom_styles/disabled = SubResource( 6 )
-custom_styles/normal = SubResource( 7 )
-custom_fonts/font = SubResource( 10 )
+custom_styles/hover = SubResource( 4 )
+custom_styles/pressed = SubResource( 5 )
+custom_styles/focus = SubResource( 6 )
+custom_styles/disabled = SubResource( 7 )
+custom_styles/normal = SubResource( 8 )
+custom_fonts/font = SubResource( 11 )
 custom_colors/font_color = Color( 0.972549, 0.870588, 0.494118, 1 )
 text = "Exit"
 align = 0
@@ -339,13 +376,13 @@ __meta__ = {
 [node name="Logo" type="TextureRect" parent="TopCenter/LogoContainer"]
 margin_right = 560.0
 margin_bottom = 140.0
-texture = SubResource( 11 )
+texture = SubResource( 12 )
 
 [node name="Label" type="Label" parent="TopCenter"]
 margin_top = 144.0
 margin_right = 560.0
 margin_bottom = 171.0
-custom_fonts/font = SubResource( 13 )
+custom_fonts/font = SubResource( 14 )
 text = "build {0} v{1} indev"
 align = 1
 valign = 1
@@ -365,17 +402,17 @@ __meta__ = {
 }
 
 [node name="Container" type="HBoxContainer" parent="Cards"]
-margin_right = 1020.0
+margin_right = 300.0
 margin_bottom = 415.0
 custom_constants/separation = 60
 alignment = 1
 
 [node name="CardPanel" type="Panel" parent="Cards/Container"]
-margin_left = 360.0
-margin_right = 660.0
+modulate = Color( 1, 1, 1, 0 )
+margin_right = 300.0
 margin_bottom = 415.0
 rect_min_size = Vector2( 300, 415 )
-custom_styles/panel = SubResource( 14 )
+custom_styles/panel = SubResource( 15 )
 __meta__ = {
 "_edit_ik_": true
 }
@@ -387,7 +424,7 @@ margin_left = 6.0
 margin_top = 6.0
 margin_right = -6.0
 margin_bottom = 205.0
-texture = SubResource( 15 )
+texture = SubResource( 16 )
 expand = true
 stretch_mode = 6
 __meta__ = {
@@ -403,7 +440,7 @@ margin_left = 6.0
 margin_top = -210.0
 margin_right = -6.0
 margin_bottom = -6.0
-custom_styles/panel = SubResource( 16 )
+custom_styles/panel = SubResource( 17 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -421,7 +458,7 @@ __meta__ = {
 [node name="TestTitle" type="Label" parent="Cards/Container/CardPanel/Info/VBoxContainer"]
 margin_right = 288.0
 margin_bottom = 51.0
-custom_fonts/font = SubResource( 18 )
+custom_fonts/font = SubResource( 19 )
 custom_colors/font_color = Color( 0.129412, 0.156863, 0.227451, 1 )
 text = "Test"
 align = 1
@@ -431,7 +468,7 @@ valign = 1
 margin_top = 76.0
 margin_right = 288.0
 margin_bottom = 127.0
-custom_fonts/font = SubResource( 19 )
+custom_fonts/font = SubResource( 20 )
 custom_colors/font_color = Color( 0.113725, 0.152941, 0.243137, 1 )
 text = "Testing grounds to help
 debug & development"
@@ -443,10 +480,10 @@ __meta__ = {
 }
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="Cards/Container/CardPanel"]
-anims/enter = SubResource( 20 )
-anims/exit = SubResource( 21 )
-anims/hover = SubResource( 22 )
-anims/unhover = SubResource( 23 )
+anims/enter = SubResource( 21 )
+anims/exit = SubResource( 22 )
+anims/hover = SubResource( 23 )
+anims/unhover = SubResource( 24 )
 
 [node name="Detector" type="Panel" parent="Cards/Container/CardPanel"]
 modulate = Color( 1, 1, 1, 0 )
@@ -469,5 +506,10 @@ margin_bottom = 303.732
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="Container" type="VBoxContainer" parent="Settings"]
+margin_right = 300.0
+margin_bottom = 415.0
+custom_constants/separation = 60
 [connection signal="mouse_entered" from="Cards/Container/CardPanel/Detector" to="Cards" method="_on_Detector_mouse_entered" binds= [ 0 ]]
 [connection signal="mouse_exited" from="Cards/Container/CardPanel/Detector" to="Cards" method="_on_Detector_mouse_exited" binds= [ 0 ]]
