@@ -8,7 +8,7 @@ namespace Casanova.ui
 		public static Array<Button> buttonGroup = new Array<Button>();
 		public static Array<Label> labelGroup = new Array<Label>();
 		public static Array<AnimationPlayer> cardAnimationGroup = new Array<AnimationPlayer>();
-		public static int currentSelected = -1; // current button/category selected   -1 = none,  0 = play, 1 = settings, etc.
+		public static int currentSelected = -1; // current button/category selected   -1 = none,  0 = play, 1 = settings, 2 = about, 3 = exit (dont select)
 		
 		public Interface()
 		{

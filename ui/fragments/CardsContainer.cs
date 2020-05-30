@@ -30,7 +30,6 @@ namespace Casanova.ui.fragments
 
 		public void _cardHover(Array args)
 		{
-			GD.Print("card hover");
 			GD.Print(args);
 			Panel cardPanel = args[0] as Panel;
 			

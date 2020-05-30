@@ -55,7 +55,6 @@
   <ItemGroup>
     <Compile Include="core\BundleHandler.cs" />
     <Compile Include="core\Vars.cs" />
-    <Compile Include="ui\elements\Card.cs" />
     <Compile Include="ui\fragments\CardsContainer.cs" />
     <Compile Include="ui\fragments\MenuButtonsContainer.cs" />
     <Compile Include="ui\Interface.cs" />

@@ -27,6 +27,7 @@ Vars="*res://core/Vars.cs"
 
 [debug]
 
+settings/fps/force_fps=144
 settings/stdout/print_fps=true
 
 [display]

@@ -3,6 +3,7 @@ using Casanova.core;
 using Godot;
 using Godot.Collections;
 using Array = Godot.Collections.Array;
+using Environment = Godot.Environment;
 
 namespace Casanova.ui.fragments
 {
@@ -35,23 +36,30 @@ namespace Casanova.ui.fragments
 
 		public void _onButtonPress(int index)
 		{
-			if (Interface.currentSelected == index) // we are selected, close all cards, settings
+			if (index == 3) // 3 = exit button index
 			{
-				Interface.currentSelected = -1;
-				Interface.MainMenu.closeAll();
+				// todo: save important data, do pre-exit things
+				GetTree().Quit();
+				return;
+			}
+			if (Interface.currentSelected == index) // we are selected, ignore
+			{
+				// Interface.currentSelected = -1;
+				// Interface.MainMenu.closeAll();
 				return;
 			}
 
 			if (Interface.currentSelected == -1) // if nothing is displayed
 			{
+				// todo: open the selected index
 				Interface.currentSelected = index;
 				return;
 			}
 
 			if (Interface.currentSelected != -1) // if something is displayed, but we want to display something else
 			{
-				Interface.currentSelected = index;
 				Interface.MainMenu.closeAll();
+				Interface.currentSelected = index;
 			}
 		}
 	

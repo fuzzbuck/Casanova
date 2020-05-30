@@ -8,7 +8,7 @@ code = "shader_type canvas_item;
 
 void fragment(){
     
-    vec3 color1 = vec3((1.0+sin(TIME/6.0))/14f, (1.0+sin(TIME/6.0+45.0))/18f, (1.0+sin(TIME/6.0+90.0))/12f);
+    vec3 color1 = vec3((1.0+sin(TIME/6.0))/7f, (1.0+sin(TIME/6.0+45.0))/9f, (1.0+sin(TIME/6.0+90.0))/6f);
     vec3 color2 = vec3(0.047, 0.129, 0.180);
     
     vec3 color = mix(color1, color2, (UV.x + UV.y)/2.0);
@@ -35,22 +35,22 @@ font_path = "res://assets/fonts/Bathrind.otf"
 size = 100
 font_data = SubResource( 8 )
 
-[sub_resource type="DynamicFont" id=13]
+[sub_resource type="DynamicFont" id=10]
 size = 64
 font_data = SubResource( 8 )
 
-[sub_resource type="StreamTexture" id=14]
+[sub_resource type="StreamTexture" id=11]
 flags = 4
 load_path = "res://.import/logo.png-63be3467a3db720a8e6f4c8e2d3c8259.stex"
 
-[sub_resource type="DynamicFontData" id=15]
+[sub_resource type="DynamicFontData" id=12]
 font_path = "res://assets/fonts/JosefinSans-LightItalic.ttf"
 
-[sub_resource type="DynamicFont" id=16]
+[sub_resource type="DynamicFont" id=13]
 size = 26
-font_data = SubResource( 15 )
+font_data = SubResource( 12 )
 
-[sub_resource type="StyleBoxFlat" id=17]
+[sub_resource type="StyleBoxFlat" id=14]
 bg_color = Color( 0.6, 0.6, 0.6, 0 )
 border_width_left = 6
 border_width_top = 6
@@ -58,25 +58,25 @@ border_width_right = 6
 border_width_bottom = 6
 border_color = Color( 0.972549, 0.87451, 0.494118, 1 )
 
-[sub_resource type="StreamTexture" id=18]
+[sub_resource type="StreamTexture" id=15]
 flags = 4
 load_path = "res://.import/fireplace.png-94ed3f234bd31702fb7e48a7c0b30bf6.stex"
 
-[sub_resource type="StyleBoxFlat" id=19]
+[sub_resource type="StyleBoxFlat" id=16]
 bg_color = Color( 1, 1, 1, 1 )
 
-[sub_resource type="DynamicFontData" id=20]
+[sub_resource type="DynamicFontData" id=17]
 font_path = "res://assets/fonts/Bathrind.otf"
 
-[sub_resource type="DynamicFont" id=21]
+[sub_resource type="DynamicFont" id=18]
 size = 48
-font_data = SubResource( 20 )
+font_data = SubResource( 17 )
 
-[sub_resource type="DynamicFont" id=22]
+[sub_resource type="DynamicFont" id=19]
 size = 22
-font_data = SubResource( 20 )
+font_data = SubResource( 17 )
 
-[sub_resource type="Animation" id=23]
+[sub_resource type="Animation" id=20]
 length = 0.25
 tracks/0/type = "value"
 tracks/0/path = NodePath(".:modulate")
@@ -103,7 +103,7 @@ tracks/1/keys = {
 "values": [ -160.0, 0.0 ]
 }
 
-[sub_resource type="Animation" id=24]
+[sub_resource type="Animation" id=21]
 length = 0.25
 tracks/0/type = "value"
 tracks/0/path = NodePath(".:modulate")
@@ -130,7 +130,7 @@ tracks/1/keys = {
 "values": [ 0.0, 30.0 ]
 }
 
-[sub_resource type="Animation" id=25]
+[sub_resource type="Animation" id=22]
 length = 0.5
 tracks/0/type = "value"
 tracks/0/path = NodePath("Icon:modulate")
@@ -157,7 +157,7 @@ tracks/1/keys = {
 "values": [ Color( 0.972549, 0.87451, 0.494118, 1 ), Color( 1, 1, 1, 1 ) ]
 }
 
-[sub_resource type="Animation" id=26]
+[sub_resource type="Animation" id=23]
 length = 0.5
 tracks/0/type = "value"
 tracks/0/path = NodePath("Icon:modulate")
@@ -261,7 +261,7 @@ custom_styles/pressed = SubResource( 4 )
 custom_styles/focus = SubResource( 5 )
 custom_styles/disabled = SubResource( 6 )
 custom_styles/normal = SubResource( 7 )
-custom_fonts/font = SubResource( 13 )
+custom_fonts/font = SubResource( 10 )
 custom_colors/font_color = Color( 0.972549, 0.870588, 0.494118, 1 )
 text = "Settings"
 align = 0
@@ -280,7 +280,7 @@ custom_styles/pressed = SubResource( 4 )
 custom_styles/focus = SubResource( 5 )
 custom_styles/disabled = SubResource( 6 )
 custom_styles/normal = SubResource( 7 )
-custom_fonts/font = SubResource( 13 )
+custom_fonts/font = SubResource( 10 )
 custom_colors/font_color = Color( 0.972549, 0.870588, 0.494118, 1 )
 text = "About"
 align = 0
@@ -294,7 +294,7 @@ custom_styles/pressed = SubResource( 4 )
 custom_styles/focus = SubResource( 5 )
 custom_styles/disabled = SubResource( 6 )
 custom_styles/normal = SubResource( 7 )
-custom_fonts/font = SubResource( 13 )
+custom_fonts/font = SubResource( 10 )
 custom_colors/font_color = Color( 0.972549, 0.870588, 0.494118, 1 )
 text = "Exit"
 align = 0
@@ -324,13 +324,13 @@ __meta__ = {
 [node name="Logo" type="TextureRect" parent="TopCenter/LogoContainer"]
 margin_right = 560.0
 margin_bottom = 140.0
-texture = SubResource( 14 )
+texture = SubResource( 11 )
 
 [node name="Label" type="Label" parent="TopCenter"]
 margin_top = 144.0
 margin_right = 560.0
 margin_bottom = 171.0
-custom_fonts/font = SubResource( 16 )
+custom_fonts/font = SubResource( 13 )
 text = "build {0} v{1} indev"
 align = 1
 valign = 1
@@ -360,8 +360,7 @@ modulate = Color( 1, 1, 1, 0 )
 margin_right = 300.0
 margin_bottom = 415.0
 rect_min_size = Vector2( 300, 415 )
-rect_rotation = 30.0
-custom_styles/panel = SubResource( 17 )
+custom_styles/panel = SubResource( 14 )
 __meta__ = {
 "_edit_ik_": true
 }
@@ -373,7 +372,7 @@ margin_left = 6.0
 margin_top = 6.0
 margin_right = -6.0
 margin_bottom = 205.0
-texture = SubResource( 18 )
+texture = SubResource( 15 )
 expand = true
 stretch_mode = 6
 __meta__ = {
@@ -389,7 +388,7 @@ margin_left = 6.0
 margin_top = -210.0
 margin_right = -6.0
 margin_bottom = -6.0
-custom_styles/panel = SubResource( 19 )
+custom_styles/panel = SubResource( 16 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -407,7 +406,7 @@ __meta__ = {
 [node name="TestTitle" type="Label" parent="Cards/Container/CardPanel/Info/VBoxContainer"]
 margin_right = 288.0
 margin_bottom = 51.0
-custom_fonts/font = SubResource( 21 )
+custom_fonts/font = SubResource( 18 )
 custom_colors/font_color = Color( 0.129412, 0.156863, 0.227451, 1 )
 text = "Test"
 align = 1
@@ -417,7 +416,7 @@ valign = 1
 margin_top = 76.0
 margin_right = 288.0
 margin_bottom = 127.0
-custom_fonts/font = SubResource( 22 )
+custom_fonts/font = SubResource( 19 )
 custom_colors/font_color = Color( 0.113725, 0.152941, 0.243137, 1 )
 text = "Testing grounds to help
 debug & development"
@@ -429,10 +428,10 @@ __meta__ = {
 }
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="Cards/Container/CardPanel"]
-anims/enter = SubResource( 23 )
-anims/exit = SubResource( 24 )
-anims/hover = SubResource( 25 )
-anims/unhover = SubResource( 26 )
+anims/enter = SubResource( 20 )
+anims/exit = SubResource( 21 )
+anims/hover = SubResource( 22 )
+anims/unhover = SubResource( 23 )
 
 [node name="Detector" type="Panel" parent="Cards/Container/CardPanel"]
 modulate = Color( 1, 1, 1, 0 )
