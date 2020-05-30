@@ -1,7 +1,19 @@
-[gd_scene load_steps=26 format=2]
+[gd_scene load_steps=27 format=2]
 
 [ext_resource path="res://ui/fragments/CardsContainer.cs" type="Script" id=1]
 [ext_resource path="res://ui/fragments/MenuButtonsContainer.cs" type="Script" id=2]
+
+[sub_resource type="Environment" id=24]
+background_mode = 4
+glow_enabled = true
+glow_intensity = 0.45
+glow_strength = 1.02
+glow_bloom = 0.2
+glow_blend_mode = 0
+glow_hdr_threshold = 0.7
+adjustment_enabled = true
+adjustment_brightness = 1.08
+adjustment_contrast = 1.17
 
 [sub_resource type="Shader" id=1]
 code = "shader_type canvas_item;
@@ -191,6 +203,9 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource( 24 )
+
 [node name="Gradient" type="ColorRect" parent="."]
 material = SubResource( 2 )
 anchor_right = 1.0
@@ -350,17 +365,16 @@ __meta__ = {
 }
 
 [node name="Container" type="HBoxContainer" parent="Cards"]
-margin_right = 300.0
+margin_right = 1020.0
 margin_bottom = 415.0
 custom_constants/separation = 60
 alignment = 1
 
 [node name="CardPanel" type="Panel" parent="Cards/Container"]
-modulate = Color( 1, 1, 1, 0 )
-margin_right = 300.0
+margin_left = 360.0
+margin_right = 660.0
 margin_bottom = 415.0
 rect_min_size = Vector2( 300, 415 )
-rect_rotation = -160.0
 custom_styles/panel = SubResource( 14 )
 __meta__ = {
 "_edit_ik_": true
