@@ -15,8 +15,8 @@ namespace Casanova.core
         
         public static void load()
         {
-            GD.Print("Applying translation");
-            new BundleHandler("pl").updateBundle("pl");
+            // GD.Print("Applying translation");
+            // new BundleHandler("pl").updateBundle("pl");
         }
     }
 }
