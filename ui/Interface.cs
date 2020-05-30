@@ -1,3 +1,7 @@
+using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.Runtime.InteropServices;
 using Godot;
 using Godot.Collections;
 
@@ -5,10 +9,10 @@ namespace Casanova.ui
 {
 	public class Interface : Node
 	{
-		public static Array<Button> buttonGroup = new Array<Button>();
-		public static Array<Label> labelGroup = new Array<Label>();
+		public static Array<Button> ButtonGroup = new Array<Button>();
+		public static Array<Label> LabelGroup = new Array<Label>();
 		public static Array<AnimationPlayer> cardAnimationGroup = new Array<AnimationPlayer>();
-		public static int currentSelected = -1; // current button/category selected   -1 = none,  0 = play, 1 = settings, 2 = about, 3 = exit (dont select)
+		public static int CurrentSelected = -1; // current button/category selected   -1 = none,  0 = play, 1 = settings, 2 = about, 3 = exit (dont select)
 		
 		public Interface()
 		{
@@ -17,19 +21,23 @@ namespace Casanova.ui
 
 		public static class Cards
 		{
-			public static void open()
+			public static bool IsShown;
+			public static void Open()
 			{
+				IsShown = true;
+				GD.Print("opening cards");
 				for (var i = 0; i < cardAnimationGroup.Count; i++)
 				{
+					GD.Print("opening card " + cardAnimationGroup[i].Name);
 					cardAnimationGroup[i].Play("enter");
 				}
 			}
 
-			public static void close()
+			public static void Close()
 			{
 				for (var i = 0; i < cardAnimationGroup.Count; i++)
 				{
-					if(cardAnimationGroup[i].AssignedAnimation != "exit") 
+					if(cardAnimationGroup[i].AssignedAnimation != "exit" && IsShown) 
 						cardAnimationGroup[i].Play("exit");
 				}
 			}
@@ -37,9 +45,22 @@ namespace Casanova.ui
 
 		public static class MainMenu
 		{
-			public static void closeAll()
+			public static readonly System.Collections.Generic.Dictionary<int, Action> IndexBindings = new System.Collections.Generic.Dictionary<int, Action>
 			{
-				Cards.close();
+				{
+					0, Cards.Open
+				},
+				{
+					1, () => {}
+				},
+				{
+					2, () => {}
+				}
+				// todo: settings.open(), about.open()
+			};
+			public static void CloseAll()
+			{
+				Cards.Close();
 			}
 		}
 	}

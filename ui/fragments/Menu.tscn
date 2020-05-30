@@ -85,7 +85,7 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0, 0.3 ),
+"times": PoolRealArray( 0, 0.2 ),
 "transitions": PoolRealArray( 0.450625, 0.466517 ),
 "update": 0,
 "values": [ Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 1 ) ]
@@ -97,7 +97,7 @@ tracks/1/loop_wrap = true
 tracks/1/imported = false
 tracks/1/enabled = true
 tracks/1/keys = {
-"times": PoolRealArray( 0, 0.3 ),
+"times": PoolRealArray( 0, 0.2 ),
 "transitions": PoolRealArray( 0.450625, 0.482968 ),
 "update": 0,
 "values": [ -160.0, 0.0 ]
@@ -360,6 +360,7 @@ modulate = Color( 1, 1, 1, 0 )
 margin_right = 300.0
 margin_bottom = 415.0
 rect_min_size = Vector2( 300, 415 )
+rect_rotation = -160.0
 custom_styles/panel = SubResource( 14 )
 __meta__ = {
 "_edit_ik_": true

@@ -18,8 +18,8 @@ namespace Casanova.ui.fragments
 				VBoxContainer infoBox = cardPanel.GetNode<Panel>("Info").GetNode<VBoxContainer>("VBoxContainer");
 				
 				// add 2 first children, which are usually Title & Description
-				Interface.labelGroup.Add(infoBox.GetChildren()[0] as Label);
-				Interface.labelGroup.Add(infoBox.GetChildren()[1] as Label);
+				Interface.LabelGroup.Add(infoBox.GetChildren()[0] as Label);
+				Interface.LabelGroup.Add(infoBox.GetChildren()[1] as Label);
 				
 				// add the animation player for this card panel
 				Interface.cardAnimationGroup.Add(cardPanel.GetNode<AnimationPlayer>("AnimationPlayer"));
