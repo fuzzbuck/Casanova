@@ -4,3 +4,9 @@ C:\Users\aspherix\Documents\GodotProjects\Casanova\.mono\temp\obj\Tools\Casanova
 C:\Users\aspherix\Documents\GodotProjects\Casanova\.mono\temp\obj\Tools\Casanova.csproj.CoreCompileInputs.cache
 C:\Users\aspherix\Documents\GodotProjects\Casanova\.mono\temp\obj\Tools\Casanova.dll
 C:\Users\aspherix\Documents\GodotProjects\Casanova\.mono\temp\obj\Tools\Casanova.pdb
+C:\Users\Ado\Desktop\Godot projects\Casanova\.mono\temp\bin\Tools\Casanova.dll
+C:\Users\Ado\Desktop\Godot projects\Casanova\.mono\temp\bin\Tools\Casanova.pdb
+C:\Users\Ado\Desktop\Godot projects\Casanova\.mono\temp\obj\Tools\Casanova.csprojAssemblyReference.cache
+C:\Users\Ado\Desktop\Godot projects\Casanova\.mono\temp\obj\Tools\Casanova.csproj.CoreCompileInputs.cache
+C:\Users\Ado\Desktop\Godot projects\Casanova\.mono\temp\obj\Tools\Casanova.dll
+C:\Users\Ado\Desktop\Godot projects\Casanova\.mono\temp\obj\Tools\Casanova.pdb
