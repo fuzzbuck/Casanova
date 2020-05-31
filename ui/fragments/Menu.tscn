@@ -1,20 +1,25 @@
-[gd_scene load_steps=27 format=2]
+[gd_scene load_steps=30 format=2]
 
 [ext_resource path="res://ui/fragments/CardsContainer.cs" type="Script" id=1]
 [ext_resource path="res://ui/fragments/MenuButtonsContainer.cs" type="Script" id=2]
+[ext_resource path="res://ui/fragments/Label.cs" type="Script" id=3]
 
 [sub_resource type="Environment" id=1]
 background_mode = 4
 glow_enabled = true
+glow_levels/2 = true
+glow_levels/3 = false
 glow_bloom = 1.0
 glow_hdr_threshold = 0.47
-glow_bicubic_upscale = true
+glow_hdr_scale = 1.0
 adjustment_enabled = true
 adjustment_brightness = 1.08
 adjustment_contrast = 1.17
 
 [sub_resource type="Shader" id=2]
 code = "shader_type canvas_item;
+
+uniform sampler2D perlin;
 
 uniform int OCTAVES = 4;
 
@@ -55,15 +60,27 @@ void fragment(){
     vec3 color2 = vec3(0.047, 0.129, 0.180);
     vec3 color = mix(color1, color2, (UV.x + UV.y)/2.0);
 	
-	vec2 motion = vec2( fbm((UV * 20.0) + TIME * 0.3) );
-	float final = fbm((UV * 20.0) + motion) / 180.0;
+	float final = texture(perlin, UV + TIME / -40.0).r / 45.0;
+	
+	// vec2 motion = vec2( fbm((UV * 20.0) + TIME) );
+	// float final = fbm((UV * 20.0) + motion) / 100.0;
 	
     COLOR = vec4(color.r + final, color.g + final, color.b + final, 1);
 }"
 
+[sub_resource type="OpenSimplexNoise" id=25]
+period = 54.0
+persistence = 0.8
+lacunarity = 1.2
+
+[sub_resource type="NoiseTexture" id=26]
+seamless = true
+noise = SubResource( 25 )
+
 [sub_resource type="ShaderMaterial" id=3]
 shader = SubResource( 2 )
 shader_param/OCTAVES = 4
+shader_param/perlin = SubResource( 26 )
 
 [sub_resource type="StyleBoxEmpty" id=4]
 
@@ -350,6 +367,14 @@ custom_fonts/font = SubResource( 11 )
 custom_colors/font_color = Color( 0.972549, 0.870588, 0.494118, 1 )
 text = "Exit"
 align = 0
+
+[node name="Label" type="Label" parent="Menu"]
+margin_left = 338.0
+margin_top = 161.0
+margin_right = 385.0
+margin_bottom = 175.0
+text = "144 fps"
+script = ExtResource( 3 )
 
 [node name="TopCenter" type="VBoxContainer" parent="."]
 anchor_left = 0.5
