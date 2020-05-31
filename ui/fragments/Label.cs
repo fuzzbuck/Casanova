@@ -14,7 +14,7 @@ public class Label : Godot.Label
 		{
 			while (true)
 			{
-				Text = Engine.GetFramesPerSecond() + " fps";
+				Text = Engine.GetFramesPerSecond() + " fps\n" + Engine.TargetFps + " cap";
 			}
 		}).Start();
 	}

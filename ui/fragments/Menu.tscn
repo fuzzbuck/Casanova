@@ -68,23 +68,19 @@ void fragment(){
     COLOR = vec4(color.r + final, color.g + final, color.b + final, 1);
 }"
 
-[sub_resource type="OpenSimplexNoise" id=25]
+[sub_resource type="OpenSimplexNoise" id=3]
 period = 54.0
 persistence = 0.8
 lacunarity = 1.2
 
-[sub_resource type="NoiseTexture" id=26]
+[sub_resource type="NoiseTexture" id=4]
 seamless = true
-noise = SubResource( 25 )
+noise = SubResource( 3 )
 
-[sub_resource type="ShaderMaterial" id=3]
+[sub_resource type="ShaderMaterial" id=5]
 shader = SubResource( 2 )
 shader_param/OCTAVES = 4
-shader_param/perlin = SubResource( 26 )
-
-[sub_resource type="StyleBoxEmpty" id=4]
-
-[sub_resource type="StyleBoxEmpty" id=5]
+shader_param/perlin = SubResource( 4 )
 
 [sub_resource type="StyleBoxEmpty" id=6]
 
@@ -92,29 +88,33 @@ shader_param/perlin = SubResource( 26 )
 
 [sub_resource type="StyleBoxEmpty" id=8]
 
-[sub_resource type="DynamicFontData" id=9]
+[sub_resource type="StyleBoxEmpty" id=9]
+
+[sub_resource type="StyleBoxEmpty" id=10]
+
+[sub_resource type="DynamicFontData" id=11]
 font_path = "res://assets/fonts/Bathrind.otf"
 
-[sub_resource type="DynamicFont" id=10]
+[sub_resource type="DynamicFont" id=12]
 size = 100
-font_data = SubResource( 9 )
+font_data = SubResource( 11 )
 
-[sub_resource type="DynamicFont" id=11]
+[sub_resource type="DynamicFont" id=13]
 size = 64
-font_data = SubResource( 9 )
+font_data = SubResource( 11 )
 
-[sub_resource type="StreamTexture" id=12]
+[sub_resource type="StreamTexture" id=14]
 flags = 4
 load_path = "res://.import/logo.png-63be3467a3db720a8e6f4c8e2d3c8259.stex"
 
-[sub_resource type="DynamicFontData" id=13]
+[sub_resource type="DynamicFontData" id=15]
 font_path = "res://assets/fonts/JosefinSans-LightItalic.ttf"
 
-[sub_resource type="DynamicFont" id=14]
+[sub_resource type="DynamicFont" id=16]
 size = 26
-font_data = SubResource( 13 )
+font_data = SubResource( 15 )
 
-[sub_resource type="StyleBoxFlat" id=15]
+[sub_resource type="StyleBoxFlat" id=17]
 bg_color = Color( 0.6, 0.6, 0.6, 0 )
 border_width_left = 6
 border_width_top = 6
@@ -122,25 +122,25 @@ border_width_right = 6
 border_width_bottom = 6
 border_color = Color( 0.972549, 0.87451, 0.494118, 1 )
 
-[sub_resource type="StreamTexture" id=16]
+[sub_resource type="StreamTexture" id=18]
 flags = 4
 load_path = "res://.import/fireplace.png-94ed3f234bd31702fb7e48a7c0b30bf6.stex"
 
-[sub_resource type="StyleBoxFlat" id=17]
+[sub_resource type="StyleBoxFlat" id=19]
 bg_color = Color( 1, 1, 1, 1 )
 
-[sub_resource type="DynamicFontData" id=18]
+[sub_resource type="DynamicFontData" id=20]
 font_path = "res://assets/fonts/Bathrind.otf"
 
-[sub_resource type="DynamicFont" id=19]
+[sub_resource type="DynamicFont" id=21]
 size = 48
-font_data = SubResource( 18 )
+font_data = SubResource( 20 )
 
-[sub_resource type="DynamicFont" id=20]
+[sub_resource type="DynamicFont" id=22]
 size = 22
-font_data = SubResource( 18 )
+font_data = SubResource( 20 )
 
-[sub_resource type="Animation" id=21]
+[sub_resource type="Animation" id=23]
 length = 0.25
 tracks/0/type = "value"
 tracks/0/path = NodePath(".:modulate")
@@ -167,7 +167,7 @@ tracks/1/keys = {
 "values": [ -160.0, 0.0 ]
 }
 
-[sub_resource type="Animation" id=22]
+[sub_resource type="Animation" id=24]
 length = 0.25
 tracks/0/type = "value"
 tracks/0/path = NodePath(".:modulate")
@@ -194,7 +194,7 @@ tracks/1/keys = {
 "values": [ 0.0, 30.0 ]
 }
 
-[sub_resource type="Animation" id=23]
+[sub_resource type="Animation" id=25]
 length = 0.5
 tracks/0/type = "value"
 tracks/0/path = NodePath("Icon:modulate")
@@ -221,7 +221,7 @@ tracks/1/keys = {
 "values": [ Color( 0.972549, 0.87451, 0.494118, 1 ), Color( 1, 1, 1, 1 ) ]
 }
 
-[sub_resource type="Animation" id=24]
+[sub_resource type="Animation" id=26]
 length = 0.5
 tracks/0/type = "value"
 tracks/0/path = NodePath("Icon:modulate")
@@ -259,7 +259,7 @@ __meta__ = {
 environment = SubResource( 1 )
 
 [node name="Gradient" type="ColorRect" parent="."]
-material = SubResource( 3 )
+material = SubResource( 5 )
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 1.85065
@@ -269,11 +269,22 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="FpsLabel" type="Label" parent="."]
+margin_left = 15.0
+margin_top = 15.0
+margin_right = 47.0
+margin_bottom = 14.0
+text = "144 fps"
+script = ExtResource( 3 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [node name="Menu" type="HBoxContainer" parent="."]
 anchor_top = 0.5
 anchor_bottom = 0.5
 margin_top = -78.8517
-margin_right = 306.0
+margin_right = 385.0
 margin_bottom = 258.148
 __meta__ = {
 "_edit_use_anchors_": false
@@ -309,12 +320,12 @@ margin_bottom = 177.0
 [node name="Play" type="Button" parent="Menu/Buttons/Container/MenuButtonsContainer/TopButtons"]
 margin_right = 234.0
 margin_bottom = 105.0
-custom_styles/hover = SubResource( 4 )
-custom_styles/pressed = SubResource( 5 )
-custom_styles/focus = SubResource( 6 )
-custom_styles/disabled = SubResource( 7 )
-custom_styles/normal = SubResource( 8 )
-custom_fonts/font = SubResource( 10 )
+custom_styles/hover = SubResource( 6 )
+custom_styles/pressed = SubResource( 7 )
+custom_styles/focus = SubResource( 8 )
+custom_styles/disabled = SubResource( 9 )
+custom_styles/normal = SubResource( 10 )
+custom_fonts/font = SubResource( 12 )
 custom_colors/font_color = Color( 0.972549, 0.87451, 0.494118, 1 )
 text = "Play"
 align = 0
@@ -323,12 +334,12 @@ align = 0
 margin_top = 109.0
 margin_right = 234.0
 margin_bottom = 177.0
-custom_styles/hover = SubResource( 4 )
-custom_styles/pressed = SubResource( 5 )
-custom_styles/focus = SubResource( 6 )
-custom_styles/disabled = SubResource( 7 )
-custom_styles/normal = SubResource( 8 )
-custom_fonts/font = SubResource( 11 )
+custom_styles/hover = SubResource( 6 )
+custom_styles/pressed = SubResource( 7 )
+custom_styles/focus = SubResource( 8 )
+custom_styles/disabled = SubResource( 9 )
+custom_styles/normal = SubResource( 10 )
+custom_fonts/font = SubResource( 13 )
 custom_colors/font_color = Color( 0.972549, 0.870588, 0.494118, 1 )
 disabled = true
 text = "Settings"
@@ -343,12 +354,12 @@ alignment = 2
 [node name="About" type="Button" parent="Menu/Buttons/Container/MenuButtonsContainer/BottomButtons"]
 margin_right = 234.0
 margin_bottom = 68.0
-custom_styles/hover = SubResource( 4 )
-custom_styles/pressed = SubResource( 5 )
-custom_styles/focus = SubResource( 6 )
-custom_styles/disabled = SubResource( 7 )
-custom_styles/normal = SubResource( 8 )
-custom_fonts/font = SubResource( 11 )
+custom_styles/hover = SubResource( 6 )
+custom_styles/pressed = SubResource( 7 )
+custom_styles/focus = SubResource( 8 )
+custom_styles/disabled = SubResource( 9 )
+custom_styles/normal = SubResource( 10 )
+custom_fonts/font = SubResource( 13 )
 custom_colors/font_color = Color( 0.972549, 0.870588, 0.494118, 1 )
 disabled = true
 text = "About"
@@ -358,23 +369,15 @@ align = 0
 margin_top = 72.0
 margin_right = 234.0
 margin_bottom = 140.0
-custom_styles/hover = SubResource( 4 )
-custom_styles/pressed = SubResource( 5 )
-custom_styles/focus = SubResource( 6 )
-custom_styles/disabled = SubResource( 7 )
-custom_styles/normal = SubResource( 8 )
-custom_fonts/font = SubResource( 11 )
+custom_styles/hover = SubResource( 6 )
+custom_styles/pressed = SubResource( 7 )
+custom_styles/focus = SubResource( 8 )
+custom_styles/disabled = SubResource( 9 )
+custom_styles/normal = SubResource( 10 )
+custom_fonts/font = SubResource( 13 )
 custom_colors/font_color = Color( 0.972549, 0.870588, 0.494118, 1 )
 text = "Exit"
 align = 0
-
-[node name="Label" type="Label" parent="Menu"]
-margin_left = 338.0
-margin_top = 161.0
-margin_right = 385.0
-margin_bottom = 175.0
-text = "144 fps"
-script = ExtResource( 3 )
 
 [node name="TopCenter" type="VBoxContainer" parent="."]
 anchor_left = 0.5
@@ -401,13 +404,13 @@ __meta__ = {
 [node name="Logo" type="TextureRect" parent="TopCenter/LogoContainer"]
 margin_right = 560.0
 margin_bottom = 140.0
-texture = SubResource( 12 )
+texture = SubResource( 14 )
 
 [node name="Label" type="Label" parent="TopCenter"]
 margin_top = 144.0
 margin_right = 560.0
 margin_bottom = 171.0
-custom_fonts/font = SubResource( 14 )
+custom_fonts/font = SubResource( 16 )
 text = "build {0} v{1} indev"
 align = 1
 valign = 1
@@ -437,7 +440,7 @@ modulate = Color( 1, 1, 1, 0 )
 margin_right = 300.0
 margin_bottom = 415.0
 rect_min_size = Vector2( 300, 415 )
-custom_styles/panel = SubResource( 15 )
+custom_styles/panel = SubResource( 17 )
 __meta__ = {
 "_edit_ik_": true
 }
@@ -449,7 +452,7 @@ margin_left = 6.0
 margin_top = 6.0
 margin_right = -6.0
 margin_bottom = 205.0
-texture = SubResource( 16 )
+texture = SubResource( 18 )
 expand = true
 stretch_mode = 6
 __meta__ = {
@@ -465,7 +468,7 @@ margin_left = 6.0
 margin_top = -210.0
 margin_right = -6.0
 margin_bottom = -6.0
-custom_styles/panel = SubResource( 17 )
+custom_styles/panel = SubResource( 19 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -483,7 +486,7 @@ __meta__ = {
 [node name="TestTitle" type="Label" parent="Cards/Container/CardPanel/Info/VBoxContainer"]
 margin_right = 288.0
 margin_bottom = 51.0
-custom_fonts/font = SubResource( 19 )
+custom_fonts/font = SubResource( 21 )
 custom_colors/font_color = Color( 0.129412, 0.156863, 0.227451, 1 )
 text = "Test"
 align = 1
@@ -493,7 +496,7 @@ valign = 1
 margin_top = 76.0
 margin_right = 288.0
 margin_bottom = 127.0
-custom_fonts/font = SubResource( 20 )
+custom_fonts/font = SubResource( 22 )
 custom_colors/font_color = Color( 0.113725, 0.152941, 0.243137, 1 )
 text = "Testing grounds to help
 debug & development"
@@ -505,10 +508,10 @@ __meta__ = {
 }
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="Cards/Container/CardPanel"]
-anims/enter = SubResource( 21 )
-anims/exit = SubResource( 22 )
-anims/hover = SubResource( 23 )
-anims/unhover = SubResource( 24 )
+anims/enter = SubResource( 23 )
+anims/exit = SubResource( 24 )
+anims/hover = SubResource( 25 )
+anims/unhover = SubResource( 26 )
 
 [node name="Detector" type="Panel" parent="Cards/Container/CardPanel"]
 modulate = Color( 1, 1, 1, 0 )
