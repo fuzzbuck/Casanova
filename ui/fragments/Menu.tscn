@@ -1,8 +1,9 @@
-[gd_scene load_steps=30 format=2]
+[gd_scene load_steps=31 format=2]
 
 [ext_resource path="res://ui/fragments/CardsContainer.cs" type="Script" id=1]
 [ext_resource path="res://ui/fragments/MenuButtonsContainer.cs" type="Script" id=2]
 [ext_resource path="res://ui/fragments/Label.cs" type="Script" id=3]
+[ext_resource path="res://assets/sounds/menu.ogg" type="AudioStream" id=4]
 
 [sub_resource type="Environment" id=1]
 background_mode = 4
@@ -539,5 +540,9 @@ __meta__ = {
 margin_right = 300.0
 margin_bottom = 415.0
 custom_constants/separation = 60
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 4 )
+autoplay = true
 [connection signal="mouse_entered" from="Cards/Container/CardPanel/Detector" to="Cards" method="_on_Detector_mouse_entered" binds= [ 0 ]]
 [connection signal="mouse_exited" from="Cards/Container/CardPanel/Detector" to="Cards" method="_on_Detector_mouse_exited" binds= [ 0 ]]
