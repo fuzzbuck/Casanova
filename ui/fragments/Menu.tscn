@@ -270,8 +270,8 @@ __meta__ = {
 }
 
 [node name="FpsLabel" type="Label" parent="."]
-margin_left = 15.0
-margin_top = 15.0
+margin_left = 65.0
+margin_top = 50.0
 margin_right = 47.0
 margin_bottom = 14.0
 text = "144 fps"
