@@ -55,5 +55,6 @@ locale_filter=[ 0, [  ] ]
 
 quality/intended_usage/framebuffer_allocation=0
 quality/intended_usage/framebuffer_allocation.mobile=0
-quality/subsurface_scattering/quality=2
+threads/thread_model=2
+vram_compression/import_etc=true
 environment/default_environment="res://default_env.tres"
