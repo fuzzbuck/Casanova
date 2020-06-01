@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://assets/sprites/units/miner_mk1_n.png" type="Texture" id=1]
+[ext_resource path="res://assets/sprites/units/miner_mk1.png" type="Texture" id=2]
+
+[node name="Player" type="KinematicBody2D"]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
+polygon = PoolVector2Array( 24, 0, 24, 32, 8, 16, -8, 16, -24, 32, -24, 0, 0, -32 )
+
+[node name="Sprite" type="Sprite" parent="."]
+texture = ExtResource( 2 )
+normal_map = ExtResource( 1 )
