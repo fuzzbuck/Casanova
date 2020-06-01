@@ -543,6 +543,8 @@ custom_constants/separation = 60
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 stream = ExtResource( 4 )
+volume_db = -10.0
 autoplay = true
+bus = "Music"
 [connection signal="mouse_entered" from="Cards/Container/CardPanel/Detector" to="Cards" method="_on_Detector_mouse_entered" binds= [ 0 ]]
 [connection signal="mouse_exited" from="Cards/Container/CardPanel/Detector" to="Cards" method="_on_Detector_mouse_exited" binds= [ 0 ]]
