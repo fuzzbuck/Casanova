@@ -20,7 +20,7 @@
         <e p="elements" t="Include" />
         <e p="fragments" t="Include">
           <e p="CardsContainer.cs" t="Include" />
-          <e p="Label.cs" t="Include" />
+          <e p="DebugLabel.cs" t="Include" />
           <e p="MenuButtonsContainer.cs" t="Include" />
         </e>
         <e p="Interface.cs" t="Include" />

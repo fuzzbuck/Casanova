@@ -1,7 +1,8 @@
 using Godot;
 using System;
+using System.Threading.Tasks;
 
-public class Label : Godot.Label
+public class DebugLabel : Godot.Label
 {
 	// Declare member variables here. Examples:
 	// private int a = 2;
@@ -14,7 +15,8 @@ public class Label : Godot.Label
 		{
 			while (true)
 			{
-				Text = Engine.GetFramesPerSecond() + " fps\n" + Engine.TargetFps + " cap";
+				Text = Engine.GetFramesPerSecond() + " fps\n" + Engine.TargetFps + " cap\n" + Engine.IterationsPerSecond + " ips";
+				//Task.Delay(1000).Wait();
 			}
 		}).Start();
 	}

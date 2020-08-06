@@ -2,7 +2,7 @@
 
 [ext_resource path="res://ui/fragments/CardsContainer.cs" type="Script" id=1]
 [ext_resource path="res://ui/fragments/MenuButtonsContainer.cs" type="Script" id=2]
-[ext_resource path="res://ui/fragments/Label.cs" type="Script" id=3]
+[ext_resource path="res://ui/fragments/DebugLabel.cs" type="Script" id=3]
 [ext_resource path="res://assets/sounds/menu.ogg" type="AudioStream" id=4]
 
 [sub_resource type="Environment" id=1]

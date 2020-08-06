@@ -56,7 +56,7 @@
     <Compile Include="core\BundleHandler.cs" />
     <Compile Include="core\Vars.cs" />
     <Compile Include="ui\fragments\CardsContainer.cs" />
-    <Compile Include="ui\fragments\Label.cs" />
+    <Compile Include="ui\fragments\DebugLabel.cs" />
     <Compile Include="ui\fragments\MenuButtonsContainer.cs" />
     <Compile Include="ui\Interface.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
