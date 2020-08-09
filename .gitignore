@@ -1,14 +1,11 @@
+# Godot-specific ignores
+.import/
+export.cfg
+export_presets.cfg
+
+# Imported translations (automatically generated from CSV files)
+*.translation
+
+# Mono-specific ignores
 .mono/
-.idea/.idea.Casanova/.idea/markdown-navigator.xml
-.idea/.idea.Casanova/.idea/markdown-navigator-enh.xml
-build/
-.mono/metadata/scripts_metadata.editor
-.idea/.idea.Casanova/.idea/contentModel.xml
-.mono/metadata/scripts_metadata.editor
-.mono/metadata/scripts_metadata.editor_player
-.mono/temp/bin/Tools/Casanova.dll
-.mono/temp/bin/Tools/Casanova.pdb
-.mono/temp/obj/Debug/Casanova.csprojAssemblyReference.cache
-.mono/temp/obj/Tools/Casanova.csproj.CoreCompileInputs.cache
-.mono/temp/obj/Tools/Casanova.dll
-.mono/temp/obj/Tools/Casanova.pdb
+data_*/
