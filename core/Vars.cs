@@ -6,6 +6,7 @@ namespace Casanova.core
     public class Vars : Node
     {
         public static BundleHandler bundleHandler = new BundleHandler("en");
+        public static string ver = "build 1 ver. indev";
 
         public class Pals
         {

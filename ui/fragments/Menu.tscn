@@ -1,9 +1,10 @@
-[gd_scene load_steps=31 format=2]
+[gd_scene load_steps=32 format=2]
 
 [ext_resource path="res://ui/fragments/CardsContainer.cs" type="Script" id=1]
 [ext_resource path="res://ui/fragments/MenuButtonsContainer.cs" type="Script" id=2]
-[ext_resource path="res://ui/fragments/DebugLabel.cs" type="Script" id=3]
+[ext_resource path="res://ui/fragments/DebugLabel.tscn" type="PackedScene" id=3]
 [ext_resource path="res://assets/sounds/menu.ogg" type="AudioStream" id=4]
+[ext_resource path="res://ui/fragments/VersionLabel.cs" type="Script" id=5]
 
 [sub_resource type="Environment" id=1]
 background_mode = 4
@@ -270,16 +271,7 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="FpsLabel" type="Label" parent="."]
-margin_left = 65.0
-margin_top = 50.0
-margin_right = 47.0
-margin_bottom = 14.0
-text = "144 fps"
-script = ExtResource( 3 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
+[node name="DebugLabel" parent="." instance=ExtResource( 3 )]
 
 [node name="Menu" type="HBoxContainer" parent="."]
 anchor_top = 0.5
@@ -415,6 +407,7 @@ custom_fonts/font = SubResource( 16 )
 text = "build {0} v{1} indev"
 align = 1
 valign = 1
+script = ExtResource( 5 )
 
 [node name="Cards" type="MarginContainer" parent="."]
 anchor_left = 0.5
@@ -546,5 +539,9 @@ stream = ExtResource( 4 )
 volume_db = -10.0
 autoplay = true
 bus = "Music"
+
+[node name="Control" type="Control" parent="."]
+margin_right = 40.0
+margin_bottom = 40.0
 [connection signal="mouse_entered" from="Cards/Container/CardPanel/Detector" to="Cards" method="_on_Detector_mouse_entered" binds= [ 0 ]]
 [connection signal="mouse_exited" from="Cards/Container/CardPanel/Detector" to="Cards" method="_on_Detector_mouse_exited" binds= [ 0 ]]

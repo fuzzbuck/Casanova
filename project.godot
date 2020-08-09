@@ -45,6 +45,14 @@ csv_translation={
 "delimiter": 0
 }
 
+[input]
+
+toggle_fullscreen={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":16777254,"unicode":0,"echo":false,"script":null)
+ ]
+}
+
 [locale]
 
 translations=PoolStringArray( "res://assets/translations/translation.en.translation", "res://assets/translations/translation.hr.translation", "res://assets/translations/translation.pl.translation", "res://assets/translations/translation.sr.translation", "res://assets/translations/translation.zh_TW.translation" )

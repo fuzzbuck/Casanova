@@ -22,6 +22,7 @@
           <e p="CardsContainer.cs" t="Include" />
           <e p="DebugLabel.cs" t="Include" />
           <e p="MenuButtonsContainer.cs" t="Include" />
+          <e p="VersionLabel.cs" t="Include" />
         </e>
         <e p="Interface.cs" t="Include" />
       </e>
