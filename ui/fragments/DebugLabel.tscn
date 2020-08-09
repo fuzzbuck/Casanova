@@ -3,6 +3,7 @@
 [ext_resource path="res://ui/fragments/DebugLabel.cs" type="Script" id=1]
 
 [node name="DebugLabel" type="Label"]
+visible = false
 margin_left = 65.0
 margin_top = 50.0
 margin_right = 112.0
