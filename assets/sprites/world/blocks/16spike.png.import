@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/miner_mk1_o.png-ae495460c83837e0eba4fb8f644ed7b2.stex"
+path="res://.import/16spike.png-977b6d9e6b0fe8bc7910a8dfeb6235ba.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/units/miner_mk1_o.png"
-dest_files=[ "res://.import/miner_mk1_o.png-ae495460c83837e0eba4fb8f644ed7b2.stex" ]
+source_file="res://assets/sprites/world/blocks/16spike.png"
+dest_files=[ "res://.import/16spike.png-977b6d9e6b0fe8bc7910a8dfeb6235ba.stex" ]
 
 [params]
 

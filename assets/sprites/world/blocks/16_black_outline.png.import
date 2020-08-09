@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/miner_mk1_n.png-5bf933bc67f61485f7669aa643b60b6d.stex"
+path="res://.import/16_black_outline.png-38cab45cfe2ce20fa746a62044b55c69.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/units/miner_mk1_n.png"
-dest_files=[ "res://.import/miner_mk1_n.png-5bf933bc67f61485f7669aa643b60b6d.stex" ]
+source_file="res://assets/sprites/world/blocks/16_black_outline.png"
+dest_files=[ "res://.import/16_black_outline.png-38cab45cfe2ce20fa746a62044b55c69.stex" ]
 
 [params]
 
@@ -20,7 +20,7 @@ compress/hdr_mode=0
 compress/bptc_ldr=0
 compress/normal_map=0
 flags/repeat=0
-flags/filter=false
+flags/filter=true
 flags/mipmaps=false
 flags/anisotropic=false
 flags/srgb=2

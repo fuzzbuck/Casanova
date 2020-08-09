@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/testing_simple_block_1.png-c6330cc9307e5a160a114265c2b0e954.stex"
+path="res://.import/16iso_black_outline.png-f3606de33f37a4a20ffb840198b0df31.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/world/blocks/testing_simple_block_1.png"
-dest_files=[ "res://.import/testing_simple_block_1.png-c6330cc9307e5a160a114265c2b0e954.stex" ]
+source_file="res://assets/sprites/world/blocks/16iso_black_outline.png"
+dest_files=[ "res://.import/16iso_black_outline.png-f3606de33f37a4a20ffb840198b0df31.stex" ]
 
 [params]
 

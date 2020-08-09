@@ -10,6 +10,11 @@
       <e p="Casanova.sln" t="IncludeFlat" />
       <e p="core" t="Include">
         <e p="BundleHandler.cs" t="Include" />
+        <e p="main" t="Include">
+          <e p="units" t="Include">
+            <e p="PlayerUnit.cs" t="Include" />
+          </e>
+        </e>
         <e p="Vars.cs" t="Include" />
       </e>
       <e p="packages" t="ExcludeRecursive" />
@@ -26,6 +31,7 @@
         </e>
         <e p="Interface.cs" t="Include" />
       </e>
+      <e p="Unit.cs" t="Include" />
     </e>
   </component>
 </project>
