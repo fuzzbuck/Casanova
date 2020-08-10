@@ -55,6 +55,7 @@
   <ItemGroup>
     <Compile Include="core\BundleHandler.cs" />
     <Compile Include="core\main\units\PlayerUnit.cs" />
+    <Compile Include="core\main\units\Unit.cs" />
     <Compile Include="core\Vars.cs" />
     <Compile Include="ui\fragments\CardsContainer.cs" />
     <Compile Include="ui\fragments\DebugLabel.cs" />
@@ -62,7 +63,6 @@
     <Compile Include="ui\fragments\VersionLabel.cs" />
     <Compile Include="ui\Interface.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Unit.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="ui" />
