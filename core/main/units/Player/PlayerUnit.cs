@@ -15,7 +15,7 @@ namespace Casanova.core.main.units.Player
 		
 		// Declared as a fraction of 1.0f
 		public static float bounciness = 0.85f;
-		public static float lubrication = 0.1f;
+		public static float lubrication = 0.7f;
 		
 		public static Vector2 Vel;
 		public Vector2 GetInputAxis()
