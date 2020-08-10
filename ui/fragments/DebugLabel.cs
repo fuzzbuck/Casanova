@@ -1,29 +1,30 @@
 using Godot;
-using System;
-using System.Threading.Tasks;
 
-public class DebugLabel : Label
+namespace Casanova.ui.fragments
 {
-	public override void _UnhandledInput(InputEvent @event)
+	public class DebugLabel : Label
 	{
-		if (@event is InputEventKey eventKey)
-			if (eventKey.Pressed)
-			{
-				if (eventKey.Scancode == (int) KeyList.F3)
-					Visible = !Visible;
-				if (eventKey.Scancode == (int) KeyList.F11)
-					OS.WindowFullscreen = !OS.WindowFullscreen;
-			}
-	}
-	public override void _Ready()
-	{
-		new System.Threading.Thread(() =>
+		public override void _UnhandledInput(InputEvent @event)
 		{
-			while (true)
+			if (@event is InputEventKey eventKey)
+				if (eventKey.Pressed)
+				{
+					if (eventKey.Scancode == (int) KeyList.F3)
+						Visible = !Visible;
+					if (eventKey.Scancode == (int) KeyList.F11)
+						OS.WindowFullscreen = !OS.WindowFullscreen;
+				}
+		}
+		public override void _Ready()
+		{
+			new System.Threading.Thread(() =>
 			{
-				Text = Engine.GetFramesPerSecond() + " fps\n" + Engine.TargetFps + " cap\n" + Engine.IterationsPerSecond + " ips";
-			}
-		}).Start();
-	}
+				while (true)
+				{
+					Text = Engine.GetFramesPerSecond() + " fps\n" + Engine.TargetFps + " cap\n" + Engine.IterationsPerSecond + " ips";
+				}
+			}).Start();
+		}
 	
+	}
 }
