@@ -54,7 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="core\BundleHandler.cs" />
-    <Compile Include="core\main\units\Player\Camera.cs" />
+    <Compile Include="core\main\units\Player\PlayerCamera.cs" />
     <Compile Include="core\main\units\Player\PlayerUnit.cs" />
     <Compile Include="core\main\units\Unit.cs" />
     <Compile Include="core\Vars.cs" />
