@@ -1,49 +1,52 @@
 using Godot;
-using System;
-using System.Security.Principal;
-using Casanova.core;
 
-public class PlayerUnit : RigidBody2D
+namespace Casanova.core.main.units
 {
-	// Declare member variables here. Examples:
-	// private int a = 2;
-	// private string b = "text";
-
-	public static float accel = 5f;
-	public static float decell = 0.1f;
+	public class PlayerUnit : Unit
+	{
+		public static float accel = 1400f;
+		public static float max_speed = 215f;
+		public static float rotation_speed = 8f;
+		public static Vector2 Vel;
 	
-	public static float max_speed = 300f;
-	public static Vector2 vel;
+		public Vector2 GetInputAxis()
+		{
+			var axis = new Vector2();
+			axis.x = Input.GetActionStrength("right") - Input.GetActionStrength("left");
+			axis.y = Input.GetActionStrength("down") - Input.GetActionStrength("up");
+			return axis;
+		}
 
-	// Called when the node enters the scene tree for the first time.
-	public override void _Ready()
-	{
-		
-	}
+		public void ApplyFriction(float amt)
+		{
+			if (Vel.Length() > amt)
+				Vel -= Vel.Normalized() * amt;
+			else
+				Vel = Vector2.Zero;
+		}
 
-	public static void process_input()
-	{
-		if (Input.IsActionPressed("right") && vel.x < max_speed)
-			vel.x += accel;
-		if (Input.IsActionPressed("left") && -vel.x < max_speed)
-			vel.x -= accel;
-		if (Input.IsActionPressed("up") && -vel.y < max_speed)
-			vel.y -= accel;
-		if (Input.IsActionPressed("down") && vel.y < max_speed)
-			vel.y += accel;
-		
-	}
+		public void ApplyMovement(Vector2 amt)
+		{
+			Vel += amt;
+			Vel = Vel.Clamped(max_speed);
+		}
 
-	public override void _PhysicsProcess(float delta)
-	{
-		process_input();
-		AngularVelocity = 3f;
-		LinearVelocity = vel;
-		GD.Print(vel);
-	}
+		public override void _PhysicsProcess(float delta)
+		{
+			// makes movement look janky on 60hz+ monitors, will use _Process instead which is bound to FPS
+		}
 
-	public override void _Process(float delta)
-	{
-		
+		public override void _Process(float delta)
+		{
+			var axis = GetInputAxis();
+			if (axis == Vector2.Zero)
+				ApplyFriction(accel * delta);
+			else
+			{
+				ApplyMovement(axis * accel * delta);
+				Rotation = Mathf.LerpAngle(Rotation, axis.Angle(), rotation_speed * delta);
+			}
+			Vel = MoveAndSlide(Vel);
+		}
 	}
 }
