@@ -54,7 +54,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="core\BundleHandler.cs" />
-    <Compile Include="core\main\units\PlayerUnit.cs" />
+    <Compile Include="core\main\units\Player\Camera.cs" />
+    <Compile Include="core\main\units\Player\PlayerUnit.cs" />
     <Compile Include="core\main\units\Unit.cs" />
     <Compile Include="core\Vars.cs" />
     <Compile Include="ui\fragments\CardsContainer.cs" />

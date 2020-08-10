@@ -12,7 +12,10 @@
         <e p="BundleHandler.cs" t="Include" />
         <e p="main" t="Include">
           <e p="units" t="Include">
-            <e p="PlayerUnit.cs" t="Include" />
+            <e p="Player" t="Include">
+              <e p="Camera.cs" t="Include" />
+              <e p="PlayerUnit.cs" t="Include" />
+            </e>
             <e p="Unit.cs" t="Include" />
           </e>
         </e>
