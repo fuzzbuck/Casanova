@@ -5,3 +5,9 @@
 
 [node name="Unit" instance=ExtResource( 1 )]
 script = ExtResource( 2 )
+
+[node name="test_spike" parent="." index="0"]
+scale = Vector2( 0.25, 0.25 )
+
+[node name="CollisionPolygon2D" parent="." index="1"]
+scale = Vector2( 0.234375, 0.234375 )
