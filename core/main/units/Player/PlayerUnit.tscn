@@ -1,0 +1,22 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://core/main/units/Unit.tscn" type="PackedScene" id=1]
+[ext_resource path="res://core/main/units/Player/PlayerUnit.cs" type="Script" id=2]
+[ext_resource path="res://core/main/units/Player/Camera.cs" type="Script" id=3]
+
+[node name="Unit" instance=ExtResource( 1 )]
+script = ExtResource( 2 )
+
+[node name="Sprite" parent="." index="0"]
+scale = Vector2( 0.15, 0.15 )
+
+[node name="CollisionPolygon2D" parent="." index="1"]
+scale = Vector2( 0.154375, 0.154375 )
+
+[node name="Camera" type="Camera2D" parent="." index="2"]
+current = true
+smoothing_enabled = true
+smoothing_speed = 2.0
+script = ExtResource( 3 )
+
+[node name="Tween" type="Tween" parent="Camera" index="0"]

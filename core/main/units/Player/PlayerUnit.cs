@@ -1,14 +1,23 @@
 using Godot;
 
-namespace Casanova.core.main.units
+namespace Casanova.core.main.units.Player
 {
 	public class PlayerUnit : Unit
 	{
-		public static float accel = 1400f;
+		// These variables are declared in units/second
+		public static float acceleration = 1800f;
+		public static float decellaration = 800f;
 		public static float max_speed = 215f;
-		public static float rotation_speed = 8f;
+		public static float speed = 0f;
+		
+		// Declared in lerp fraction/delta
+		public static float rotation_speed = 6.5f;
+		
+		// Declared as a fraction of 1.0f
+		public static float bounciness = 0.85f;
+		public static float lubrication = 0.1f;
+		
 		public static Vector2 Vel;
-	
 		public Vector2 GetInputAxis()
 		{
 			var axis = new Vector2();
@@ -40,13 +49,23 @@ namespace Casanova.core.main.units
 		{
 			var axis = GetInputAxis();
 			if (axis == Vector2.Zero)
-				ApplyFriction(accel * delta);
+				ApplyFriction(decellaration * delta);
 			else
 			{
-				ApplyMovement(axis * accel * delta);
+				ApplyMovement(axis * acceleration * delta);
 				Rotation = Mathf.LerpAngle(Rotation, axis.Angle(), rotation_speed * delta);
 			}
-			Vel = MoveAndSlide(Vel);
+			var collision = MoveAndCollide(Vel * delta);
+			
+			
+			if (collision != null)
+			{
+				//Vel = Vel.Bounce(collision.Normal * bounciness);
+				Vel = Vel.Slide(collision.Normal * lubrication);
+			}
+			
+			
+			speed = Vel.Length();
 		}
 	}
 }
