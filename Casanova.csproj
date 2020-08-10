@@ -57,6 +57,7 @@
     <Compile Include="core\main\units\Player\PlayerCamera.cs" />
     <Compile Include="core\main\units\Player\PlayerUnit.cs" />
     <Compile Include="core\main\units\Unit.cs" />
+    <Compile Include="core\server\UDPeer.cs" />
     <Compile Include="core\Vars.cs" />
     <Compile Include="ui\fragments\CardsContainer.cs" />
     <Compile Include="ui\fragments\DebugLabel.cs" />
@@ -66,6 +67,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="core\main\world" />
     <Folder Include="ui" />
     <Folder Include="ui\elements" />
     <Folder Include="ui\fragments" />

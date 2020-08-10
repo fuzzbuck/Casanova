@@ -18,6 +18,11 @@ namespace Casanova.core
 				public static float smoothness = 0.014f;
 			}
 		}
+
+		public class Networking
+		{
+			public static bool isConnected = false;
+		}
 		public class Pals
 		{
 			public static Color accent = new Color(248, 248, 126);

@@ -18,6 +18,10 @@
             </e>
             <e p="Unit.cs" t="Include" />
           </e>
+          <e p="world" t="Include" />
+        </e>
+        <e p="server" t="Include">
+          <e p="UDPeer.cs" t="Include" />
         </e>
         <e p="Vars.cs" t="Include" />
       </e>
