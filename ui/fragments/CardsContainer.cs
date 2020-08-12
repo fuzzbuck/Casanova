@@ -1,4 +1,3 @@
-using System.Linq;
 using Casanova.core;
 using Godot;
 using Godot.Collections;

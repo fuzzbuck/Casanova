@@ -1,9 +1,11 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://assets/sprites/world/blocks/test_spike.png" type="Texture" id=1]
+[ext_resource path="res://core/main/units/Unit.cs" type="Script" id=2]
 
 [node name="Unit" type="KinematicBody2D"]
 collision_layer = 4
+script = ExtResource( 2 )
 
 [node name="Sprite" type="Sprite" parent="."]
 rotation = 1.5708

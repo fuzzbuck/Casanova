@@ -1,4 +1,3 @@
-using Casanova.ui;
 using Godot;
 
 namespace Casanova.core

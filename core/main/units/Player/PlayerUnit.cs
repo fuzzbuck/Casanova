@@ -1,14 +1,9 @@
-using System.Runtime.CompilerServices;
-using System.Security.Cryptography.X509Certificates;
 using Godot;
 
 namespace Casanova.core.main.units.Player
 {
 	public class PlayerUnit : Unit
 	{
-		public PlayerUnit ()
-		{
-		}
 		public override Vector2 _GetInputAxis()
 		{
 			var axis = new Vector2();

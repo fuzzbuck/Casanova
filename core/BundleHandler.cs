@@ -1,6 +1,5 @@
 using Godot;
 using System;
-using Casanova.core;
 using Casanova.ui;
 
 public class BundleHandler : Node

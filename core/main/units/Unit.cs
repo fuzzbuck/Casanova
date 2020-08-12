@@ -1,28 +1,23 @@
-using System.Management.Instrumentation;
 using Godot;
 
 namespace Casanova.core.main.units
 {
 	public class Unit : KinematicBody2D
 	{
-		public Unit()
-		{
-		}
-
 		// These variables are declared in units/second
-		float Acceleration = 1800f;
-		float Decellaration = 800f;
-		float MaxSpeed = 215f;
+		protected float Acceleration = 1800f;
+		protected float Decellaration = 800f;
+		protected float MaxSpeed = 215f;
 		protected float Speed = 0f;
 		
 		// Declared in lerp fraction/delta
-		float RotationSpeed = 6.5f;
+		protected float RotationSpeed = 6.5f;
 		
 		// Declared as a fraction of 1.0f
-		float Bounciness = 0.85f;
-		float Lubrication = 0.7f;
+		protected float Bounciness = 0.85f;
+		protected float Lubrication = 0.7f;
 		
-		Vector2 Vel;
+		[Export] Vector2 Vel;
 		
 		public void ApplyFriction(float amt)
 		{

@@ -1,9 +1,6 @@
-using System;
-using Casanova.core;
 using Godot;
 using Godot.Collections;
 using Array = Godot.Collections.Array;
-using Environment = Godot.Environment;
 
 namespace Casanova.ui.fragments
 {
