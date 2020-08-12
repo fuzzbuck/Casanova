@@ -11,6 +11,8 @@ namespace Casanova.ui.fragments
 				{
 					if (eventKey.Scancode == (int) KeyList.F3)
 						Visible = !Visible;
+					
+					// todo: move this somewhere else
 					if (eventKey.Scancode == (int) KeyList.F11)
 						OS.WindowFullscreen = !OS.WindowFullscreen;
 				}
