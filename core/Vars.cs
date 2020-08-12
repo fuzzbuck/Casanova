@@ -7,6 +7,9 @@ namespace Casanova.core
 	{
 		public static BundleHandler bundleHandler = new BundleHandler("en");
 		public static string ver = "build 1 ver. indev";
+		
+		public static string path_core = "res://core";
+		public static string path_main = path_core + "/main";
 
 		public class GlobalSettings
 		{

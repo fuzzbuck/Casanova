@@ -434,6 +434,7 @@ modulate = Color( 1, 1, 1, 0 )
 margin_right = 300.0
 margin_bottom = 415.0
 rect_min_size = Vector2( 300, 415 )
+rect_rotation = -160.0
 custom_styles/panel = SubResource( 17 )
 __meta__ = {
 "_edit_ik_": true
@@ -543,5 +544,3 @@ bus = "Music"
 [node name="Control" type="Control" parent="."]
 margin_right = 40.0
 margin_bottom = 40.0
-[connection signal="mouse_entered" from="Cards/Container/CardPanel/Detector" to="Cards" method="_on_Detector_mouse_entered" binds= [ 0 ]]
-[connection signal="mouse_exited" from="Cards/Container/CardPanel/Detector" to="Cards" method="_on_Detector_mouse_exited" binds= [ 0 ]]

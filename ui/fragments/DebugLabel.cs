@@ -17,16 +17,10 @@ namespace Casanova.ui.fragments
 						OS.WindowFullscreen = !OS.WindowFullscreen;
 				}
 		}
-		public override void _Ready()
+
+		public override void _Process(float delta)
 		{
-			new System.Threading.Thread(() =>
-			{
-				while (true)
-				{
-					Text = Engine.GetFramesPerSecond() + " fps\n" + Engine.TargetFps + " cap\n" + Engine.IterationsPerSecond + " ips";
-				}
-			}).Start();
+			Text = Engine.GetFramesPerSecond() + " fps\n" + Engine.TargetFps + " cap\n" + Engine.IterationsPerSecond + " ips";
 		}
-	
 	}
 }

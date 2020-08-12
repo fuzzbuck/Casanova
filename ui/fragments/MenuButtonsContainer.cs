@@ -58,7 +58,7 @@ namespace Casanova.ui.fragments
 				return;
 			}
 
-			if (Interface.CurrentSelected != -1) // if something is displayed, but we want to display something else
+			if (Interface.CurrentSelected != -1) // if something is already displayed, but we want to display something else
 			{
 				Interface.MainMenu.CloseAll();
 				Interface.MainMenu.IndexBindings[index].DynamicInvoke();

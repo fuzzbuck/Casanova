@@ -8,6 +8,7 @@ namespace Casanova.ui.fragments
 	public class CardsContainer : MarginContainer
 	{
 		private HBoxContainer container;
+		private Array<Panel> detectors = new Array<Panel>();
 		public override void _Ready()
 		{
 			container = GetNode<HBoxContainer>("Container");
@@ -23,6 +24,14 @@ namespace Casanova.ui.fragments
 				
 				// add the animation player for this card panel
 				Interface.cardAnimationGroup.Add(cardPanel.GetNode<AnimationPlayer>("AnimationPlayer"));
+				
+				var detector = cardPanel.GetNode<Panel>("Detector");
+				detectors.Add(detector);
+				
+				detector.Connect("mouse_entered", this, "_on_Detector_mouse_entered", new Array {i});
+				detector.Connect("mouse_exited", this, "_on_Detector_mouse_exited", new Array {i});
+				detector.Connect("gui_input", this, "_on_Detector_gui_input", new Array {i});
+				
 			}
 			
 			Vars.load();
@@ -49,6 +58,7 @@ namespace Casanova.ui.fragments
 
 		private void _on_Detector_mouse_entered(int index)
 		{
+			GD.Print("index: " + index);
 			// play hover animation
 			AnimationPlayer animation = Interface.cardAnimationGroup[index];
 			animation.Stop();
@@ -57,10 +67,22 @@ namespace Casanova.ui.fragments
 		
 		private void _on_Detector_mouse_exited(int index)
 		{
+			GD.Print("index: " + index);
 			AnimationPlayer animation = Interface.cardAnimationGroup[index];
 			animation.Stop();
 			animation.Play("unhover");
 		}
 
+		private void _on_Detector_gui_input(InputEvent @event, int index)
+		{
+			if (@event is InputEventMouseButton)
+			{
+				var e = (InputEventMouseButton) @event;
+				if (@event.IsPressed())
+				{
+					Interface.Cards.IndexBindings[index].DynamicInvoke();
+				}
+			}
+		}
 	}
 }
