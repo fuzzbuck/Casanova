@@ -35,9 +35,10 @@ namespace Casanova.ui
 
 			public static void Close()
 			{
+				IsShown = false;
 				for (var i = 0; i < cardAnimationGroup.Count; i++)
 				{
-					if(cardAnimationGroup[i].AssignedAnimation != "exit" && IsShown) 
+					if(cardAnimationGroup[i].AssignedAnimation != "exit") 
 						cardAnimationGroup[i].Play("exit");
 				}
 			}
@@ -51,10 +52,14 @@ namespace Casanova.ui
 					0, Cards.Open
 				},
 				{
-					1, () => {}
+					1, () =>
+					{
+					}
 				},
 				{
-					2, () => {}
+					2, () =>
+					{
+					}
 				}
 				// todo: settings.open(), about.open()
 			};

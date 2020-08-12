@@ -43,10 +43,11 @@ namespace Casanova.ui.fragments
 				GetTree().Quit();
 				return;
 			}
-			if (Interface.CurrentSelected == index) // we are selected, ignore
+			if (Interface.CurrentSelected == index) // cards selected, close them
 			{
-				// Interface.currentSelected = -1;
-				// Interface.MainMenu.closeAll();
+				Interface.CurrentSelected = -1;
+				GD.Print("Closing cards");
+				Interface.Cards.Close();
 				return;
 			}
 
