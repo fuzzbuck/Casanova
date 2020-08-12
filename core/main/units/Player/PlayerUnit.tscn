@@ -16,5 +16,5 @@ scale = Vector2( 0.1, 0.1 )
 [node name="PlayerCamera" type="Camera2D" parent="." index="2"]
 current = true
 smoothing_enabled = true
-smoothing_speed = 2.0
+smoothing_speed = 3.5
 script = ExtResource( 3 )
