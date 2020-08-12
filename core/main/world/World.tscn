@@ -56,11 +56,12 @@ float fbm(vec2 coord){
 
 
 void fragment(){
-    vec3 color1 = vec3((1.0+sin(TIME/6.0))/7f, (1.0+sin(TIME/6.0+45.0))/9f, (1.0+sin(TIME/6.0+90.0))/6f);
-    vec3 color2 = vec3(0.047, 0.129, 0.180);
+    vec3 color1 = vec3((1.0+sin(TIME/6.0))/5f, (1.0+sin(TIME/6.0+45.0))/5f, (1.0+sin(TIME/6.0+90.0))/4f);
+    //vec3 color2 = vec3(0.047, 0.129, 0.180);
+	vec3 color2 = vec3(0.1, 0.26, 0.36);
     vec3 color = mix(color1, color2, (UV.x + UV.y)/2.0);
 	
-	float final = texture(perlin, UV + TIME / -40.0).r / 45.0;
+	float final = texture(perlin, UV + TIME / -40.0).r / 35.0;
 	
 	// vec2 motion = vec2( fbm((UV * 20.0) + TIME) );
 	// float final = fbm((UV * 20.0) + motion) / 100.0;

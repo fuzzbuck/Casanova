@@ -93,4 +93,5 @@ quality/intended_usage/framebuffer_allocation=0
 quality/intended_usage/framebuffer_allocation.mobile=0
 threads/thread_model=2
 vram_compression/import_etc=true
+quality/filters/msaa=2
 environment/default_environment="res://default_env.tres"

@@ -13,8 +13,8 @@ namespace Casanova.core
 			public class PlayerCamera
 			{
 				public static bool rotates_with_player = false;
-				public static float min_zoom_distance = 1f;
-				public static float max_zoom_distance = 2.5f;
+				public static float min_zoom_distance = 0.7f;
+				public static float max_zoom_distance = 1.75f;
 				public static float smoothness = 0.014f;
 			}
 		}
