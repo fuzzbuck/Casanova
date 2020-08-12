@@ -1,7 +1,5 @@
 using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Runtime.InteropServices;
+using Casanova.core;
 using Godot;
 using Godot.Collections;
 
@@ -13,22 +11,34 @@ namespace Casanova.ui
 		public static Array<Label> LabelGroup = new Array<Label>();
 		public static Array<AnimationPlayer> cardAnimationGroup = new Array<AnimationPlayer>();
 		public static int CurrentSelected = -1; // current button/category selected   -1 = none,  0 = play, 1 = settings, 2 = about, 3 = exit (dont select)
-		
-		public Interface()
+		public static SceneTree tree;
+
+		public override void _Ready()
 		{
-			
+			tree = GetTree();
+			GD.Print(tree);
 		}
 
 		public static class Cards
 		{
 			public static bool IsShown;
+			
+			public static readonly System.Collections.Generic.Dictionary<int, Action> IndexBindings = new System.Collections.Generic.Dictionary<int, Action>
+			{
+				{
+					0, () =>
+					{
+						// start test scene
+						GD.Print(Vars.path_main + "/world/World.tscn");
+						tree.ChangeScene(Vars.path_main + "/world/World.tscn");
+					}
+				}
+			};
 			public static void Open()
 			{
 				IsShown = true;
-				GD.Print("opening cards");
 				for (var i = 0; i < cardAnimationGroup.Count; i++)
 				{
-					GD.Print("opening card " + cardAnimationGroup[i].Name);
 					cardAnimationGroup[i].Play("enter");
 				}
 			}

@@ -24,6 +24,7 @@ boot_splash/bg_color=Color( 0, 0, 0, 1 )
 [autoload]
 
 Vars="*res://core/Vars.cs"
+Interface="*res://ui/Interface.cs"
 
 [debug]
 
