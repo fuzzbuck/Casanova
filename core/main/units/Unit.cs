@@ -1,3 +1,4 @@
+using System.Management.Instrumentation;
 using Godot;
 
 namespace Casanova.core.main.units
@@ -52,14 +53,18 @@ namespace Casanova.core.main.units
 				ApplyMovement(axis * Acceleration * delta);
 				Rotation = Mathf.LerpAngle(Rotation, axis.Angle(), RotationSpeed * delta);
 			}
+			
+
+
+			
 			var collision = MoveAndCollide(Vel * delta);
 			
 			
 			if (collision != null)
 			{
-				//Vel = Vel.Bounce(collision.Normal * bounciness);
 				Vel = Vel.Slide(collision.Normal * Lubrication);
 			}
+			
 			
 			
 			Speed = Vel.Length();
@@ -69,6 +74,7 @@ namespace Casanova.core.main.units
 		{
 			ProcessMovement(delta);
 		}
+		
 
 		public override void _Ready()
 		{
