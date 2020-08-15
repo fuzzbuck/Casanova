@@ -53,9 +53,11 @@ namespace Casanova.core.net
                         if (unit != null)
                         {
                             unit.Axis = axis;
-                            unit.Speed = speed;
-                            if (unit.Position.DistanceTo(pos) > 4)
+                            //unit.Speed = speed;
+                            
+                            if (unit.Position.DistanceTo(pos) > Vars.Networking.unit_desync_treshold)
                                 unit.Position = pos;
+                            
                         }
                     }
                 }
