@@ -222,8 +222,11 @@ namespace Casanova.core.net.server
         private void Disconnect()
         {
             GD.Print($"{tcp.socket.Client.RemoteEndPoint} has disconnected.");
-
-            player = null;
+            
+            ThreadManager.ExecuteOnMainThread(() =>
+            {
+                player = null;
+            });
 
             tcp.Disconnect();
             udp.Disconnect();
