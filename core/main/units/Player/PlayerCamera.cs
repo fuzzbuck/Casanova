@@ -1,5 +1,5 @@
 using Godot;
-using static Casanova.core.Vars.GlobalSettings.PlayerCamera;
+using static Casanova.core.Vars.PlayerCamera;
 
 namespace Casanova.core.main.units.Player
 {
