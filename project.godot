@@ -25,10 +25,7 @@ boot_splash/bg_color=Color( 0, 0, 0, 1 )
 
 Vars="*res://core/Vars.cs"
 Interface="*res://ui/Interface.cs"
-
-[debug]
-
-settings/stdout/print_fps=true
+PlayerController="*res://core/main/PlayerController.cs"
 
 [display]
 

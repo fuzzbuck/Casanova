@@ -54,10 +54,23 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="core\BundleHandler.cs" />
+    <Compile Include="core\main\PlayerController.cs" />
     <Compile Include="core\main\units\Player\PlayerCamera.cs" />
     <Compile Include="core\main\units\Player\PlayerUnit.cs" />
-    <Compile Include="core\main\units\Unit.cs" />
-    <Compile Include="core\server\UDPeer.cs" />
+    <Compile Include="core\main\units\Player\Unit.cs" />
+    <Compile Include="core\main\world\NetworkManager.cs" />
+    <Compile Include="core\main\world\World.cs" />
+    <Compile Include="core\net\ClientSend.cs" />
+    <Compile Include="core\net\client\Client.cs" />
+    <Compile Include="core\net\client\ClientHandler.cs" />
+    <Compile Include="core\net\Packet.cs" />
+    <Compile Include="core\net\Packets.cs" />
+    <Compile Include="core\net\ServerSend.cs" />
+    <Compile Include="core\net\server\Client.cs" />
+    <Compile Include="core\net\server\ServerHandler.cs" />
+    <Compile Include="core\net\server\Server.cs" />
+    <Compile Include="core\net\ThreadManager.cs" />
+    <Compile Include="core\net\types\Player.cs" />
     <Compile Include="core\Vars.cs" />
     <Compile Include="ui\fragments\CardsContainer.cs" />
     <Compile Include="ui\fragments\DebugLabel.cs" />
@@ -67,7 +80,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="core\main\world" />
     <Folder Include="ui" />
     <Folder Include="ui\elements" />
     <Folder Include="ui\fragments" />
