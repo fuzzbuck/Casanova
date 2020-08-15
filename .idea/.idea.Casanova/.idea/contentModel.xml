@@ -11,17 +11,37 @@
       <e p="core" t="Include">
         <e p="BundleHandler.cs" t="Include" />
         <e p="main" t="Include">
+          <e p="PlayerController.cs" t="Include" />
           <e p="units" t="Include">
             <e p="Player" t="Include">
               <e p="PlayerCamera.cs" t="Include" />
               <e p="PlayerUnit.cs" t="Include" />
+              <e p="Unit.cs" t="Include" />
             </e>
-            <e p="Unit.cs" t="Include" />
           </e>
-          <e p="world" t="Include" />
+          <e p="world" t="Include">
+            <e p="NetworkManager.cs" t="Include" />
+            <e p="World.cs" t="Include" />
+          </e>
         </e>
-        <e p="server" t="Include">
-          <e p="UDPeer.cs" t="Include" />
+        <e p="net" t="Include">
+          <e p="client" t="Include">
+            <e p="Client.cs" t="Include" />
+            <e p="ClientHandler.cs" t="Include" />
+          </e>
+          <e p="ClientSend.cs" t="Include" />
+          <e p="Packet.cs" t="Include" />
+          <e p="Packets.cs" t="Include" />
+          <e p="server" t="Include">
+            <e p="Client.cs" t="Include" />
+            <e p="Server.cs" t="Include" />
+            <e p="ServerHandler.cs" t="Include" />
+          </e>
+          <e p="ServerSend.cs" t="Include" />
+          <e p="ThreadManager.cs" t="Include" />
+          <e p="types" t="Include">
+            <e p="Player.cs" t="Include" />
+          </e>
         </e>
         <e p="Vars.cs" t="Include" />
       </e>
