@@ -8,7 +8,8 @@ namespace Casanova.core.main.units
 		protected float Acceleration = 1800f;
 		protected float Decellaration = 800f;
 		protected float MaxSpeed = 215f;
-		protected float Speed = 0f;
+		public float Speed = 0f;
+		protected Vector2 InWorldPosition;
 		
 		// Declared in lerp fraction/delta
 		protected float RotationSpeed = 6.5f;
@@ -17,8 +18,9 @@ namespace Casanova.core.main.units
 		protected float Bounciness = 0.85f;
 		protected float Lubrication = 0.7f;
 		
-		[Export] Vector2 Vel;
-		
+		public Vector2 Vel;
+		public Vector2 Axis;
+
 		public void ApplyFriction(float amt)
 		{
 			if (Vel.Length() > amt)
@@ -33,27 +35,18 @@ namespace Casanova.core.main.units
 			Vel = Vel.Clamped(MaxSpeed);
 		}
 		
-		// todo: make it use pathfinder or something later
-		public virtual Vector2 _GetInputAxis()
-		{
-			return new Vector2(0, 0);
-		}
 		public void ProcessMovement(float delta)
 		{
-			var axis = _GetInputAxis();
-			if (axis == Vector2.Zero)
+			if (Axis == Vector2.Zero)
 				ApplyFriction(Decellaration * delta);
 			else
 			{
-				ApplyMovement(axis * Acceleration * delta);
-				Rotation = Mathf.LerpAngle(Rotation, axis.Angle(), RotationSpeed * delta);
+				ApplyMovement(Axis * Acceleration * delta);
+				Rotation = Mathf.LerpAngle(Rotation, Axis.Angle(), RotationSpeed * delta);
 			}
 			
-
-
 			
 			var collision = MoveAndCollide(Vel * delta);
-			
 			
 			if (collision != null)
 			{
@@ -63,6 +56,7 @@ namespace Casanova.core.main.units
 			
 			
 			Speed = Vel.Length();
+			InWorldPosition = Position;
 		}
 
 		public override void _Process(float delta)

@@ -1,7 +1,8 @@
 [gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://assets/sprites/world/blocks/test_spike.png" type="Texture" id=1]
-[ext_resource path="res://core/main/units/Unit.cs" type="Script" id=2]
+[ext_resource path="res://core/main/units/Player/Unit.cs" type="Script" id=2]
+
 
 [node name="Unit" type="KinematicBody2D"]
 collision_layer = 4

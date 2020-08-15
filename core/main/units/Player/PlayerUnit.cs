@@ -4,6 +4,11 @@ namespace Casanova.core.main.units.Player
 {
 	public class PlayerUnit : Unit
 	{
+		public int id;
+		public PlayerUnit()
+		{}
+
+		/*
 		public override Vector2 _GetInputAxis()
 		{
 			var axis = new Vector2();
@@ -11,5 +16,6 @@ namespace Casanova.core.main.units.Player
 			axis.y = Input.GetActionStrength("down") - Input.GetActionStrength("up");
 			return axis;
 		}
+		*/
 	}
 }
