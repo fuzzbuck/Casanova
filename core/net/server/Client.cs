@@ -78,7 +78,7 @@ namespace Casanova.core.net.server
                     int _byteLength = stream.EndRead(_result);
                     if (_byteLength <= 0)
                     {
-                        // TODO: disconnect
+                        Server.Clients[id].Disconnect();
                         return;
                     }
 
@@ -90,8 +90,8 @@ namespace Casanova.core.net.server
                 }
                 catch (Exception _ex)
                 {
-                    Console.WriteLine($"Error receiving TCP data: {_ex}");
-                    // TODO: disconnect
+                    Console.WriteLine($"Error receiving TCP data: {_ex}, disconnecting.");
+                    Server.Clients[id].Disconnect();
                 }
             }
 
@@ -140,6 +140,15 @@ namespace Casanova.core.net.server
 
                 return false;
             }
+
+            public void Disconnect()
+            {
+                socket.Close();
+                stream = null;
+                receivedData = null;
+                receiveBuffer = null;
+                socket = null;
+            }
         }
         public class UDP
         {
@@ -176,6 +185,11 @@ namespace Casanova.core.net.server
                     }
                 });
             }
+
+            public void Disconnect()
+            {
+                endPoint = null;
+            }
         }
 
         public void SendIntoGame(string _playerName)
@@ -203,6 +217,16 @@ namespace Casanova.core.net.server
                     Packets.ServerHandle.Send.SpawnPlayer(_client.id, player);
                 }
             }
+        }
+
+        private void Disconnect()
+        {
+            GD.Print($"{tcp.socket.Client.RemoteEndPoint} has disconnected.");
+
+            player = null;
+
+            tcp.Disconnect();
+            udp.Disconnect();
         }
     }
 }

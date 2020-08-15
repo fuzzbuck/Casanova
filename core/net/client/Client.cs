@@ -104,21 +104,20 @@ namespace Casanova.core.net.client
                     int _byteLength = stream.EndRead(_result);
                     if (_byteLength <= 0)
                     {
-                        // TODO: disconnect
+                        instance.Disconnect();
                         return;
                     }
 
                     byte[] _data = new byte[_byteLength];
                     Array.Copy(receiveBuffer, _data, _byteLength);
-
-                    // TODO: handle data
+                    
                     receivedData.Reset(HandleData(_data));
                     stream.BeginRead(receiveBuffer, 0, dataBufferSize, ReceiveCallback, null);
                 }
                 catch (Exception e)
                 {
                     GD.Print($"Error receiving TCP data; {e}");
-                    // TODO: disconnect
+                    Disconnect();
                 }
             }
             
@@ -171,6 +170,16 @@ namespace Casanova.core.net.client
                 // malformed/not-understood packet, drop it
                 return false;
             }
+
+            public void Disconnect()
+            {
+                instance.Disconnect();
+
+                stream = null;
+                receivedData = null;
+                receiveBuffer = null;
+                socket = null;
+            }
         }
 
         public class UDP
@@ -221,7 +230,7 @@ namespace Casanova.core.net.client
 
                     if (_data.Length < 4)
                     {
-                        // TODO: disconnect
+                        instance.Disconnect();
                         return;
                     }
 
@@ -229,7 +238,7 @@ namespace Casanova.core.net.client
                 }
                 catch
                 {
-                    // TODO: disconnect
+                    Disconnect();
                 }
             }
 
@@ -250,6 +259,14 @@ namespace Casanova.core.net.client
                     }
                 });
             }
+            
+            public void Disconnect()
+            {
+                instance.Disconnect();
+
+                endPoint = null;
+                socket = null;
+            }
         }
 
         private void InitializeClientData()
@@ -260,6 +277,18 @@ namespace Casanova.core.net.client
                 { (int)ServerPackets.spawnPlayer, Packets.ClientHandle.Receive.SpawnPlayer },
                 { (int)ServerPackets.playerMovement, Packets.ClientHandle.Receive.PlayerMovement }
             };
+        }
+
+        private void Disconnect()
+        {
+            if (isConnected)
+            {
+                isConnected = false;
+                tcp.socket.Close();
+                udp.socket.Close();
+                
+                GD.Print("Disconnected from server.");
+            }
         }
     }
 }
