@@ -1,9 +1,10 @@
-[gd_scene load_steps=12 format=2]
+[gd_scene load_steps=13 format=2]
 
 [ext_resource path="res://ui/fragments/DebugLabel.tscn" type="PackedScene" id=1]
 [ext_resource path="res://assets/sprites/world/blocks/16_black.png" type="Texture" id=2]
-[ext_resource path="res://core/main/units/Player/PlayerUnit.tscn" type="PackedScene" id=3]
-[ext_resource path="res://core/main/units/Unit.tscn" type="PackedScene" id=4]
+[ext_resource path="res://core/net/client/ClientHandler.tscn" type="PackedScene" id=3]
+[ext_resource path="res://core/main/world/World.cs" type="Script" id=5]
+[ext_resource path="res://core/net/server/ServerHandler.tscn" type="PackedScene" id=6]
 
 [sub_resource type="Environment" id=1]
 background_mode = 4
@@ -111,6 +112,7 @@ points = PoolVector2Array( 8, 8, 0, 8, 0, 0, 8, 0 )
 0/z_index = 0
 
 [node name="World" type="Node2D"]
+script = ExtResource( 5 )
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource( 1 )
@@ -145,12 +147,6 @@ tile_data = PoolIntArray( -6225875, 0, 0, -6225874, 0, 0, -6225873, 0, 0, -62258
 
 [node name="Units" type="Node2D" parent="."]
 
-[node name="LocalPlayer" parent="Units" instance=ExtResource( 3 )]
-position = Vector2( -20, 36 )
-collision_layer = 1
+[node name="Server" parent="." instance=ExtResource( 6 )]
 
-[node name="Unit" parent="Units" instance=ExtResource( 4 )]
-position = Vector2( 76, 32 )
-
-[node name="Unit2" parent="Units" instance=ExtResource( 4 )]
-position = Vector2( -216, -52 )
+[node name="Client" parent="." instance=ExtResource( 3 )]
