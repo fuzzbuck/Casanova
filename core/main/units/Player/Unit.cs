@@ -53,8 +53,6 @@ namespace Casanova.core.main.units
 				Vel = Vel.Slide(collision.Normal * Lubrication);
 			}
 			
-			
-			
 			Speed = Vel.Length();
 			InWorldPosition = Position;
 		}
