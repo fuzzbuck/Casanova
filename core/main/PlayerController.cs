@@ -28,7 +28,7 @@ namespace Casanova.core.main
         {
             if (localUnit != null)
             {
-                Packets.ClientHandle.Send.PlayerMovement(localUnit.Position, localUnit.Axis, localUnit.Speed, localUnit.Rotation);
+                Packets.ClientHandle.Send.PlayerMovement(localUnit.instance.Position, localUnit.Axis, localUnit.Speed, localUnit.instance.Rotation);
             }
         }
 

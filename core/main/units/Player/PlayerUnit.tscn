@@ -7,13 +7,11 @@
 [node name="PlayerUnit" instance=ExtResource( 1 )]
 script = ExtResource( 2 )
 
-[node name="Sprite" parent="." index="0"]
-scale = Vector2( 0.1, 0.1 )
+[node name="Unit" parent="." index="0"]
+scale = Vector2( 0.4, 0.4 )
 
-[node name="CollisionPolygon2D" parent="." index="1"]
-scale = Vector2( 0.1, 0.1 )
-
-[node name="Camera" type="Camera2D" parent="." index="2"]
+[node name="Camera" type="Camera2D" parent="Unit" index="2"]
+scale = Vector2( 2.5, 2.5 )
 zoom = Vector2( 0.65, 0.65 )
 smoothing_enabled = true
 smoothing_speed = 3.5

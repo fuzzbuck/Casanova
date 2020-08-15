@@ -55,7 +55,7 @@ namespace Casanova.core.main.world
 
             if (_id == Client.instance.myId)
             {
-                _instance.GetNode<Camera2D>("Camera").Current = true;
+                _instance.instance.GetNode<Camera2D>("Camera").Current = true;
                 PlayerController.localPlayer = player;
                 PlayerController.localUnit = (PlayerUnit) _instance;
             }

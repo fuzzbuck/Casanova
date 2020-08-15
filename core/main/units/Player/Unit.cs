@@ -2,7 +2,7 @@ using Godot;
 
 namespace Casanova.core.main.units
 {
-	public class Unit : KinematicBody2D
+	public class Unit : Node
 	{
 		// These variables are declared in units/second
 		protected float Acceleration = 1800f;
@@ -20,6 +20,13 @@ namespace Casanova.core.main.units
 		
 		public Vector2 Vel;
 		public Vector2 Axis;
+
+		public KinematicBody2D instance;
+
+		public override void _Ready()
+		{
+			instance = GetNode<KinematicBody2D>("Unit");
+		}
 
 		public void ApplyFriction(float amt)
 		{
@@ -42,11 +49,11 @@ namespace Casanova.core.main.units
 			else
 			{
 				ApplyMovement(Axis * Acceleration * delta);
-				Rotation = Mathf.LerpAngle(Rotation, Axis.Angle(), RotationSpeed * delta);
+				instance.Rotation = Mathf.LerpAngle(instance.Rotation, Axis.Angle(), RotationSpeed * delta);
 			}
 			
 			
-			var collision = MoveAndCollide(Vel * delta);
+			var collision = instance.MoveAndCollide(Vel * delta);
 			
 			if (collision != null)
 			{
@@ -54,18 +61,12 @@ namespace Casanova.core.main.units
 			}
 			
 			Speed = Vel.Length();
-			InWorldPosition = Position;
+			InWorldPosition = instance.Position;
 		}
 
 		public override void _Process(float delta)
 		{
 			ProcessMovement(delta);
-		}
-		
-
-		public override void _Ready()
-		{
-		
 		}
 	}
 }

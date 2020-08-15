@@ -55,8 +55,8 @@ namespace Casanova.core.net
                             unit.Axis = axis;
                             //unit.Speed = speed;
                             
-                            if (unit.Position.DistanceTo(pos) > Vars.Networking.unit_desync_treshold)
-                                unit.Position = pos;
+                            if (unit.instance.Position.DistanceTo(pos) > Vars.Networking.unit_desync_treshold)
+                                unit.instance.Position = pos;
                             
                         }
                     }
@@ -125,8 +125,8 @@ namespace Casanova.core.net
                     {
                         unit.Axis = axis;
                         unit.Speed = speed;
-                        unit.Rotation = rotation;
-                        unit.Position = pos;
+                        unit.instance.Rotation = rotation;
+                        unit.instance.Position = pos;
                     }
                     // replicate movement to other clients
                     Send.PlayerMovement(_plr);
@@ -164,10 +164,10 @@ namespace Casanova.core.net
                     {
                         var unit = _player.unit;
                         _packet.Write(_player.id);
-                        _packet.Write(unit.Position);
+                        _packet.Write(unit.instance.Position);
                         _packet.Write(unit.Axis);
                         _packet.Write(unit.Speed);
-                        _packet.Write(unit.Rotation);
+                        _packet.Write(unit.instance.Rotation);
 
                         ServerSend.SendUDPDataToAll(_player.id, _packet);
                     }
