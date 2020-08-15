@@ -434,7 +434,6 @@ modulate = Color( 1, 1, 1, 0 )
 margin_right = 300.0
 margin_bottom = 415.0
 rect_min_size = Vector2( 300, 415 )
-rect_rotation = -160.0
 custom_styles/panel = SubResource( 17 )
 __meta__ = {
 "_edit_ik_": true
