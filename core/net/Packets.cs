@@ -6,7 +6,6 @@ using Casanova.core.net.server;
 using Casanova.core.net.types;
 using Godot;
 using Client = Casanova.core.net.client.Client;
-using World = Casanova.core.main.world.World;
 
 namespace Casanova.core.net
 {
@@ -47,18 +46,15 @@ namespace Casanova.core.net
                     // todo: use UnitType for rotation speed, prediction & etc..
 
                     var player = NetworkManager.playersGroup[id];
-                    if (player != null)
+                    var unit = player?.unit;
+                    if (unit != null)
                     {
-                        var unit = player.unit;
-                        if (unit != null)
-                        {
-                            unit.Axis = axis;
-                            //unit.Speed = speed;
+                        unit.Axis = axis;
+                        //unit.Speed = speed;
                             
-                            if (unit.kinematicBody.Position.DistanceTo(pos) > Vars.Networking.unit_desync_treshold)
-                                unit.kinematicBody.Position = pos;
+                        if (unit.kinematicBody.Position.DistanceTo(pos) > Vars.Networking.unit_desync_treshold)
+                            unit.kinematicBody.Position = pos;
                             
-                        }
                     }
                 }
 
@@ -128,7 +124,7 @@ namespace Casanova.core.net
 
                     var _plr = Server.Clients[_fromClient].player;
                     var unit = _plr.unit;
-                    if (unit != null)
+                    if (!_plr.isLocal && unit != null)
                     {
                         unit.Axis = axis;
                         unit.Speed = speed;
@@ -170,9 +166,6 @@ namespace Casanova.core.net
 
                 public static void PlayerMovement(Player _player)
                 {
-                    if (NetworkManager.playersGroup[_player.id].isLocal)
-                        return;
-                    
                     using (Packet _packet = new Packet((int)ServerPackets.playerMovement))
                     {
                         var unit = _player.unit;

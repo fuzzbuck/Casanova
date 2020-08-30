@@ -6,18 +6,7 @@
 [ext_resource path="res://assets/sounds/menu.ogg" type="AudioStream" id=4]
 [ext_resource path="res://ui/fragments/VersionLabel.cs" type="Script" id=5]
 [ext_resource path="res://assets/sprites/interface/server.png" type="Texture" id=6]
-
-[sub_resource type="Environment" id=1]
-background_mode = 4
-glow_enabled = true
-glow_levels/2 = true
-glow_levels/3 = false
-glow_bloom = 1.0
-glow_hdr_threshold = 0.47
-glow_hdr_scale = 1.0
-adjustment_enabled = true
-adjustment_brightness = 1.08
-adjustment_contrast = 1.17
+[ext_resource path="res://environment.tres" type="Environment" id=7]
 
 [sub_resource type="Shader" id=2]
 code = "shader_type canvas_item;
@@ -367,7 +356,7 @@ __meta__ = {
 }
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
-environment = SubResource( 1 )
+environment = ExtResource( 7 )
 
 [node name="Gradient" type="ColorRect" parent="."]
 material = SubResource( 5 )

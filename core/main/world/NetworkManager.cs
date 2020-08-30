@@ -79,8 +79,17 @@ namespace Casanova.core.main.world
                     {
                         // make camera
                         Camera cam = (Camera) ResourceLoader.Load<PackedScene>(Vars.path_main + "/units/Camera.tscn").Instance();
-                        _instance.kinematicBody.AddChild(cam);
 
+                        if (Vars.PersistentData.isMobile)
+                        {
+                            _instance.AddChild(cam);
+                            cam.GlobalPosition = _instance.kinematicBody.Position;
+                        }
+                        else
+                        {
+                            _instance.kinematicBody.AddChild(cam);
+                        }
+                        
                         PlayerController.localPlayer = player;
                         PlayerController.localUnit = _instance;
                     }

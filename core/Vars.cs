@@ -28,10 +28,11 @@ namespace Casanova.core
 			public static float min_zoom_distance = 0.6f;
 			public static float max_zoom_distance = 1.5f;
 			public static float mobile_zoom_offset_multiplier = 0.25f;
-			
-			public static float zoom_sensitivity = 3f;
+
+			public static float mobile_cam_distance_treshold = 35f;
+			public static float zoom_sensitivity = 2f;
 			public static float zoom_speed = 0.02f;
-			public static float drag_sensitivity = 1.5f;
+			public static float drag_sensitivity = 0.2f;
 			public static float smoothness = 0.014f;
 		}
 

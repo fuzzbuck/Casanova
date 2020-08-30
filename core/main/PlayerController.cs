@@ -1,10 +1,8 @@
-﻿using System;
-using Casanova.core.main.units;
+﻿using Casanova.core.main.units;
 using Casanova.core.net;
-using Casanova.core.net.client;
-using Casanova.core.net.server;
 using Casanova.core.net.types;
 using Godot;
+using Camera = Casanova.core.main.units.Camera;
 
 namespace Casanova.core.main
 {
@@ -17,7 +15,19 @@ namespace Casanova.core.main
         public override void _Process(float delta)
         {
             ThreadManager.UpdateMain();
-            
+
+            if (!Vars.PersistentData.isMobile)
+            {
+                ProcessMovement();
+            }
+            else
+            {
+                ProcessMobileMovement();
+            }
+        }
+
+        public void ProcessMovement()
+        {
             if (localUnit != null)
             {
                 var axis = new Vector2();
@@ -27,11 +37,29 @@ namespace Casanova.core.main
             }
         }
 
+        public void ProcessMobileMovement()
+        {
+            if (localUnit != null && Camera.instance != null)
+            {
+                var p1 = localUnit.InWorldPosition;
+                var p2 = Camera.instance.GlobalPosition;
+
+                if (p1.DistanceTo(p2) > Vars.PlayerCamera.mobile_cam_distance_treshold)
+                {
+                    localUnit.Axis = p1.DirectionTo(p2);
+                }
+                else
+                {
+                    localUnit.Axis = Vector2.Zero;
+                }
+            }
+        }
+
         public override void _PhysicsProcess(float delta)
         {
-            if (localUnit != null)
+            if (localUnit != null && !localPlayer.isLocal)
             {
-                Packets.ClientHandle.Send.PlayerMovement(localUnit.kinematicBody.Position, localUnit.Axis, localUnit.Speed, localUnit.kinematicBody.Rotation);
+                Packets.ClientHandle.Send.PlayerMovement(localUnit.InWorldPosition, localUnit.Axis, localUnit.Speed, localUnit.kinematicBody.Rotation);
             }
         }
 

@@ -1,0 +1,15 @@
+[gd_resource type="Environment" format=2]
+
+[resource]
+background_mode = 4
+glow_enabled = true
+glow_levels/2 = true
+glow_levels/3 = false
+glow_intensity = 1.19
+glow_strength = 0.79
+glow_bloom = 0.96
+glow_blend_mode = 0
+adjustment_enabled = true
+adjustment_brightness = 1.03
+adjustment_contrast = 1.07
+adjustment_saturation = 1.14

@@ -8,7 +8,7 @@ namespace Casanova.core.main.units
 {
 	public class Camera : Camera2D
 	{
-		
+		public static Camera instance;
 		Dictionary<int, Vector2> events = new Dictionary<int, Vector2>();
 		private float last_drag_distance = 0;
 		
@@ -20,11 +20,14 @@ namespace Casanova.core.main.units
 			{
 				Zoom = new Vector2(min_zoom_distance * mobile_zoom_offset_multiplier,
 					min_zoom_distance * mobile_zoom_offset_multiplier);
+				SmoothingSpeed = 8f;
 			}
 			else
 			{
 				Zoom = new Vector2(min_zoom_distance, min_zoom_distance);
 			}
+
+			instance = this;
 		}
 		
 		public override void _Input(InputEvent @event){

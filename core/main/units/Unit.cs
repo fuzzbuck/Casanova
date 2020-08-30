@@ -6,18 +6,18 @@ namespace Casanova.core.main.units
 	public class Unit : Node
 	{
 		// These variables are declared in units/second
-		protected float Acceleration = 1600f;
-		protected float Decellaration = 800f;
-		protected float MaxSpeed = 215f;
+		protected float Acceleration = 1200f;
+		protected float Decellaration = 600f;
+		protected float MaxSpeed = 185f;
 		public float Speed = 0f;
-		protected Vector2 InWorldPosition;
+		public Vector2 InWorldPosition;
 		
 		// Declared in lerp fraction/delta
 		protected float RotationSpeed = 6.5f;
 		
 		// Declared as a fraction of 1.0f
 		protected float Bounciness = 0.7f;
-		protected float Lubrication = 0.3f;
+		protected float Lubrication = 0.8f;
 		
 		public Vector2 Vel;
 		public Vector2 Axis;
@@ -81,13 +81,13 @@ namespace Casanova.core.main.units
 			
 			var collision = kinematicBody.MoveAndCollide(Vel * delta);
 			
-			/*
+			
 			if (collision != null)
 			{
-				//Vel = Vel.Slide(collision.Normal * Lubrication);
-				Vel = Vel.Bounce(collision.Normal * Bounciness);
+				Vel = Vel.Slide(collision.Normal * Lubrication);
+				//Vel = Vel.Bounce(collision.Normal * Bounciness);
 			}
-			*/
+			
 			
 			Speed = Vel.Length();
 			InWorldPosition = kinematicBody.Position;

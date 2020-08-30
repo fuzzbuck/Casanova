@@ -6,5 +6,5 @@
 current = true
 zoom = Vector2( 0.6, 0.6 )
 smoothing_enabled = true
-smoothing_speed = 3.5
+smoothing_speed = 4.0
 script = ExtResource( 1 )
