@@ -1,4 +1,4 @@
-﻿using Casanova.core.main.units.Player;
+﻿using Casanova.core.main.units;
 using Godot;
 
 namespace Casanova.core.net.types
@@ -7,13 +7,15 @@ namespace Casanova.core.net.types
     {
         public int id;
         public string username;
-        public PlayerUnit unit;
+        public Unit unit;
+        public bool isLocal = false;
 
-        public Player(int _id, string _username, PlayerUnit _unit)
+        public Player(int _id, string _username, Unit _unit, bool _isLocal = false)
         {
             id = _id;
             username = _username;
             unit = _unit;
+            isLocal = _isLocal;
         }
     }
 }

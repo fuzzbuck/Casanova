@@ -1,38 +1,44 @@
+using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices.ComTypes;
 using System.Runtime.Remoting.Messaging;
-using Casanova.core.main.units.Player;
+using Casanova.core.main.units;
 using Casanova.core.net;
 using Casanova.core.net.server;
 using Casanova.core.net.types;
 using Godot;
+using Camera = Casanova.core.main.units.Camera;
 using Client = Casanova.core.net.client.Client;
 
 namespace Casanova.core.main.world
 {
     public class NetworkManager
     {
-        public static NetworkManager instance;
         public static Dictionary<int, Player> playersGroup = new Dictionary<int, Player>();
 
-        public void Awake()
+        public static Unit CreatePlayerInstance()
         {
-            if (instance == null)
+            var scene = (PackedScene) ResourceLoader.Load(Vars.path_main + "/units/Unit.tscn");
+            return (Unit) scene.Instance();
+        }
+        
+        public enum loc
+        {
+            SERVER, CLIENT
+        }
+
+        // SERVER & CLIENT
+        public static void DestroyPlayer(int _id)
+        {
+            if (playersGroup.ContainsKey(_id))
             {
-                instance = this;
-            }else if (instance != this)
-            {
-                GD.Print("fatal error! network manager instance already exists.");
+                playersGroup[_id].unit?.QueueFree();
+                playersGroup.Remove(_id);
             }
         }
 
-        public static PlayerUnit CreatePlayerInstance()
-        {
-            var scene = (PackedScene) ResourceLoader.Load(Vars.path_main + "/units/Player/PlayerUnit.tscn");
-            return (PlayerUnit) scene.Instance();
-        }
-
         // TODO: add unit type parameter
-        public void SpawnPlayer(int _id, string _username)
+        public static Player CreatePlayer(loc loc, int _id, string _username)
         {
             /*
              TODO:
@@ -40,25 +46,54 @@ namespace Casanova.core.main.world
              2. spawn player if doesnt exist
              3. tell the client which player instance to control
              */
+            GD.Print($"Spawning unit for player {_id}");
 
-            PlayerUnit _instance = CreatePlayerInstance();
-            
-            World.instance.SpawnPlayer(_instance);
-            
-            GD.Print($"[CLIENT]: Spawning unit for player {_id}");
+            Unit _instance = CreatePlayerInstance();
 
-            Player player = new Player(_id, _username, _instance);
+            Unit unit = World.instance.SpawnPlayer(_instance);
+            unit.Tag = _username;
+
+            bool willBeLocal = false;
+            if (loc == loc.CLIENT && Server.IsHosting)
+            {
+                willBeLocal = true;
+            }
+            else
+            {
+                if (loc == loc.SERVER && !Server.IsDedicated)
+                {
+                    willBeLocal = true;
+                }
+            }
+            
+            Player player = new Player(_id, _username, _instance, willBeLocal);
             player.unit = _instance;
             playersGroup[_id] = player;
 
-            // if this is our player
-
-            if (_id == Client.instance.myId)
+            ThreadManager.ExecuteOnMainThread(() =>
             {
-                _instance.instance.GetNode<Camera2D>("Camera").Current = true;
-                PlayerController.localPlayer = player;
-                PlayerController.localUnit = (PlayerUnit) _instance;
-            }
+
+                try
+                {
+                    if (_id == Client.instance.myId)
+                    {
+                        // make camera
+                        Camera cam = (Camera) ResourceLoader.Load<PackedScene>(Vars.path_main + "/units/Camera.tscn").Instance();
+                        _instance.kinematicBody.AddChild(cam);
+
+                        PlayerController.localPlayer = player;
+                        PlayerController.localUnit = _instance;
+                    }
+                }
+                catch (Exception e)
+                {
+                    // this is not my unit
+                }
+
+            });
+            
+
+            return player;
         }
     }
 }

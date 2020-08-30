@@ -1,13 +1,15 @@
 using System;
 using Casanova.core;
+using Casanova.ui.fragments;
 using Godot;
 using Godot.Collections;
+using World = Casanova.core.main.world.World;
 
 namespace Casanova.ui
 {
 	public class Interface : Node
 	{
-		public static Array<Button> ButtonGroup = new Array<Button>();
+		public static Array<Godot.Button> ButtonGroup = new Array<Godot.Button>();
 		public static Array<Label> LabelGroup = new Array<Label>();
 		public static Array<AnimationPlayer> cardAnimationGroup = new Array<AnimationPlayer>();
 		public static int CurrentSelected = -1; // current button/category selected   -1 = none,  0 = play, 1 = settings, 2 = about, 3 = exit (dont select)
@@ -19,6 +21,14 @@ namespace Casanova.ui
 			GD.Print(tree);
 		}
 
+		public class Utils
+		{
+			public static Node createFragment(string fragment)
+			{ 
+				return ResourceLoader.Load<PackedScene>(Vars.path_frags + $"/{fragment}.tscn").Instance();
+			}
+		}
+
 		public static class Cards
 		{
 			public static bool IsShown;
@@ -28,9 +38,13 @@ namespace Casanova.ui
 				{
 					0, () =>
 					{
-						// start test scene
-						GD.Print(Vars.path_main + "/world/World.tscn");
 						tree.ChangeScene(Vars.path_main + "/world/World.tscn");
+					}
+				},
+				{
+					1, () =>
+					{
+						tree.CurrentScene.AddChild(Utils.createFragment("ServerJoin"));
 					}
 				}
 			};

@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Net;
-using Casanova.core.main.units.Player;
 using Casanova.core.main.world;
 using Casanova.core.net.server;
 using Casanova.core.net.types;
 using Godot;
 using Client = Casanova.core.net.client.Client;
+using World = Casanova.core.main.world.World;
 
 namespace Casanova.core.net
 {
@@ -23,7 +23,7 @@ namespace Casanova.core.net
 
                     GD.Print($"Message from server: {_msg}");
                     Client.instance.myId = _myId;
-                    Send.WelcomeConfirmation("username");
+                    Send.WelcomeConfirmation(Vars.PersistentData.username);
 
                     Client.instance.udp.Connect(((IPEndPoint)Client.instance.tcp.socket.Client.LocalEndPoint).Port);
                 }
@@ -34,7 +34,7 @@ namespace Casanova.core.net
                     string _username = _packet.ReadString();
                     
                     GD.Print($"Received spawn packet from server for {_username} with id {_id}");
-                    NetworkManager.instance.SpawnPlayer(_id, _username);
+                    NetworkManager.CreatePlayer(NetworkManager.loc.CLIENT, _id, _username);
                 }
                 
                 public static void PlayerMovement(Packet _packet)
@@ -46,7 +46,7 @@ namespace Casanova.core.net
                     float rotation = _packet.ReadFloat();
                     // todo: use UnitType for rotation speed, prediction & etc..
 
-                    var player = NetworkManager.playersGroup.ContainsKey(id) ? NetworkManager.playersGroup[id] : null;
+                    var player = NetworkManager.playersGroup[id];
                     if (player != null)
                     {
                         var unit = player.unit;
@@ -55,11 +55,18 @@ namespace Casanova.core.net
                             unit.Axis = axis;
                             //unit.Speed = speed;
                             
-                            if (unit.instance.Position.DistanceTo(pos) > Vars.Networking.unit_desync_treshold)
-                                unit.instance.Position = pos;
+                            if (unit.kinematicBody.Position.DistanceTo(pos) > Vars.Networking.unit_desync_treshold)
+                                unit.kinematicBody.Position = pos;
                             
                         }
                     }
+                }
+
+                public static void PlayerDisconnect(Packet _packet)
+                {
+                    int _id = _packet.ReadInt();
+
+                    NetworkManager.DestroyPlayer(_id);
                 }
                 
             }
@@ -125,11 +132,11 @@ namespace Casanova.core.net
                     {
                         unit.Axis = axis;
                         unit.Speed = speed;
-                        unit.instance.Rotation = rotation;
-                        unit.instance.Position = pos;
+                        unit.kinematicBody.Rotation = rotation;
+                        unit.kinematicBody.Position = pos;
+                        
+                        Send.PlayerMovement(_plr);
                     }
-                    // replicate movement to other clients
-                    Send.PlayerMovement(_plr);
                 }
             }
 
@@ -148,6 +155,9 @@ namespace Casanova.core.net
 
                 public static void SpawnPlayer(int _toClient, Player _player)
                 {
+                    if (NetworkManager.playersGroup[_toClient].isLocal)
+                        return;
+                    
                     using (Packet _packet = new Packet((int)ServerPackets.spawnPlayer))
                     {
                         _packet.Write(_player.id);
@@ -160,17 +170,34 @@ namespace Casanova.core.net
 
                 public static void PlayerMovement(Player _player)
                 {
+                    if (NetworkManager.playersGroup[_player.id].isLocal)
+                        return;
+                    
                     using (Packet _packet = new Packet((int)ServerPackets.playerMovement))
                     {
                         var unit = _player.unit;
                         _packet.Write(_player.id);
-                        _packet.Write(unit.instance.Position);
+                        _packet.Write(unit.kinematicBody.Position);
                         _packet.Write(unit.Axis);
                         _packet.Write(unit.Speed);
-                        _packet.Write(unit.instance.Rotation);
+                        _packet.Write(unit.kinematicBody.Rotation);
 
                         ServerSend.SendUDPDataToAll(_player.id, _packet);
                     }
+                }
+                
+                public static void PlayerDisconnect(int _id)
+                {
+                    using (Packet _packet = new Packet((int)ServerPackets.disconnectPlayer))
+                    {
+                        _packet.Write(_id);
+                        
+                        // replicate to all clients
+                        ServerSend.SendTCPDataToAll(_packet);
+                    }
+                    
+                    // destroy player server-side
+                    NetworkManager.DestroyPlayer(_id);
                 }
             }
         }

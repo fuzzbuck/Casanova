@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://ui/elements/Label.tscn" type="PackedScene" id=1]
+
+[sub_resource type="StyleBoxFlat" id=1]
+draw_center = false
+border_width_bottom = 4
+border_color = Color( 0.972549, 0.87451, 0.494118, 1 )
+expand_margin_bottom = 4.0
+
+[node name="Header" instance=ExtResource( 1 )]
+anchor_right = 1.0
+margin_right = 0.0
+margin_bottom = 49.0
+custom_styles/normal = SubResource( 1 )
+text = "Overlay"
+align = 1

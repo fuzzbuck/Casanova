@@ -5,3 +5,6 @@ ABOUT,About,O Projekcie,O Projektu,О Пројекту,關於
 EXIT,Exit,Wyjscie,Izađi,Изађи,離開
 TESTTITLE,Test,Test,Test,Тест,測試
 TESTDESC,Testing grounds,Testowanie funkcji,Testiranje,Тестирање,測試中
+SERVERTITLE,Join Server,Dolacz do Serwera,,,
+SERVERDESC,"Join a server by the
+provided ip",Dolacz do Serwera poprzez ip,,,

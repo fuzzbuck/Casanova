@@ -9,22 +9,22 @@ namespace Casanova.ui.fragments
 		private VBoxContainer _topButtons;
 		private VBoxContainer _botButtons;
 		
-		private Array<Button> buttons = new Array<Button>();
+		private Array<Godot.Button> buttons = new Array<Godot.Button>();
 
 		public override void _Ready()
 		{
 			_topButtons = GetNode<VBoxContainer>("TopButtons");
 			_botButtons = GetNode<VBoxContainer>("BottomButtons");
 
-			buttons.Add(_topButtons.GetNode("Play") as Button);
-			buttons.Add(_topButtons.GetNode("Settings") as Button);
+			buttons.Add(_topButtons.GetNode("Play") as Godot.Button);
+			buttons.Add(_topButtons.GetNode("Settings") as Godot.Button);
 			
-			buttons.Add(_botButtons.GetNode("About") as Button);
-			buttons.Add(_botButtons.GetNode("Exit") as Button);
+			buttons.Add(_botButtons.GetNode("About") as Godot.Button);
+			buttons.Add(_botButtons.GetNode("Exit") as Godot.Button);
 
 			for (int i = 0; i < buttons.Count; i++)
 			{
-				Button button = buttons[i];
+				Godot.Button button = buttons[i];
 				
 				button.Connect("button_down", this, "_onButtonPress", new Array(new[] {i}));
 				Interface.ButtonGroup.Add(button);

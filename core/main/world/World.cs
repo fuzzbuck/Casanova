@@ -1,6 +1,6 @@
-using Casanova.core.main.units.Player;
 using Casanova.core.net.client;
 using Casanova.core.net.server;
+using Casanova.core.main.units;
 using Godot;
 
 namespace Casanova.core.main.world
@@ -10,34 +10,20 @@ namespace Casanova.core.main.world
         public static World instance;
         public override void _Ready()
         {
-            // awake NetworkManager
-            new NetworkManager().Awake();
-            
             // singleton
-            instance = this;
+            if (instance == null)
+                instance = this;
+            
+            // todo: change this
+            // start server & client
+            GetNode<ServerHandler>("Server").Start();
+            GetNode<ClientHandler>("Client").ConnectToServer();
+            
         }
-
-        public void SpawnPlayer(PlayerUnit unit)
+        public Unit SpawnPlayer(Unit unit)
         {
             GetNode<Node2D>("Units").AddChild(unit);
-        }
-
-        public override void _UnhandledInput(InputEvent @event)
-        {
-            if (@event is InputEventKey eventKey)
-                if (eventKey.Pressed)
-                {
-                    if (eventKey.Scancode == (int) KeyList.F10)
-                    {
-                        ServerHandler server = GetNode<ServerHandler>("Server");
-                        server.Start();
-                    }
-                    if (eventKey.Scancode == (int) KeyList.F9)
-                    {
-                        ClientHandler client = GetNode<ClientHandler>("Client");
-                        client.ConnectToServer();
-                    }
-                }
+            return unit;
         }
     }
 }

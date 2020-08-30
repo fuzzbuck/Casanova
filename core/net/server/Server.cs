@@ -17,10 +17,19 @@ namespace Casanova.core.net.server
 
         private static TcpListener tcpListener;
         private static UdpClient udpListener;
-        public static void Start(int _maxClients, int _port)
+
+        
+        // is server currently running and doing stuff
+        public static bool IsRunning = false;
+        
+        // is currently hosting a map/world and playing on it
+        public static bool IsHosting = false;
+        public static bool IsDedicated = false;
+        public static void Start(int _maxClients, int _port, bool _IsDedicated = false)
         {
             MaxClients = _maxClients;
             Port = _port;
+            IsDedicated = _IsDedicated;
             
             GD.Print("Starting server...");
             InitializeServerData();
@@ -33,6 +42,15 @@ namespace Casanova.core.net.server
             udpListener.BeginReceive(UDPReceiveCallback, null);
             
             GD.Print($"Server started on port {Port}.");
+            IsRunning = true;
+            IsHosting = true;
+        }
+
+        public static void Stop()
+        {
+            GD.Print($"Server stopped on port {Port}.");
+            IsRunning = true;
+            IsHosting = true;
         }
 
         private static void TCPConnectCallback(IAsyncResult _result)

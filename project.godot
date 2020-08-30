@@ -29,10 +29,12 @@ PlayerController="*res://core/main/PlayerController.cs"
 
 [display]
 
-window/size/width=1280
-window/size/height=720
+window/size/width=1920
+window/size/height=1080
 window/dpi/allow_hidpi=true
 window/vsync/use_vsync=false
+window/per_pixel_transparency/enabled=true
+window/stretch/mode="2d"
 window/stretch/aspect="expand"
 
 [importer_defaults]
@@ -87,9 +89,11 @@ locale_filter=[ 0, [  ] ]
 
 [rendering]
 
+quality/driver/driver_name="GLES2"
 quality/intended_usage/framebuffer_allocation=0
 quality/intended_usage/framebuffer_allocation.mobile=0
 threads/thread_model=2
 vram_compression/import_etc=true
 quality/filters/msaa=2
 environment/default_environment="res://default_env.tres"
+quality/dynamic_fonts/use_oversampling=false

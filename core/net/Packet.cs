@@ -12,7 +12,8 @@ namespace Casanova.core.net
     {
         welcome = 1,
         spawnPlayer,
-        playerMovement
+        playerMovement,
+        disconnectPlayer
 
     }
 

@@ -16,16 +16,14 @@ public class BundleHandler : Node
 		// update buttons
 		for (var i = 0; i < Interface.ButtonGroup.Count; i++)
 		{
-			Button button = Interface.ButtonGroup[i];
-			GD.Print(button.Name);
-            button.Text = Tr(button.Name.ToUpper());
+			Godot.Button button = Interface.ButtonGroup[i];
+			button.Text = Tr(button.Name.ToUpper());
 		}
 		
 		// update labels
 		for (var i = 0; i < Interface.LabelGroup.Count; i++)
 		{
 			Label label = Interface.LabelGroup[i];
-			GD.Print(label.Name);
 			label.Text = Tr(label.Name.ToUpper());
 		}
 	}

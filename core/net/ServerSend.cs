@@ -53,7 +53,7 @@ namespace Casanova.core.net
             _packet.WriteLength();
             for (int i = 1; i <= Server.MaxClients; i++)
             {
-                if (i != _exceptClient && Server.Clients[i].udp != null)
+                if (i != _exceptClient)
                 {
                     Server.Clients[i].udp.SendData(_packet);
                 }

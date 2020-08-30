@@ -1,11 +1,9 @@
 using System;
 using System.Net;
 using System.Net.Sockets;
-using Casanova.core.main.units.Player;
 using Casanova.core.main.world;
 using Casanova.core.net.types;
 using Godot;
-using World = Casanova.core.main.world.World;
 
 namespace Casanova.core.net.server
 {
@@ -192,12 +190,9 @@ namespace Casanova.core.net.server
             }
         }
 
-        public void SendIntoGame(string _playerName)
+        public void SendIntoGame(string _username)
         {
-            var _unit = NetworkManager.CreatePlayerInstance();
-            World.instance.SpawnPlayer(_unit);
-            
-            player = new Player(id, _playerName, _unit);
+            player = NetworkManager.CreatePlayer(NetworkManager.loc.SERVER, id, _username);
 
             foreach (Client _client in Server.Clients.Values)
             {
@@ -225,6 +220,8 @@ namespace Casanova.core.net.server
             
             ThreadManager.ExecuteOnMainThread(() =>
             {
+                // replicate disconnections across all clients
+                Packets.ServerHandle.Send.PlayerDisconnect(id);
                 player = null;
             });
 

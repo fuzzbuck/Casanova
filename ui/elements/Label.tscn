@@ -1,0 +1,20 @@
+[gd_scene load_steps=3 format=2]
+
+[sub_resource type="DynamicFontData" id=1]
+font_path = "res://assets/fonts/Bathrind.otf"
+
+[sub_resource type="DynamicFont" id=2]
+size = 32
+use_mipmaps = true
+font_data = SubResource( 1 )
+
+[node name="Label" type="Label"]
+margin_right = 40.0
+margin_bottom = 14.0
+custom_fonts/font = SubResource( 2 )
+custom_colors/font_color = Color( 0.972549, 0.87451, 0.494118, 1 )
+text = "Hi Bro"
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}

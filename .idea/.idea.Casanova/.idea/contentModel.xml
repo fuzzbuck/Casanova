@@ -13,11 +13,9 @@
         <e p="main" t="Include">
           <e p="PlayerController.cs" t="Include" />
           <e p="units" t="Include">
-            <e p="Player" t="Include">
-              <e p="PlayerCamera.cs" t="Include" />
-              <e p="PlayerUnit.cs" t="Include" />
-              <e p="Unit.cs" t="Include" />
-            </e>
+            <e p="Camera.cs" t="Include" />
+            <e p="Tag.cs" t="Include" />
+            <e p="Unit.cs" t="Include" />
           </e>
           <e p="world" t="Include">
             <e p="NetworkManager.cs" t="Include" />
@@ -50,11 +48,14 @@
         <e p="AssemblyInfo.cs" t="Include" />
       </e>
       <e p="ui" t="Include">
-        <e p="elements" t="Include" />
+        <e p="elements" t="Include">
+          <e p="Button.cs" t="Include" />
+        </e>
         <e p="fragments" t="Include">
           <e p="CardsContainer.cs" t="Include" />
           <e p="DebugLabel.cs" t="Include" />
           <e p="MenuButtonsContainer.cs" t="Include" />
+          <e p="Overlay.cs" t="Include" />
           <e p="VersionLabel.cs" t="Include" />
         </e>
         <e p="Interface.cs" t="Include" />

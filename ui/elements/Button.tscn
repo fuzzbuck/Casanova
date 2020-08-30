@@ -1,0 +1,45 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://ui/elements/Button.cs" type="Script" id=1]
+[ext_resource path="res://ui/elements/ButtonNormal.tres" type="StyleBox" id=2]
+
+[sub_resource type="StyleBoxFlat" id=5]
+bg_color = Color( 0.968627, 0.898039, 0.627451, 1 )
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+expand_margin_left = 6.0
+expand_margin_right = 6.0
+expand_margin_top = 4.0
+expand_margin_bottom = 4.0
+shadow_color = Color( 0, 0, 0, 0.00392157 )
+shadow_size = 4
+shadow_offset = Vector2( 0, 5 )
+
+[sub_resource type="StyleBoxEmpty" id=6]
+
+[sub_resource type="DynamicFontData" id=2]
+font_path = "res://assets/fonts/Bathrind.otf"
+
+[sub_resource type="DynamicFont" id=3]
+size = 32
+font_data = SubResource( 2 )
+
+[node name="Button" type="Button"]
+margin_right = 128.0
+margin_bottom = 36.0
+grow_vertical = 0
+custom_styles/hover = ExtResource( 2 )
+custom_styles/pressed = SubResource( 5 )
+custom_styles/focus = SubResource( 6 )
+custom_styles/normal = ExtResource( 2 )
+custom_fonts/font = SubResource( 3 )
+custom_colors/font_color = Color( 0.0901961, 0.141176, 0.172549, 1 )
+custom_colors/font_color_hover = Color( 0.0901961, 0.141176, 0.172549, 1 )
+custom_colors/font_color_pressed = Color( 0.0313726, 0.0470588, 0.054902, 1 )
+text = "Click Me Pls"
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}

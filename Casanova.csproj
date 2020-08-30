@@ -55,9 +55,9 @@
   <ItemGroup>
     <Compile Include="core\BundleHandler.cs" />
     <Compile Include="core\main\PlayerController.cs" />
-    <Compile Include="core\main\units\Player\PlayerCamera.cs" />
-    <Compile Include="core\main\units\Player\PlayerUnit.cs" />
-    <Compile Include="core\main\units\Player\Unit.cs" />
+    <Compile Include="core\main\units\Camera.cs" />
+    <Compile Include="core\main\units\Tag.cs" />
+    <Compile Include="core\main\units\Unit.cs" />
     <Compile Include="core\main\world\NetworkManager.cs" />
     <Compile Include="core\main\world\World.cs" />
     <Compile Include="core\net\ClientSend.cs" />
@@ -72,9 +72,11 @@
     <Compile Include="core\net\ThreadManager.cs" />
     <Compile Include="core\net\types\Player.cs" />
     <Compile Include="core\Vars.cs" />
+    <Compile Include="ui\elements\Button.cs" />
     <Compile Include="ui\fragments\CardsContainer.cs" />
     <Compile Include="ui\fragments\DebugLabel.cs" />
     <Compile Include="ui\fragments\MenuButtonsContainer.cs" />
+    <Compile Include="ui\fragments\Overlay.cs" />
     <Compile Include="ui\fragments\VersionLabel.cs" />
     <Compile Include="ui\Interface.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

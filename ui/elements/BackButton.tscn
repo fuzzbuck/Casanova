@@ -1,0 +1,20 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://ui/elements/Button.tscn" type="PackedScene" id=1]
+
+[sub_resource type="StyleBoxEmpty" id=1]
+
+[sub_resource type="StyleBoxEmpty" id=4]
+
+[sub_resource type="StyleBoxEmpty" id=3]
+
+[node name="BackButton" instance=ExtResource( 1 )]
+custom_styles/hover = SubResource( 1 )
+custom_styles/pressed = SubResource( 4 )
+custom_styles/normal = SubResource( 3 )
+custom_colors/font_color = Color( 0.972549, 0.87451, 0.494118, 1 )
+custom_colors/font_color_hover = Color( 0.972549, 0.87451, 0.494118, 1 )
+custom_colors/font_color_pressed = Color( 0.972549, 0.87451, 0.494118, 1 )
+action_mode = 0
+text = "<-  Back"
+expand_icon = true
