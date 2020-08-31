@@ -1,10 +1,19 @@
 using Godot;
-using System;
 
-public class Tag : Node2D
+namespace Casanova.core.main.units
 {
-    public override void _Process(float delta)
+    public class Tag : Node2D
     {
-        GlobalRotation = 0;
+        private KinematicBody2D _kinematicBody2D;
+        public override void _Ready()
+        {
+            _kinematicBody2D = GetParent<KinematicBody2D>();
+        }
+
+        public override void _Process(float delta)
+        {
+            GlobalRotation = 0f;
+            GlobalPosition = _kinematicBody2D.GlobalPosition + new Vector2(0, 10);
+        }
     }
 }

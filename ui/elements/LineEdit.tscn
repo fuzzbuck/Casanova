@@ -15,7 +15,7 @@ border_color = Color( 0.972549, 0.87451, 0.494118, 1 )
 expand_margin_bottom = 2.0
 
 [sub_resource type="DynamicFontData" id=3]
-font_path = "res://assets/fonts/JosefinSans-Regular.ttf"
+font_path = "res://assets/fonts/Ubuntu-Regular.ttf"
 
 [sub_resource type="DynamicFont" id=4]
 size = 20

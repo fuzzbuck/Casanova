@@ -1,0 +1,52 @@
+[gd_scene load_steps=5 format=2]
+
+[sub_resource type="DynamicFontData" id=3]
+font_path = "res://assets/fonts/RussoOne-Regular.ttf"
+
+[sub_resource type="DynamicFont" id=4]
+size = 64
+font_data = SubResource( 3 )
+
+[sub_resource type="Shader" id=1]
+code = "shader_type canvas_item;
+
+uniform float rotation = 3.0;
+
+void fragment() {
+	vec2 uv = SCREEN_UV;
+	vec2 rel = uv - vec2(0.5, 0.5);
+	float angle = length(rel) * rotation;
+	mat2 rot = mat2(vec2(cos(angle), -sin(angle)), vec2(sin(angle), cos(angle)));
+	rel = rot * rel;
+	uv = clamp(rel + vec2(0.5,0.5), vec2(0.0, 0.0), vec2(1.0, 1.0));
+	COLOR.rgb = textureLod(SCREEN_TEXTURE, uv, 0.0).rgb + vec3(0.1, 0.1, 0.1);
+}"
+
+[sub_resource type="ShaderMaterial" id=2]
+shader = SubResource( 1 )
+shader_param/rotation = 9.0
+
+[node name="RichTextLabel" type="RichTextLabel"]
+grow_horizontal = 2
+grow_vertical = 2
+custom_fonts/normal_font = SubResource( 4 )
+bbcode_enabled = true
+bbcode_text = "[center]hiiii[/center]"
+text = "hiiii"
+scroll_active = false
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Panel" type="ColorRect" parent="."]
+show_behind_parent = true
+material = SubResource( 2 )
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+__meta__ = {
+"_edit_use_anchors_": false
+}

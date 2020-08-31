@@ -27,9 +27,12 @@ namespace Casanova.ui.fragments
             username_field = username.GetNode<LineEdit>("LineEdit");
             ip_field = ip.GetNode<LineEdit>("LineEdit");
 
-            username_field.Connect("focus_entered", this, "_onUsernameEditFocus");
-            ip_field.Connect("focus_entered", this, "_onIpEditFocus");
-            
+            if (Vars.PersistentData.isMobile)
+            {
+                username_field.Connect("focus_entered", this, "_onUsernameEditFocus");
+                ip_field.Connect("focus_entered", this, "_onIpEditFocus");
+            }
+
             username_field.Connect("text_changed", this, "_onUsernameFieldTextChange");
             ip_field.Connect("text_changed", this, "_onIpFieldTextChange");
             connect_button.Connect("pressed", this, "_onConnectButtonPress");

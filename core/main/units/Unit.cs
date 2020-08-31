@@ -1,4 +1,5 @@
 using System;
+using Casanova.core.net;
 using Godot;
 
 namespace Casanova.core.main.units
@@ -25,6 +26,7 @@ namespace Casanova.core.main.units
 		public KinematicBody2D kinematicBody;
 
 		public Node2D tagNode;
+		public Label tagFakeLabel;
 		public RichTextLabel tagLabel;
 		
 		private string tag;
@@ -34,8 +36,20 @@ namespace Casanova.core.main.units
 			get => tag;
 			set
 			{
+
+				
 				tag = value;
 				tagLabel.BbcodeText = $"[center]{tag}[/center]";
+				
+				tagFakeLabel.Text = String.Empty;
+				tagFakeLabel.RectPosition = new Vector2(0, -17);
+				tagFakeLabel.RectSize = Vector2.Zero;
+				
+				tagFakeLabel.Text = tagLabel.Text;
+				
+				
+
+
 				if (value == String.Empty)
 				{
 					tagNode.Visible = false;
@@ -51,7 +65,8 @@ namespace Casanova.core.main.units
 		{
 			kinematicBody = GetNode<KinematicBody2D>("Unit");
 			tagNode = kinematicBody.GetNode<Node2D>("Tag");
-			tagLabel = tagNode.GetNode("Panel").GetNode<RichTextLabel>("Name");
+			tagFakeLabel = tagNode.GetNode<Label>("FakeLabel");
+			tagLabel = tagFakeLabel.GetNode<RichTextLabel>("Text");
 		}
 
 		public void ApplyFriction(float amt)
