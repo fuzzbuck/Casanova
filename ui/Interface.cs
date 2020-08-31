@@ -32,6 +32,12 @@ namespace Casanova.ui
 			{
 				MobileTextInput mte = (MobileTextInput) createFragment("MobileTextInput");
 				tree.CurrentScene.GetParent().AddChild(mte);
+				
+				ThreadManager.ExecuteOnMainThread(() =>
+				{
+					mte.texteditor.Text = text;
+					mte.preview.BbcodeText = text;
+				});
 
 				return mte;
 			}

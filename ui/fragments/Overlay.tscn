@@ -1,27 +1,26 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://ui/elements/Header.tscn" type="PackedScene" id=1]
 [ext_resource path="res://ui/elements/BackButton.tscn" type="PackedScene" id=2]
 [ext_resource path="res://ui/fragments/Overlay.cs" type="Script" id=3]
 
-[sub_resource type="Shader" id=5]
+[sub_resource type="Shader" id=14]
 code = "shader_type canvas_item;
 
 uniform float blur_amount = 2.0;
-uniform float darkness = 0.6;
 
 void fragment()
     {
     COLOR = textureLod(SCREEN_TEXTURE, SCREEN_UV, blur_amount);
-	COLOR.rgb = COLOR.rgb - vec3(darkness);
     }"
 
-[sub_resource type="ShaderMaterial" id=4]
-shader = SubResource( 5 )
+[sub_resource type="ShaderMaterial" id=15]
+shader = SubResource( 14 )
 shader_param/blur_amount = 2.0
-shader_param/darkness = 0.6
 
-[sub_resource type="Animation" id=1]
+[sub_resource type="StyleBoxEmpty" id=12]
+
+[sub_resource type="Animation" id=16]
 resource_name = "Enter"
 length = 0.3
 tracks/0/type = "value"
@@ -37,7 +36,7 @@ tracks/0/keys = {
 "values": [ Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 1 ) ]
 }
 
-[sub_resource type="Animation" id=2]
+[sub_resource type="Animation" id=17]
 resource_name = "Leave"
 length = 0.3
 tracks/0/type = "value"
@@ -61,14 +60,18 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Overlay" type="ColorRect" parent="."]
-material = SubResource( 4 )
+[node name="Blur" type="ColorRect" parent="."]
+material = SubResource( 15 )
 anchor_right = 1.0
 anchor_bottom = 1.0
-color = Color( 0, 0, 0, 0.784314 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="Overlay" type="ColorRect" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color( 0.0588235, 0.0588235, 0.0588235, 0.862745 )
 
 [node name="CenterContainer" type="CenterContainer" parent="."]
 anchor_right = 1.0
@@ -78,15 +81,14 @@ __meta__ = {
 }
 
 [node name="Title" parent="." instance=ExtResource( 1 )]
+margin_bottom = 80.0
 
 [node name="BackButton" parent="Title" instance=ExtResource( 2 )]
-anchor_top = 0.5
-anchor_bottom = 0.5
-margin_left = 10.0
-margin_top = -17.0
-margin_right = 120.0
-margin_bottom = 17.0
+anchor_bottom = 1.0
+margin_right = 164.0
+margin_bottom = 0.0
+custom_styles/normal = SubResource( 12 )
 
 [node name="Animation" type="AnimationPlayer" parent="."]
-anims/Enter = SubResource( 1 )
-anims/Leave = SubResource( 2 )
+anims/Enter = SubResource( 16 )
+anims/Leave = SubResource( 17 )
