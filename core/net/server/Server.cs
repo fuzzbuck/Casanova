@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
@@ -41,7 +41,7 @@ namespace Casanova.core.net.server
             udpListener = new UdpClient(Port);
             udpListener.BeginReceive(UDPReceiveCallback, null);
             
-            GD.Print($"Server started on port {Port}.");
+            GD.Print($"Server started on {tcpListener.LocalEndpoint}:{Port}.");
             IsRunning = true;
             IsHosting = true;
         }
