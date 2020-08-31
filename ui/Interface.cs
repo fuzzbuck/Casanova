@@ -19,7 +19,6 @@ namespace Casanova.ui
 		public override void _Ready()
 		{
 			tree = GetTree();
-			GD.Print(tree);
 		}
 
 		public class Utils
@@ -27,6 +26,14 @@ namespace Casanova.ui
 			public static Node createFragment(string fragment)
 			{ 
 				return ResourceLoader.Load<PackedScene>(Vars.path_frags + $"/{fragment}.tscn").Instance();
+			}
+
+			public static MobileTextInput spawnMte(string text)
+			{
+				MobileTextInput mte = (MobileTextInput) createFragment("MobileTextInput");
+				tree.CurrentScene.GetParent().AddChild(mte);
+
+				return mte;
 			}
 		}
 

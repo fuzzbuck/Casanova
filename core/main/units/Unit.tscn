@@ -23,21 +23,21 @@ void fragment() {
 shader = SubResource( 1 )
 shader_param/rotation = 9.0
 
-[sub_resource type="DynamicFontData" id=3]
+[sub_resource type="DynamicFontData" id=9]
 antialiased = false
 font_path = "res://assets/fonts/dogicabold.ttf"
 
 [sub_resource type="DynamicFont" id=4]
-size = 58
+size = 32
 use_mipmaps = true
-font_data = SubResource( 3 )
+font_data = SubResource( 9 )
 
 [sub_resource type="DynamicFontData" id=5]
 antialiased = false
 font_path = "res://assets/fonts/dogica.ttf"
 
 [sub_resource type="DynamicFont" id=6]
-size = 58
+size = 32
 use_mipmaps = true
 font_data = SubResource( 5 )
 
