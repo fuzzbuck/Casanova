@@ -57,7 +57,7 @@ namespace Casanova.core.main
 
         public override void _PhysicsProcess(float delta)
         {
-            if (localUnit != null && !localPlayer.isLocal)
+            if (localUnit != null)
             {
                 Packets.ClientHandle.Send.PlayerMovement(localUnit.InWorldPosition, localUnit.Axis, localUnit.Speed, localUnit.kinematicBody.Rotation);
             }

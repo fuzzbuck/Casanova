@@ -1,3 +1,4 @@
+using System;
 using Casanova.core.net.client;
 using Casanova.core.net.server;
 using Casanova.core.main.units;
@@ -10,15 +11,24 @@ namespace Casanova.core.main.world
         public static World instance;
         public override void _Ready()
         {
-            // singleton
             if (instance == null)
+            {
                 instance = this;
-            
-            // todo: change this
-            // start server & client
+            }
+            else
+            {
+                throw new Exception("Can't instance multiple worlds!");
+            }
+        }
+
+        public void StartServer()
+        {
             GetNode<ServerHandler>("Server").Start();
-            GetNode<ClientHandler>("Client").ConnectToServer();
-            
+        }
+
+        public void StartClient()
+        {
+            GetNode<ClientHandler>("Client").ConnectToServer(Vars.PersistentData.ip);
         }
         public Unit SpawnPlayer(Unit unit)
         {

@@ -56,6 +56,7 @@
           <e p="DebugLabel.cs" t="Include" />
           <e p="MenuButtonsContainer.cs" t="Include" />
           <e p="Overlay.cs" t="Include" />
+          <e p="ServerJoin.cs" t="Include" />
           <e p="VersionLabel.cs" t="Include" />
         </e>
         <e p="Interface.cs" t="Include" />

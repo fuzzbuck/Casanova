@@ -78,8 +78,6 @@ namespace Casanova.core.main.units
 					}
 				}
 			}
-
-			// todo: implement zooming/pinching & dragging movement for mobile
 		}
 	}
 }

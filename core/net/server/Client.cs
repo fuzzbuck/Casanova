@@ -50,7 +50,7 @@ namespace Casanova.core.net.server
 
                 stream.BeginRead(receiveBuffer, 0, dataBufferSize, ReceiveCallback, null);
 
-                Packets.ServerHandle.Send.Welcome(id, "whats up everyguys");
+                Packets.ServerHandle.Send.Welcome(id, "Welcome to the testing branch.");
             }
 
             public void SendData(Packet _packet)
@@ -194,6 +194,8 @@ namespace Casanova.core.net.server
         {
             player = NetworkManager.CreatePlayer(NetworkManager.loc.SERVER, id, _username);
 
+            
+            // send info to all clients except ours that we spawned
             foreach (Client _client in Server.Clients.Values)
             {
                 if (_client.player != null)
@@ -205,9 +207,10 @@ namespace Casanova.core.net.server
                 }
             }
             
+            // send info from all clients except ours about others existance
             foreach (Client _client in Server.Clients.Values)
             {
-                if (_client.player != null)
+                if (_client.player != null && !_client.player.isLocal)
                 {
                     Packets.ServerHandle.Send.SpawnPlayer(_client.id, player);
                 }

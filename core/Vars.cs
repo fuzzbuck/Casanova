@@ -9,6 +9,7 @@ namespace Casanova.core
 		
 		public static string path_core = "res://core";
 		public static string path_main = path_core + "/main";
+		public static string path_world = path_main + "/world";
 		
 		public static string path_ui = "res://ui";
 		public static string path_elems = path_ui + "/elements";
@@ -18,8 +19,8 @@ namespace Casanova.core
 		{
 			public static bool isMobile = false;
 			
-			public static string username = "fazzubaku";
-			public static string ip = "";
+			public static string username = "bro";
+			public static string ip = "127.0.0.1:6969";
 		}
 		
 		public class PlayerCamera
@@ -55,8 +56,6 @@ namespace Casanova.core
 			{
 				PersistentData.isMobile = true;
 				OS.WindowSize = new Vector2(1080, 720);
-				
-				GD.Print("Changed resolution to 720p");
 			}
 		}
 	}

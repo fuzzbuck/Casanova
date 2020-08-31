@@ -77,6 +77,7 @@
     <Compile Include="ui\fragments\DebugLabel.cs" />
     <Compile Include="ui\fragments\MenuButtonsContainer.cs" />
     <Compile Include="ui\fragments\Overlay.cs" />
+    <Compile Include="ui\fragments\ServerJoin.cs" />
     <Compile Include="ui\fragments\VersionLabel.cs" />
     <Compile Include="ui\Interface.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

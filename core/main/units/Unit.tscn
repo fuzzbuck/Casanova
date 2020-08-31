@@ -23,23 +23,23 @@ void fragment() {
 shader = SubResource( 1 )
 shader_param/rotation = 9.0
 
-[sub_resource type="DynamicFontData" id=5]
-antialiased = false
-font_path = "res://assets/fonts/dogicabold.ttf"
-
-[sub_resource type="DynamicFont" id=6]
-size = 58
-use_mipmaps = true
-font_data = SubResource( 5 )
-
 [sub_resource type="DynamicFontData" id=3]
 antialiased = false
-font_path = "res://assets/fonts/dogica.ttf"
+font_path = "res://assets/fonts/dogicabold.ttf"
 
 [sub_resource type="DynamicFont" id=4]
 size = 58
 use_mipmaps = true
 font_data = SubResource( 3 )
+
+[sub_resource type="DynamicFontData" id=5]
+antialiased = false
+font_path = "res://assets/fonts/dogica.ttf"
+
+[sub_resource type="DynamicFont" id=6]
+size = 58
+use_mipmaps = true
+font_data = SubResource( 5 )
 
 [node name="Unit" type="Node"]
 script = ExtResource( 2 )
@@ -79,8 +79,8 @@ margin_top = 1.0
 margin_right = 586.0
 margin_bottom = 52.0
 rect_scale = Vector2( 0.125, 0.125 )
-custom_fonts/bold_font = SubResource( 6 )
-custom_fonts/normal_font = SubResource( 4 )
+custom_fonts/bold_font = SubResource( 4 )
+custom_fonts/normal_font = SubResource( 6 )
 bbcode_enabled = true
 bbcode_text = "[center][color=#ff6699][b]fuzz[/b][/color][color=#3399ff]buck[/color][/center]"
 meta_underlined = false

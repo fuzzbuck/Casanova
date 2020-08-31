@@ -33,15 +33,29 @@ namespace Casanova.core.net.client
             }
         }
 
-        public void ConnectToServer()
+        public void ConnectToServer(string _ip, int _port)
         {
-            tcp = new TCP();
-            udp = new UDP();
+            try
+            {
+                ip = _ip;
+                port = _port;
 
-            InitializeClientData();
-            
-            isConnected = true;
-            tcp.Connect();
+                tcp = new TCP();
+                udp = new UDP();
+
+                InitializeClientData();
+
+                isConnected = true;
+                tcp.Connect();
+            }
+            catch (Exception e)
+            {
+                isConnected = false;
+                tcp = null;
+                udp = null;
+                
+                throw new Exception("An error occured while connecting to the server: " + e.Message);
+            }
         }
 
         public class TCP

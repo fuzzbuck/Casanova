@@ -130,9 +130,9 @@ namespace Casanova.core.net
                         unit.Speed = speed;
                         unit.kinematicBody.Rotation = rotation;
                         unit.kinematicBody.Position = pos;
-                        
-                        Send.PlayerMovement(_plr);
                     }
+                    if (unit != null)
+                        Send.PlayerMovement(_plr);
                 }
             }
 
@@ -151,9 +151,6 @@ namespace Casanova.core.net
 
                 public static void SpawnPlayer(int _toClient, Player _player)
                 {
-                    if (NetworkManager.playersGroup[_toClient].isLocal)
-                        return;
-                    
                     using (Packet _packet = new Packet((int)ServerPackets.spawnPlayer))
                     {
                         _packet.Write(_player.id);

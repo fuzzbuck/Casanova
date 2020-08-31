@@ -1,5 +1,6 @@
 using System;
 using Casanova.core;
+using Casanova.core.net;
 using Casanova.ui.fragments;
 using Godot;
 using Godot.Collections;
@@ -38,7 +39,15 @@ namespace Casanova.ui
 				{
 					0, () =>
 					{
-						tree.ChangeScene(Vars.path_main + "/world/World.tscn");
+						tree.ChangeSceneTo(ResourceLoader.Load<PackedScene>(Vars.path_world + "/World.tscn"));
+						
+						ThreadManager.ExecuteOnMainThread(() =>
+						{
+							World world = (World) tree.CurrentScene;
+							
+							world.StartServer();
+							world.StartClient();
+						});
 					}
 				},
 				{

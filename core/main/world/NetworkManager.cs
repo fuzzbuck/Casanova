@@ -15,6 +15,7 @@ namespace Casanova.core.main.world
     public class NetworkManager
     {
         public static Dictionary<int, Player> playersGroup = new Dictionary<int, Player>();
+        public static Player hostPlayer;
 
         public static Unit CreatePlayerInstance()
         {
@@ -60,7 +61,7 @@ namespace Casanova.core.main.world
             }
             else
             {
-                if (loc == loc.SERVER && !Server.IsDedicated)
+                if (loc == loc.SERVER && !Server.IsDedicated && hostPlayer == null)
                 {
                     willBeLocal = true;
                 }
@@ -69,6 +70,9 @@ namespace Casanova.core.main.world
             Player player = new Player(_id, _username, _instance, willBeLocal);
             player.unit = _instance;
             playersGroup[_id] = player;
+            
+            if (hostPlayer == null && loc == loc.SERVER)
+                hostPlayer = player;
 
             ThreadManager.ExecuteOnMainThread(() =>
             {
