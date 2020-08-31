@@ -50,11 +50,13 @@
       <e p="ui" t="Include">
         <e p="elements" t="Include">
           <e p="Button.cs" t="Include" />
+          <e p="LineEdit.cs" t="Include" />
         </e>
         <e p="fragments" t="Include">
           <e p="CardsContainer.cs" t="Include" />
           <e p="DebugLabel.cs" t="Include" />
           <e p="MenuButtonsContainer.cs" t="Include" />
+          <e p="MobileTextInput.cs" t="Include" />
           <e p="Overlay.cs" t="Include" />
           <e p="ServerJoin.cs" t="Include" />
           <e p="VersionLabel.cs" t="Include" />
