@@ -11,4 +11,4 @@ export_presets.cfg
 data_*/
 
 # Temporary builds
-.build/
+build/*
