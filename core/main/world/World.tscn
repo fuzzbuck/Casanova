@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=2]
+[gd_scene load_steps=15 format=2]
 
 [ext_resource path="res://ui/fragments/DebugLabel.tscn" type="PackedScene" id=1]
 [ext_resource path="res://assets/sprites/world/blocks/16_black.png" type="Texture" id=2]
@@ -7,6 +7,7 @@
 [ext_resource path="res://core/main/world/World.cs" type="Script" id=5]
 [ext_resource path="res://core/net/server/ServerHandler.tscn" type="PackedScene" id=6]
 [ext_resource path="res://ui/fragments/Chat.tscn" type="PackedScene" id=7]
+[ext_resource path="res://ui/fragments/MobileUnderhead.tscn" type="PackedScene" id=8]
 
 [sub_resource type="Shader" id=1]
 code = "shader_type canvas_item;
@@ -118,6 +119,12 @@ margin_left = 9.0
 margin_top = -480.0
 margin_right = 907.0
 margin_bottom = -9.0
+
+[node name="Control" parent="TopLayer" instance=ExtResource( 8 )]
+margin_left = -424.0
+margin_top = -304.0
+margin_right = -215.0
+margin_bottom = -30.0
 
 [node name="BackgroundLayer" type="CanvasLayer" parent="."]
 layer = -100

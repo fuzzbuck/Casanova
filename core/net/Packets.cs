@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.Net;
 using Casanova.core.main.world;
@@ -32,7 +32,10 @@ namespace Casanova.core.net
                 {
                     int _id = _packet.ReadInt();
                     string _username = _packet.ReadString();
-                    
+
+                    if (Server.IsHosting)
+                        return;
+
                     GD.Print($"Received spawn packet from server for {_username} with id {_id}");
                     NetworkManager.CreatePlayer(NetworkManager.loc.CLIENT, _id, _username);
                 }

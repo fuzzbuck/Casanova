@@ -61,6 +61,7 @@
           <e p="DebugLabel.cs" t="Include" />
           <e p="MenuButtonsContainer.cs" t="Include" />
           <e p="MobileTextInput.cs" t="Include" />
+          <e p="MobileUnderhead.cs" t="Include" />
           <e p="Overlay.cs" t="Include" />
           <e p="ServerJoin.cs" t="Include" />
           <e p="VersionLabel.cs" t="Include" />

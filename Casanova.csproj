@@ -80,6 +80,7 @@
     <Compile Include="ui\fragments\DebugLabel.cs" />
     <Compile Include="ui\fragments\MenuButtonsContainer.cs" />
     <Compile Include="ui\fragments\MobileTextInput.cs" />
+    <Compile Include="ui\fragments\MobileUnderhead.cs" />
     <Compile Include="ui\fragments\Overlay.cs" />
     <Compile Include="ui\fragments\ServerJoin.cs" />
     <Compile Include="ui\fragments\VersionLabel.cs" />

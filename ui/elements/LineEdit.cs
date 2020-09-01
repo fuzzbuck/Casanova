@@ -1,20 +1,25 @@
-using Godot;
-using System;
 using Casanova.core;
-using Casanova.ui;
 
-public class LineEdit : Godot.LineEdit
+namespace Casanova.ui.elements
 {
-    public override void _Ready()
+    public class LineEdit : Godot.LineEdit
     {
-        if (Vars.PersistentData.isMobile)
+        public bool custom_behaviour = false;
+        public override void _Ready()
         {
-            Connect("focus_entered", this, "_onFocus");
+            if (Vars.PersistentData.isMobile)
+            {
+                Connect("focus_entered", this, "_onFocus");
+            }
         }
-    }
-    private void _onFocus()
-    {
-        var mte = Interface.Utils.spawnMte(Text);
-        mte.label = this;
+
+        private void _onFocus()
+        {
+            if (custom_behaviour)
+                return;
+            
+            var mte = Interface.Utils.spawnMte(Text);
+            mte.label = this;
+        }
     }
 }

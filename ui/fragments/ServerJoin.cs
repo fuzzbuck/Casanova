@@ -3,6 +3,7 @@ using System.Runtime.CompilerServices;
 using Casanova.core;
 using Casanova.core.net;
 using Godot;
+using LineEdit = Casanova.ui.elements.LineEdit;
 using World = Casanova.core.main.world.World;
 
 namespace Casanova.ui.fragments

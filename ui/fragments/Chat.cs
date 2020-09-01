@@ -1,6 +1,4 @@
 using System;
-using System.Linq;
-using System.Security.Claims;
 using Casanova.core;
 using Casanova.core.main;
 using Casanova.core.net;
@@ -8,6 +6,7 @@ using Casanova.core.net.types;
 using Godot;
 using Godot.Collections;
 using Array = Godot.Collections.Array;
+using LineEdit = Casanova.ui.elements.LineEdit;
 
 namespace Casanova.ui.fragments
 {
@@ -18,12 +17,12 @@ namespace Casanova.ui.fragments
         private VBoxContainer content;
         private ScrollContainer messageScrollerBox;
         private VBoxContainer messageBox;
-        private HBoxContainer senderBox;
+        public HBoxContainer senderBox;
         private Button button;
         private LineEdit _lineEdit;
 
         private RichTextLabel chatMessage;
-        private Random rnd;
+        private RandomNumberGenerator rnd;
 
         private int MaxMessages = 50;
         private Array<RichTextLabel> msgInstances = new Array<RichTextLabel>();
@@ -40,6 +39,9 @@ namespace Casanova.ui.fragments
             {
                 throw new Exception("Can't instance multiple chat objects!");
             }
+            
+            if(Vars.PersistentData.isMobile)
+                RectPosition = new Vector2(9, 0);
 
             content = GetNode("MarginContainer").GetNode<VBoxContainer>("Content");
             messageScrollerBox = content.GetNode<ScrollContainer>("Messages");
@@ -52,11 +54,10 @@ namespace Casanova.ui.fragments
 
             _lineEdit.Connect("focus_entered", this, "_onSenderBoxFocusEnter");
             _lineEdit.Connect("focus_exited", this, "_onFocusLost");
+            _lineEdit.Connect("text_changed", this, "_onTextChanged");
+            _lineEdit.custom_behaviour = true;
 
-            senderBox.Connect("mouse_entered", this, "MouseEntered");
-            senderBox.Connect("mouse_exited", this, "MouseLeft");
-
-            rnd = new Random();
+            rnd = new RandomNumberGenerator();
 
             chatMessage.Visible = false;
             senderBox.Modulate = new Color(0, 0, 0, 0);
@@ -72,8 +73,12 @@ namespace Casanova.ui.fragments
             string sendername = sender == null ? "Server" : sender.username;
             string message = $"[color=#fa9e48]<[/color]{sendername}[color=#fa9e48]>[/color]: {text}";
             AddMessage(message);
-            messageScrollerBox.GetVScrollbar().Value = messageScrollerBox.GetVScrollbar().MaxValue;
             lastMessage = text;
+            
+            ThreadManager.ExecuteOnMainThread(() =>
+            {
+                messageScrollerBox.GetVScrollbar().Value = messageScrollerBox.GetVScrollbar().MaxValue;
+            });
         }
 
         private void _onSenderBoxFocusEnter()
@@ -87,6 +92,18 @@ namespace Casanova.ui.fragments
             
             _lineEdit.SetProcess(false);
             senderBox.Modulate = new Color(0, 0, 0, 0);
+        }
+
+        private void _onTextChanged(string text)
+        {
+            if (text.Length > 0)
+            {
+                button.Disabled = false;
+            }
+            else
+            {
+                button.Disabled = true;
+            }
         }
 
         private void CancelSend()
@@ -144,16 +161,7 @@ namespace Casanova.ui.fragments
                     }
                     else
                     {
-                        senderBox.Modulate = new Color(1, 1, 1);
-                        _lineEdit.SetProcess(true);
-                        
-                        ShowAllMessages();
-                        _lineEdit.GrabFocus();
-                        
-                        ThreadManager.ExecuteOnMainThread(() =>
-                        {
-                            messageScrollerBox.GetVScrollbar().Value = messageScrollerBox.GetVScrollbar().MaxValue;
-                        });
+                        TriggerSendBox();
                     }
                 }
 
@@ -173,6 +181,22 @@ namespace Casanova.ui.fragments
             }
 
         }
+
+        public void TriggerSendBox()
+        {
+            button.Disabled = true;
+            
+            senderBox.Modulate = new Color(1, 1, 1);
+            _lineEdit.SetProcess(true);
+                        
+            ShowAllMessages();
+            _lineEdit.GrabFocus();
+                        
+            ThreadManager.ExecuteOnMainThread(() =>
+            {
+                messageScrollerBox.GetVScrollbar().Value = messageScrollerBox.GetVScrollbar().MaxValue;
+            });
+        }
         public void Clear()
         {
             foreach (RichTextLabel msgInstance in messageBox.GetChildren())
@@ -185,7 +209,7 @@ namespace Casanova.ui.fragments
         public void AddMessage(string message)
         {
             RichTextLabel msgInstance = chatMessage.Duplicate() as RichTextLabel;
-            msgInstance.Name = rnd.Next(1000, 99999999).ToString();
+            msgInstance.Name = rnd.RandiRange(1000, 99999999).ToString();
             messageBox.AddChild(msgInstance);
             msgInstance.BbcodeText = message;
             msgInstance.GetNode<AnimationPlayer>("Animation").Play("Enter");

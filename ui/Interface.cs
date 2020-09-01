@@ -31,7 +31,7 @@ namespace Casanova.ui
 			public static MobileTextInput spawnMte(string text)
 			{
 				MobileTextInput mte = (MobileTextInput) createFragment("MobileTextInput");
-				tree.CurrentScene.GetParent().AddChild(mte);
+				tree.CurrentScene.AddChild(mte);
 				
 				ThreadManager.ExecuteOnMainThread(() =>
 				{

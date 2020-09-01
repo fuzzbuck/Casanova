@@ -1,4 +1,5 @@
 using Godot;
+using LineEdit = Casanova.ui.elements.LineEdit;
 
 namespace Casanova.ui.fragments
 {
