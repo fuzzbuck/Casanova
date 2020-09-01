@@ -63,6 +63,7 @@
     <Compile Include="core\net\ClientSend.cs" />
     <Compile Include="core\net\client\Client.cs" />
     <Compile Include="core\net\client\ClientHandler.cs" />
+    <Compile Include="core\net\headless_server\ServerLauncher.cs" />
     <Compile Include="core\net\Packet.cs" />
     <Compile Include="core\net\Packets.cs" />
     <Compile Include="core\net\ServerSend.cs" />
@@ -75,6 +76,7 @@
     <Compile Include="ui\elements\Button.cs" />
     <Compile Include="ui\elements\LineEdit.cs" />
     <Compile Include="ui\fragments\CardsContainer.cs" />
+    <Compile Include="ui\fragments\Chat.cs" />
     <Compile Include="ui\fragments\DebugLabel.cs" />
     <Compile Include="ui\fragments\MenuButtonsContainer.cs" />
     <Compile Include="ui\fragments\MobileTextInput.cs" />
@@ -85,6 +87,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="core\net\headless_server" />
     <Folder Include="ui" />
     <Folder Include="ui\elements" />
     <Folder Include="ui\fragments" />

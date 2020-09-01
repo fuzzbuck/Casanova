@@ -1,0 +1,75 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://ui/fragments/Chat.cs" type="Script" id=1]
+[ext_resource path="res://ui/effects/Warp.tscn" type="PackedScene" id=2]
+[ext_resource path="res://ui/elements/Sender.tscn" type="PackedScene" id=3]
+[ext_resource path="res://ui/elements/ChatMessage.tscn" type="PackedScene" id=4]
+
+[sub_resource type="StyleBoxEmpty" id=1]
+
+[node name="Chat" type="PanelContainer"]
+margin_right = 898.0
+margin_bottom = 471.0
+grow_horizontal = 2
+grow_vertical = 2
+custom_styles/panel = SubResource( 1 )
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="WarpEffect" parent="." instance=ExtResource( 2 )]
+margin_right = 898.0
+margin_bottom = 471.0
+color = Color( 1, 1, 1, 1 )
+
+[node name="Overlay" type="ColorRect" parent="."]
+margin_right = 898.0
+margin_bottom = 471.0
+color = Color( 0.0588235, 0.0588235, 0.0588235, 0.470588 )
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+margin_right = 898.0
+margin_bottom = 471.0
+custom_constants/margin_right = 30
+custom_constants/margin_top = 25
+custom_constants/margin_left = 25
+custom_constants/margin_bottom = 25
+
+[node name="Content" type="VBoxContainer" parent="MarginContainer"]
+margin_left = 25.0
+margin_top = 25.0
+margin_right = 868.0
+margin_bottom = 446.0
+grow_horizontal = 2
+grow_vertical = 2
+custom_constants/separation = 15
+alignment = 2
+
+[node name="Messages" type="ScrollContainer" parent="MarginContainer/Content"]
+margin_right = 843.0
+margin_bottom = 372.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+scroll_horizontal_enabled = false
+
+[node name="MessageContainer" type="VBoxContainer" parent="MarginContainer/Content/Messages"]
+margin_right = 843.0
+margin_bottom = 372.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+alignment = 2
+
+[node name="ChatMessage" parent="MarginContainer/Content/Messages/MessageContainer" instance=ExtResource( 4 )]
+margin_top = 306.0
+margin_bottom = 337.0
+
+[node name="ChatMessage2" parent="MarginContainer/Content/Messages/MessageContainer" instance=ExtResource( 4 )]
+margin_top = 341.0
+margin_bottom = 372.0
+text = "[fuzz]: this is a very basic but ok chat system"
+
+[node name="Sender" parent="MarginContainer/Content" instance=ExtResource( 3 )]
+margin_top = 387.0
+margin_right = 843.0
+margin_bottom = 421.0

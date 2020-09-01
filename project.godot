@@ -27,6 +27,7 @@ config/quit_on_go_back=false
 Vars="*res://core/Vars.cs"
 Interface="*res://ui/Interface.cs"
 PlayerController="*res://core/main/PlayerController.cs"
+ServerLauncher="*res://core/net/headless_server/ServerLauncher.cs"
 
 [display]
 

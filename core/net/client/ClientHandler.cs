@@ -1,4 +1,5 @@
 using System;
+using System.Net;
 using Godot;
 
 namespace Casanova.core.net.client
@@ -10,16 +11,25 @@ namespace Casanova.core.net.client
             // awake client
             new Client().Awake();
 
-            GD.Print("Connecting to server");
+            
             string[] addy = ip.Split(":");
-            if (addy.Length > 1 && int.TryParse(addy[1], out int temp))
+            int port = Vars.Networking.defaultPort;
+
+            if (addy.Length > 1 && int.TryParse(addy[1], out int newport))
+                port = newport;
+
+            if (!IPAddress.TryParse(addy[0], out IPAddress address))
             {
-                Client.instance.ConnectToServer(addy[0], int.Parse(addy[1]));
+                var ips = Dns.GetHostAddresses(addy[0]);
+                if (ips.Length > 0)
+                {
+                    addy[0] = ips[0].ToString();
+                }
             }
-            else
-            {
-                throw new Exception("Invalid IP address issued! Requires IP/Hostname & Port seperated by `:`");
-            }
+            
+            GD.Print($"Parsed {addy}");
+            
+            Client.instance.ConnectToServer(addy[0], port);
         }
         
     }

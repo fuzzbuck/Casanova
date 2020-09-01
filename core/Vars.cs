@@ -17,9 +17,9 @@ namespace Casanova.core
 
 		public class PersistentData
 		{
-			public static bool isMobile = false;
+			public static bool isMobile = true;
 			
-			public static string username = "bro";
+			public static string username = "unnamed";
 			public static string ip = "127.0.0.1:6969";
 		}
 		
@@ -40,6 +40,9 @@ namespace Casanova.core
 		public class Networking
 		{
 			public static float unit_desync_treshold = 8f;
+
+			public static bool isHeadless = false;
+			public static int defaultPort = 6969;
 		}
 		public class Pals
 		{

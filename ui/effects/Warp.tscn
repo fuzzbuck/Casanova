@@ -1,0 +1,29 @@
+[gd_scene load_steps=3 format=2]
+
+[sub_resource type="Shader" id=1]
+code = "shader_type canvas_item;
+
+uniform float rotation = 3.0;
+
+void fragment() {
+	vec2 uv = SCREEN_UV;
+	vec2 rel = uv - vec2(0.5, 0.5);
+	float angle = length(rel) * rotation;
+	mat2 rot = mat2(vec2(cos(angle), -sin(angle)), vec2(sin(angle), cos(angle)));
+	rel = rot * rel;
+	uv = clamp(rel + vec2(0.5,0.5), vec2(0.0, 0.0), vec2(1.0, 1.0));
+	COLOR.rgb = textureLod(SCREEN_TEXTURE, uv, 0.0).rgb;
+}"
+
+[sub_resource type="ShaderMaterial" id=2]
+shader = SubResource( 1 )
+shader_param/rotation = 3.0
+
+[node name="WarpEffect" type="ColorRect"]
+material = SubResource( 2 )
+margin_right = 33.0
+margin_bottom = 30.0
+color = Color( 1, 1, 1, 0 )
+__meta__ = {
+"_edit_use_anchors_": false
+}

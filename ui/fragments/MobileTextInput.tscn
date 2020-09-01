@@ -93,8 +93,6 @@ custom_fonts/font = SubResource( 5 )
 custom_constants/line_spacing = 16
 context_menu_enabled = false
 wrap_enabled = true
-caret_block_mode = true
-caret_blink_speed = 1.17
 __meta__ = {
 "_edit_use_anchors_": false
 }

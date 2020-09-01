@@ -1,0 +1,84 @@
+[gd_scene load_steps=11 format=2]
+
+[ext_resource path="res://ui/elements/Button.tscn" type="PackedScene" id=1]
+[ext_resource path="res://ui/elements/LineEdit.tscn" type="PackedScene" id=2]
+
+[sub_resource type="StyleBoxFlat" id=1]
+content_margin_left = 10.0
+bg_color = Color( 0.6, 0.6, 0.6, 0 )
+border_width_bottom = 2
+border_color = Color( 1, 1, 1, 1 )
+expand_margin_bottom = 2.0
+
+[sub_resource type="StyleBoxFlat" id=2]
+content_margin_left = 10.0
+draw_center = false
+border_width_bottom = 2
+border_color = Color( 0.972549, 0.87451, 0.494118, 1 )
+expand_margin_bottom = 2.0
+
+[sub_resource type="DynamicFontData" id=3]
+font_path = "res://assets/fonts/Ubuntu-Regular.ttf"
+
+[sub_resource type="DynamicFont" id=4]
+size = 20
+use_mipmaps = true
+font_data = SubResource( 3 )
+
+[sub_resource type="StyleBoxFlat" id=5]
+bg_color = Color( 0.968627, 0.898039, 0.627451, 1 )
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+expand_margin_left = 6.0
+expand_margin_right = 6.0
+expand_margin_top = 4.0
+expand_margin_bottom = 4.0
+shadow_color = Color( 0, 0, 0, 0.00392157 )
+shadow_size = 4
+shadow_offset = Vector2( 0, 5 )
+
+[sub_resource type="StyleBoxEmpty" id=6]
+
+[sub_resource type="DynamicFontData" id=7]
+font_path = "res://assets/fonts/Bathrind.otf"
+
+[sub_resource type="DynamicFont" id=8]
+size = 32
+font_data = SubResource( 7 )
+
+[node name="Sender" type="HBoxContainer"]
+margin_top = 397.0
+margin_right = 684.0
+margin_bottom = 431.0
+grow_horizontal = 2
+grow_vertical = 2
+custom_constants/separation = 34
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="LineEdit" parent="." instance=ExtResource( 2 )]
+margin_right = 588.0
+margin_bottom = 34.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+custom_styles/focus = SubResource( 1 )
+custom_styles/normal = SubResource( 2 )
+custom_fonts/font = SubResource( 4 )
+text = ""
+align = 0
+max_length = 128
+
+[node name="Button" parent="." instance=ExtResource( 1 )]
+margin_left = 622.0
+margin_right = 684.0
+margin_bottom = 34.0
+grow_horizontal = 2
+grow_vertical = 2
+custom_styles/pressed = SubResource( 5 )
+custom_styles/focus = SubResource( 6 )
+custom_fonts/font = SubResource( 8 )
+text = "send"

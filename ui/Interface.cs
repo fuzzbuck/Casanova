@@ -37,6 +37,7 @@ namespace Casanova.ui
 				{
 					mte.texteditor.Text = text;
 					mte.preview.BbcodeText = text;
+					mte.GrabFocus();
 				});
 
 				return mte;

@@ -35,6 +35,7 @@ namespace Casanova.core.net.client
 
         public void ConnectToServer(string _ip, int _port)
         {
+            GD.Print($"Attempting connection to {_ip}:{_port}");
             try
             {
                 ip = _ip;

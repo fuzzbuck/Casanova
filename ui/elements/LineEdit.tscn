@@ -34,8 +34,6 @@ text = "fuzz"
 align = 1
 max_length = 32
 context_menu_enabled = false
-shortcut_keys_enabled = false
-selecting_enabled = false
 script = ExtResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": false
