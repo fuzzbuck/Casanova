@@ -49,9 +49,8 @@ size = 32
 font_data = SubResource( 7 )
 
 [node name="Sender" type="HBoxContainer"]
-margin_top = 397.0
 margin_right = 684.0
-margin_bottom = 431.0
+margin_bottom = 34.0
 grow_horizontal = 2
 grow_vertical = 2
 custom_constants/separation = 34

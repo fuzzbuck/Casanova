@@ -17,7 +17,7 @@ namespace Casanova.core
 
 		public class PersistentData
 		{
-			public static bool isMobile = true;
+			public static bool isMobile = false;
 			
 			public static string username = "unnamed";
 			public static string ip = "127.0.0.1:6969";

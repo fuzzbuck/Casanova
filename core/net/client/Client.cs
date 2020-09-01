@@ -292,6 +292,7 @@ namespace Casanova.core.net.client
                 { (int)ServerPackets.spawnPlayer, Packets.ClientHandle.Receive.SpawnPlayer },
                 { (int)ServerPackets.playerMovement, Packets.ClientHandle.Receive.PlayerMovement },
                 { (int)ServerPackets.disconnectPlayer, Packets.ClientHandle.Receive.PlayerDisconnect },
+                { (int)ServerPackets.chatMessage, Packets.ClientHandle.Receive.ChatMessage }
             };
         }
 

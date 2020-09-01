@@ -8,7 +8,7 @@ namespace Casanova.ui.fragments
         public Godot.Button button;
         public RichTextLabel preview;
         
-        // label to change real=time
+        // label to change real-time
         public LineEdit label;
 
         public override void _Ready()

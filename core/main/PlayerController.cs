@@ -12,6 +12,8 @@ namespace Casanova.core.main
         public static Unit localUnit;
         public static Player localPlayer;
 
+        public static Node focus;
+
         public override void _Process(float delta)
         {
             ThreadManager.UpdateMain();
@@ -28,7 +30,7 @@ namespace Casanova.core.main
 
         public void ProcessMovement()
         {
-            if (localUnit != null)
+            if (localUnit != null && focus == null)
             {
                 var axis = new Vector2();
                 axis.x = Input.GetActionStrength("right") - Input.GetActionStrength("left");
@@ -63,7 +65,7 @@ namespace Casanova.core.main
             }
         }
 
-        public override void _UnhandledInput(InputEvent @event)
+        public override void _Input(InputEvent @event)
         {
             if (@event is InputEventKey eventKey)
             {

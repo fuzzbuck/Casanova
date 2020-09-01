@@ -3,7 +3,7 @@
 [sub_resource type="Shader" id=1]
 code = "shader_type canvas_item;
 
-uniform float rotation = 3.0;
+uniform float rotation = 0.03;
 
 void fragment() {
 	vec2 uv = SCREEN_UV;

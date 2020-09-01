@@ -30,6 +30,8 @@ namespace Casanova.ui.fragments
             username_field.Connect("text_changed", this, "_onUsernameFieldTextChange");
             ip_field.Connect("text_changed", this, "_onIpFieldTextChange");
             connect_button.Connect("pressed", this, "_onConnectButtonPress");
+
+            Vars.PersistentData.ip = ip_field.Text;
         }
         private void _onUsernameFieldTextChange(string text)
         {

@@ -13,7 +13,8 @@ namespace Casanova.core.net
         welcome = 1,
         spawnPlayer,
         playerMovement,
-        disconnectPlayer
+        disconnectPlayer,
+        chatMessage
 
     }
 
@@ -21,7 +22,8 @@ namespace Casanova.core.net
     public enum ClientPackets
     {
         welcomeReceived = 1,
-        playerMovement
+        playerMovement,
+        chatMessage
     }
 
 

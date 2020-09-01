@@ -139,7 +139,8 @@ namespace Casanova.core.net.server
             packetHandlers = new Dictionary<int, PacketHandler>()
             {
                 { (int)ClientPackets.welcomeReceived, Packets.ServerHandle.Receive.WelcomeConfirmation },
-                { (int)ClientPackets.playerMovement, Packets.ServerHandle.Receive.PlayerMovement }
+                { (int)ClientPackets.playerMovement, Packets.ServerHandle.Receive.PlayerMovement },
+                { (int)ClientPackets.chatMessage, Packets.ServerHandle.Receive.ChatMessage }
             };
         }
     }

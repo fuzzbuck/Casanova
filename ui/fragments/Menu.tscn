@@ -363,7 +363,9 @@ material = SubResource( 4 )
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 1.85065
+margin_top = -5.66324
 margin_right = 1.85059
+margin_bottom = -5.66321
 color = Color( 0, 0, 0, 1 )
 __meta__ = {
 "_edit_use_anchors_": false

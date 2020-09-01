@@ -4,6 +4,7 @@ using System.Net;
 using Casanova.core.main.world;
 using Casanova.core.net.server;
 using Casanova.core.net.types;
+using Casanova.ui.fragments;
 using Godot;
 using Client = Casanova.core.net.client.Client;
 
@@ -64,6 +65,16 @@ namespace Casanova.core.net
 
                     NetworkManager.DestroyPlayer(_id);
                 }
+
+                public static void ChatMessage(Packet _packet)
+                {
+                    int _id = _packet.ReadInt();
+                    string message = _packet.ReadString();
+                    
+                    GD.Print($"Received chat message from {_id}: {message}");
+                    
+                    Chat.instance?.SendMessage(message, _id == 0 ? new Player(0, "server", null, false) : NetworkManager.playersGroup[_id]);
+                }
                 
             }
 
@@ -91,6 +102,16 @@ namespace Casanova.core.net
                         _packet.Write(_rotation);
 
                         ClientSend.SendUDPData(_packet);
+                    }
+                }
+
+                public static void ChatMessage(string _message)
+                {
+                    using (Packet _packet = new Packet((int) ClientPackets.chatMessage))
+                    {
+                        _packet.Write(_message);
+
+                        ClientSend.SendTCPData(_packet);
                     }
                 }
             }
@@ -133,6 +154,13 @@ namespace Casanova.core.net
                     }
                     if (unit != null)
                         Send.PlayerMovement(_plr);
+                }
+
+                public static void ChatMessage(int _fromClient, Packet _packet)
+                {
+                    String message = _packet.ReadString();
+                    
+                    Send.ChatMessage(_fromClient, message);
                 }
             }
 
@@ -188,6 +216,17 @@ namespace Casanova.core.net
                     
                     // destroy player server-side
                     NetworkManager.DestroyPlayer(_id);
+                }
+                
+                public static void ChatMessage(int _id, string message)
+                {
+                    using (Packet _packet = new Packet((int)ServerPackets.chatMessage))
+                    {
+                        _packet.Write(_id);
+                        _packet.Write(message);
+                        
+                        ServerSend.SendTCPDataToAll(_packet);
+                    }
                 }
             }
         }
