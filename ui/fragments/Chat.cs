@@ -72,6 +72,7 @@ namespace Casanova.ui.fragments
             string sendername = sender == null ? "Server" : sender.username;
             string message = $"[color=#fa9e48]<[/color]{sendername}[color=#fa9e48]>[/color]: {text}";
             AddMessage(message);
+            messageScrollerBox.GetVScrollbar().Value = messageScrollerBox.GetVScrollbar().MaxValue;
             lastMessage = text;
         }
 

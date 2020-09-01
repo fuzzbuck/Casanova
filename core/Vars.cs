@@ -5,7 +5,7 @@ namespace Casanova.core
 	public class Vars : Node
 	{
 		public static BundleHandler bundleHandler = new BundleHandler("en");
-		public static string ver = "build 1 ver. indev";
+		public static string ver = "build 2 ver. indev";
 		
 		public static string path_core = "res://core";
 		public static string path_main = path_core + "/main";
@@ -39,7 +39,8 @@ namespace Casanova.core
 
 		public class Networking
 		{
-			public static float unit_desync_treshold = 8f;
+			public static float unit_desync_treshold = 12f;
+			public static float unit_desync_interpolation = 0.05f;
 
 			public static bool isHeadless = false;
 			public static int defaultPort = 6969;

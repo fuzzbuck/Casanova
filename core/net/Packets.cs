@@ -40,6 +40,10 @@ namespace Casanova.core.net
                 public static void PlayerMovement(Packet _packet)
                 {
                     int id = _packet.ReadInt();
+
+                    if (!NetworkManager.playersGroup.ContainsKey(id))
+                        return;
+                    
                     Vector2 pos = _packet.ReadVector2();
                     Vector2 axis = _packet.ReadVector2();
                     float speed = _packet.ReadFloat();
@@ -52,16 +56,19 @@ namespace Casanova.core.net
                     {
                         unit.Axis = axis;
                         //unit.Speed = speed;
-                            
+
                         if (unit.kinematicBody.Position.DistanceTo(pos) > Vars.Networking.unit_desync_treshold)
-                            unit.kinematicBody.Position = pos;
-                            
+                            unit.kinematicBody.Position = unit.kinematicBody.Position.LinearInterpolate(pos, Vars.Networking.unit_desync_interpolation);
+
                     }
                 }
 
                 public static void PlayerDisconnect(Packet _packet)
                 {
                     int _id = _packet.ReadInt();
+                    
+                    if (!NetworkManager.playersGroup.ContainsKey(_id))
+                        return;
 
                     NetworkManager.DestroyPlayer(_id);
                 }
@@ -69,6 +76,10 @@ namespace Casanova.core.net
                 public static void ChatMessage(Packet _packet)
                 {
                     int _id = _packet.ReadInt();
+                    
+                    if (_id != 0 && !NetworkManager.playersGroup.ContainsKey(_id))
+                        return;
+                    
                     string message = _packet.ReadString();
                     
                     GD.Print($"Received chat message from {_id}: {message}");
