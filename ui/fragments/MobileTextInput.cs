@@ -29,6 +29,7 @@ namespace Casanova.ui.fragments
             if (label != null)
             {
                 label.Text = texteditor.Text;
+                label.EmitSignal("text_changed", texteditor.Text);
             }
         }
 

@@ -47,12 +47,11 @@ namespace Casanova.ui.fragments
         private void _onConnectButtonPress()
         {
             var tree = GetTree();
-            tree.ChangeSceneTo(ResourceLoader.Load<PackedScene>(Vars.path_world + "/World.tscn"));
-						
+            tree.ChangeScene(Vars.path_world + "/World.tscn");
+            
             ThreadManager.ExecuteOnMainThread(() =>
             {
                 World world = (World) tree.CurrentScene;
-                
                 GD.Print("Connecting to " + Vars.PersistentData.ip + " with username " + Vars.PersistentData.username);
 
                 try
@@ -61,7 +60,7 @@ namespace Casanova.ui.fragments
                 }
                 catch (Exception e)
                 {
-                    GD.Print(e);
+                    GD.Print("error starting client ! " + e);
                     
                     // todo: display connection failed popup
                 }

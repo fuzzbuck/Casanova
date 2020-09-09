@@ -1,3 +1,4 @@
+using Casanova.core;
 using Godot;
 using Godot.Collections;
 using Array = Godot.Collections.Array;
@@ -43,7 +44,6 @@ namespace Casanova.ui.fragments
 			if (Interface.CurrentSelected == index) // cards selected, close them
 			{
 				Interface.CurrentSelected = -1;
-				GD.Print("Closing cards");
 				Interface.Cards.Close();
 				return;
 			}

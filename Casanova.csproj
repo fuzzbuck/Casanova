@@ -78,6 +78,7 @@
     <Compile Include="ui\fragments\CardsContainer.cs" />
     <Compile Include="ui\fragments\Chat.cs" />
     <Compile Include="ui\fragments\DebugLabel.cs" />
+    <Compile Include="ui\fragments\LoadingOverlay.cs" />
     <Compile Include="ui\fragments\MenuButtonsContainer.cs" />
     <Compile Include="ui\fragments\MobileTextInput.cs" />
     <Compile Include="ui\fragments\MobileUnderhead.cs" />

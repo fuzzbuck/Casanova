@@ -14,6 +14,14 @@ namespace Casanova.core
 		public static string path_ui = "res://ui";
 		public static string path_elems = path_ui + "/elements";
 		public static string path_frags = path_ui + "/fragments";
+		
+		// a place for hacky functions
+		public static void ChangeSceneToInstance(Node nd)
+		{
+			nd.GetNode("/root").AddChild(nd);
+			nd.GetTree().CurrentScene = nd;
+			nd.GetNode("/root").RemoveChild(nd);
+		}
 
 		public class PersistentData
 		{
@@ -53,7 +61,6 @@ namespace Casanova.core
 		
 		public static void load()
 		{
-			GD.Print("Applying translation");
 			bundleHandler.updateBundle("en");
 
 			if (OS.HasTouchscreenUiHint())

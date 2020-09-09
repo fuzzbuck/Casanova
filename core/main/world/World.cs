@@ -9,16 +9,12 @@ namespace Casanova.core.main.world
     public class World : Node2D
     {
         public static World instance;
+        public static SceneTree tree;
+
         public override void _Ready()
         {
-            if (instance == null)
-            {
-                instance = this;
-            }
-            else
-            {
-                throw new Exception("Can't instance multiple worlds!");
-            }
+            instance = this;
+            tree = GetTree();
         }
 
         public void StartServer()

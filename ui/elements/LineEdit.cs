@@ -18,7 +18,7 @@ namespace Casanova.ui.elements
             if (custom_behaviour)
                 return;
             
-            var mte = Interface.Utils.spawnMte(Text);
+            var mte = Interface.Utils.SpawnMte(Text);
             mte.label = this;
         }
     }

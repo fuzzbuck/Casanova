@@ -59,6 +59,7 @@
           <e p="CardsContainer.cs" t="Include" />
           <e p="Chat.cs" t="Include" />
           <e p="DebugLabel.cs" t="Include" />
+          <e p="LoadingOverlay.cs" t="Include" />
           <e p="MenuButtonsContainer.cs" t="Include" />
           <e p="MobileTextInput.cs" t="Include" />
           <e p="MobileUnderhead.cs" t="Include" />

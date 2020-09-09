@@ -531,6 +531,7 @@ custom_constants/separation = 60
 alignment = 1
 
 [node name="Test" type="Panel" parent="Cards/Container"]
+visible = false
 modulate = Color( 1, 1, 1, 0 )
 margin_left = 210.0
 margin_right = 510.0
@@ -618,9 +619,10 @@ __meta__ = {
 }
 
 [node name="ServerJoin" type="Panel" parent="Cards/Container"]
+visible = false
 modulate = Color( 1, 1, 1, 0 )
-margin_left = 570.0
-margin_right = 870.0
+margin_left = 390.0
+margin_right = 690.0
 margin_bottom = 415.0
 rect_min_size = Vector2( 300, 415 )
 custom_styles/panel = SubResource( 16 )

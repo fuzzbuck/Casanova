@@ -76,7 +76,6 @@ namespace Casanova.core.main.world
 
             ThreadManager.ExecuteOnMainThread(() =>
             {
-
                 try
                 {
                     if (_id == Client.instance.myId)

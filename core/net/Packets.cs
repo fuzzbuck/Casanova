@@ -55,7 +55,7 @@ namespace Casanova.core.net
 
                     var player = NetworkManager.playersGroup[id];
                     var unit = player?.unit;
-                    if (unit != null)
+                    if (unit != null && !player.isLocal)
                     {
                         unit.Axis = axis;
                         //unit.Speed = speed;

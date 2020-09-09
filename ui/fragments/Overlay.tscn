@@ -4,7 +4,7 @@
 [ext_resource path="res://ui/elements/BackButton.tscn" type="PackedScene" id=2]
 [ext_resource path="res://ui/fragments/Overlay.cs" type="Script" id=3]
 
-[sub_resource type="Shader" id=14]
+[sub_resource type="Shader" id=1]
 code = "shader_type canvas_item;
 
 uniform float blur_amount = 2.0;
@@ -14,13 +14,13 @@ void fragment()
     COLOR = textureLod(SCREEN_TEXTURE, SCREEN_UV, blur_amount);
     }"
 
-[sub_resource type="ShaderMaterial" id=15]
-shader = SubResource( 14 )
+[sub_resource type="ShaderMaterial" id=2]
+shader = SubResource( 1 )
 shader_param/blur_amount = 2.0
 
-[sub_resource type="StyleBoxEmpty" id=12]
+[sub_resource type="StyleBoxEmpty" id=3]
 
-[sub_resource type="Animation" id=16]
+[sub_resource type="Animation" id=4]
 resource_name = "Enter"
 length = 0.3
 tracks/0/type = "value"
@@ -36,7 +36,7 @@ tracks/0/keys = {
 "values": [ Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 1 ) ]
 }
 
-[sub_resource type="Animation" id=17]
+[sub_resource type="Animation" id=5]
 resource_name = "Leave"
 length = 0.3
 tracks/0/type = "value"
@@ -61,7 +61,7 @@ __meta__ = {
 }
 
 [node name="Blur" type="ColorRect" parent="."]
-material = SubResource( 15 )
+material = SubResource( 2 )
 anchor_right = 1.0
 anchor_bottom = 1.0
 __meta__ = {
@@ -87,8 +87,8 @@ margin_bottom = 80.0
 anchor_bottom = 1.0
 margin_right = 164.0
 margin_bottom = 0.0
-custom_styles/normal = SubResource( 12 )
+custom_styles/normal = SubResource( 3 )
 
 [node name="Animation" type="AnimationPlayer" parent="."]
-anims/Enter = SubResource( 16 )
-anims/Leave = SubResource( 17 )
+anims/Enter = SubResource( 4 )
+anims/Leave = SubResource( 5 )

@@ -18,6 +18,11 @@ namespace Casanova.ui.fragments
 
         public void _onButtonPress()
         {
+            Clear();
+        }
+
+        public void Clear()
+        {
             if (anim.AssignedAnimation != "Leave")
             {
                 anim.Stop();

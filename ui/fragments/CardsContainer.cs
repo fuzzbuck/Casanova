@@ -22,8 +22,8 @@ namespace Casanova.ui.fragments
 				Interface.LabelGroup.Add(infoBox.GetChildren()[1] as Label);
 				
 				// add the animation player for this card panel
-				Interface.cardAnimationGroup.Add(cardPanel.GetNode<AnimationPlayer>("AnimationPlayer"));
-				
+				Interface.CardsGroup.Add(cardPanel);
+
 				var detector = cardPanel.GetNode<Panel>("Detector");
 				detectors.Add(detector);
 				
@@ -38,14 +38,13 @@ namespace Casanova.ui.fragments
 
 		public void _cardHover(Array args)
 		{
-			GD.Print(args);
 			Panel cardPanel = args[0] as Panel;
 			
 			// find the animation for this card panel
 			AnimationPlayer animation = null;
-			for (var i = 0; i < Interface.cardAnimationGroup.Count; i++)
+			for (var i = 0; i < Interface.CardsGroup.Count; i++)
 			{
-				AnimationPlayer anim = Interface.cardAnimationGroup[i];
+				AnimationPlayer anim = Interface.CardsGroup[i].GetNode<AnimationPlayer>("AnimationPlayer");
 				if (anim.GetParent() == cardPanel)
 				{
 					animation = anim;
@@ -57,17 +56,14 @@ namespace Casanova.ui.fragments
 
 		private void _on_Detector_mouse_entered(int index)
 		{
-			GD.Print("index: " + index);
-			// play hover animation
-			AnimationPlayer animation = Interface.cardAnimationGroup[index];
+			AnimationPlayer animation = Interface.CardsGroup[index].GetNode<AnimationPlayer>("AnimationPlayer");;
 			animation.Stop();
 			animation.Play("hover");
 		}
 		
 		private void _on_Detector_mouse_exited(int index)
 		{
-			GD.Print("index: " + index);
-			AnimationPlayer animation = Interface.cardAnimationGroup[index];
+			AnimationPlayer animation = Interface.CardsGroup[index].GetNode<AnimationPlayer>("AnimationPlayer");;
 			animation.Stop();
 			animation.Play("unhover");
 		}

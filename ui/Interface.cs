@@ -12,9 +12,10 @@ namespace Casanova.ui
 	{
 		public static Array<Godot.Button> ButtonGroup = new Array<Godot.Button>();
 		public static Array<Label> LabelGroup = new Array<Label>();
-		public static Array<AnimationPlayer> cardAnimationGroup = new Array<AnimationPlayer>();
+		public static Array<Panel> CardsGroup = new Array<Panel>();
 		public static int CurrentSelected = -1; // current button/category selected   -1 = none,  0 = play, 1 = settings, 2 = about, 3 = exit (dont select)
 		public static SceneTree tree;
+		public static LoadingOverlay CurrentLoading;
 
 		public override void _Ready()
 		{
@@ -23,14 +24,18 @@ namespace Casanova.ui
 
 		public class Utils
 		{
-			public static Node createFragment(string fragment)
+			public static Node CreateFragment(string fragment)
 			{ 
-				return ResourceLoader.Load<PackedScene>(Vars.path_frags + $"/{fragment}.tscn").Instance();
+				var frag = ResourceLoader.Load<PackedScene>(Vars.path_frags + $"/{fragment}.tscn").Instance();
+				if (frag is LoadingOverlay lo)
+					CurrentLoading = lo;
+
+				return frag;
 			}
 
-			public static MobileTextInput spawnMte(string text)
+			public static MobileTextInput SpawnMte(string text)
 			{
-				MobileTextInput mte = (MobileTextInput) createFragment("MobileTextInput");
+				MobileTextInput mte = (MobileTextInput) CreateFragment("MobileTextInput");
 				tree.CurrentScene.AddChild(mte);
 				
 				ThreadManager.ExecuteOnMainThread(() =>
@@ -41,6 +46,14 @@ namespace Casanova.ui
 				});
 
 				return mte;
+			}
+
+			public static Node SpawnOverlayFragment(string fragment)
+			{
+				var frag = CreateFragment(fragment);
+				tree.CurrentScene.AddChild(frag);
+
+				return frag;
 			}
 		}
 
@@ -53,7 +66,7 @@ namespace Casanova.ui
 				{
 					0, () =>
 					{
-						tree.ChangeSceneTo(ResourceLoader.Load<PackedScene>(Vars.path_world + "/World.tscn"));
+						tree.ChangeScene(Vars.path_world + "/World.tscn");
 						
 						ThreadManager.ExecuteOnMainThread(() =>
 						{
@@ -67,26 +80,27 @@ namespace Casanova.ui
 				{
 					1, () =>
 					{
-						tree.CurrentScene.AddChild(Utils.createFragment("ServerJoin"));
+						Utils.SpawnOverlayFragment("ServerJoin");
 					}
 				}
 			};
 			public static void Open()
 			{
 				IsShown = true;
-				for (var i = 0; i < cardAnimationGroup.Count; i++)
+				for (var i = 0; i < CardsGroup.Count; i++)
 				{
-					cardAnimationGroup[i].Play("enter");
+					CardsGroup[i].Visible = true;
+					CardsGroup[i].GetNode<AnimationPlayer>("AnimationPlayer").Play("enter");
 				}
 			}
 
 			public static void Close()
 			{
 				IsShown = false;
-				for (var i = 0; i < cardAnimationGroup.Count; i++)
+				for (var i = 0; i < CardsGroup.Count; i++)
 				{
-					if(cardAnimationGroup[i].AssignedAnimation != "exit") 
-						cardAnimationGroup[i].Play("exit");
+					CardsGroup[i].GetNode<AnimationPlayer>("AnimationPlayer").Play("exit");
+					
 				}
 			}
 		}
