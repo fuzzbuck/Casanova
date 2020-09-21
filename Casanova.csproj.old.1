@@ -1,0 +1,104 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{532E9724-2748-4986-8E09-16FDE26288F4}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <OutputPath>.mono\temp\bin\$(Configuration)</OutputPath>
+    <RootNamespace>Casanova</RootNamespace>
+    <AssemblyName>Casanova</AssemblyName>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
+    <GodotProjectGeneratorVersion>1.0.7374.16792</GodotProjectGeneratorVersion>
+    <BaseIntermediateOutputPath>.mono\temp\obj</BaseIntermediateOutputPath>
+    <IntermediateOutputPath>$(BaseIntermediateOutputPath)\$(Configuration)</IntermediateOutputPath>
+    <ApiConfiguration Condition=" '$(Configuration)' != 'ExportRelease' ">Debug</ApiConfiguration>
+    <ApiConfiguration Condition=" '$(Configuration)' == 'ExportRelease' ">Release</ApiConfiguration>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'ExportDebug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>portable</DebugType>
+    <Optimize>false</Optimize>
+    <DefineConstants>$(GodotDefineConstants);GODOT;DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'ExportRelease|AnyCPU' ">
+    <DebugType>portable</DebugType>
+    <Optimize>true</Optimize>
+    <DefineConstants>$(GodotDefineConstants);GODOT;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>portable</DebugType>
+    <Optimize>false</Optimize>
+    <DefineConstants>$(GodotDefineConstants);GODOT;DEBUG;TOOLS;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="GodotSharp">
+      <Private>False</Private>
+      <HintPath>$(ProjectDir)/.mono/assemblies/$(ApiConfiguration)/GodotSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="GodotSharpEditor" Condition=" '$(Configuration)' == 'Debug' ">
+      <Private>False</Private>
+      <HintPath>$(ProjectDir)/.mono/assemblies/$(ApiConfiguration)/GodotSharpEditor.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="core\BundleHandler.cs" />
+    <Compile Include="core\main\PlayerController.cs" />
+    <Compile Include="core\main\units\Camera.cs" />
+    <Compile Include="core\main\units\Tag.cs" />
+    <Compile Include="core\main\units\Unit.cs" />
+    <Compile Include="core\main\world\NetworkManager.cs" />
+    <Compile Include="core\main\world\World.cs" />
+    <Compile Include="core\net\ClientSend.cs" />
+    <Compile Include="core\net\client\Client.cs" />
+    <Compile Include="core\net\client\ClientHandler.cs" />
+    <Compile Include="core\net\headless_server\ServerLauncher.cs" />
+    <Compile Include="core\net\Packet.cs" />
+    <Compile Include="core\net\Packets.cs" />
+    <Compile Include="core\net\ServerSend.cs" />
+    <Compile Include="core\net\server\Client.cs" />
+    <Compile Include="core\net\server\ServerHandler.cs" />
+    <Compile Include="core\net\server\Server.cs" />
+    <Compile Include="core\net\ThreadManager.cs" />
+    <Compile Include="core\net\types\Player.cs" />
+    <Compile Include="core\Vars.cs" />
+    <Compile Include="ui\elements\Button.cs" />
+    <Compile Include="ui\elements\LineEdit.cs" />
+    <Compile Include="ui\fragments\CardsContainer.cs" />
+    <Compile Include="ui\fragments\Chat.cs" />
+    <Compile Include="ui\fragments\DebugLabel.cs" />
+    <Compile Include="ui\fragments\LoadingOverlay.cs" />
+    <Compile Include="ui\fragments\MenuButtonsContainer.cs" />
+    <Compile Include="ui\fragments\MobileTextInput.cs" />
+    <Compile Include="ui\fragments\MobileUnderhead.cs" />
+    <Compile Include="ui\fragments\Overlay.cs" />
+    <Compile Include="ui\fragments\ServerJoin.cs" />
+    <Compile Include="ui\fragments\VersionLabel.cs" />
+    <Compile Include="ui\Interface.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="core\net\headless_server" />
+    <Folder Include="ui" />
+    <Folder Include="ui\elements" />
+    <Folder Include="ui\fragments" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies">
+      <Version>1.0.0</Version>
+      <PrivateAssets>All</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+</Project>

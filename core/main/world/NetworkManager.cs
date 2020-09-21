@@ -6,6 +6,7 @@ using Casanova.core.main.units;
 using Casanova.core.net;
 using Casanova.core.net.server;
 using Casanova.core.net.types;
+using Casanova.ui;
 using Godot;
 using Camera = Casanova.core.main.units.Camera;
 using Client = Casanova.core.net.client.Client;
@@ -21,6 +22,11 @@ namespace Casanova.core.main.world
         {
             var scene = (PackedScene) ResourceLoader.Load(Vars.path_main + "/units/Unit.tscn");
             return (Unit) scene.Instance();
+        }
+
+        public static void ConfirmConnect()
+        {
+            Interface.tree.ChangeScene(Vars.path_world + "/World.tscn");
         }
         
         public enum loc
@@ -78,7 +84,7 @@ namespace Casanova.core.main.world
             {
                 try
                 {
-                    if (_id == Client.instance.myId)
+                    if (_id == Client.myId)
                     {
                         // make camera
                         Camera cam = (Camera) ResourceLoader.Load<PackedScene>(Vars.path_main + "/units/Camera.tscn").Instance();

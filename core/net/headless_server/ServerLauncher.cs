@@ -1,3 +1,4 @@
+using Casanova.core.net.client;
 using Casanova.core.net.server;
 using Godot;
 using Godot.Collections;
@@ -17,15 +18,17 @@ namespace Casanova.core.net.headless_server
             if (!isHeadless)
                 return;
 
+            Server.Start(128, defaultPort);
+
             var tree = GetTree();
             tree.ChangeSceneTo(ResourceLoader.Load<PackedScene>(Vars.path_world + "/World.tscn"));
-						
+
+            /*
             ThreadManager.ExecuteOnMainThread(() =>
             {
                 World world = (World) tree.CurrentScene;
-							
-                world.StartServer();
             });
+            */
         }
     }
 }

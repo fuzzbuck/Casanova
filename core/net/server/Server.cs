@@ -29,8 +29,7 @@ namespace Casanova.core.net.server
         {
             MaxClients = _maxClients;
             Port = _port;
-
-            GD.Print("Starting server...");
+            
             InitializeServerData();
             
             tcpListener = new TcpListener(IPAddress.Any, Port);

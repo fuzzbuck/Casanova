@@ -2,6 +2,7 @@ using System;
 using System.Runtime.CompilerServices;
 using Casanova.core;
 using Casanova.core.net;
+using Casanova.core.net.client;
 using Godot;
 using LineEdit = Casanova.ui.elements.LineEdit;
 using World = Casanova.core.main.world.World;
@@ -44,27 +45,38 @@ namespace Casanova.ui.fragments
             Vars.PersistentData.ip = text;
         }
 
+        public bool AttemptConnection(string ip)
+        {
+            try
+            {
+                string[] addy = Vars.Networking.ParseIpString(ip);
+                Client.ConnectToServer(addy[0], int.Parse(addy[1]));
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                // todo: display error
+                Client.DisconnectAndDispose();
+                GD.Print(e);
+                return false;
+            }
+        }
+
         private void _onConnectButtonPress()
         {
-            var tree = GetTree();
-            tree.ChangeScene(Vars.path_world + "/World.tscn");
-            
-            ThreadManager.ExecuteOnMainThread(() =>
+            var success = AttemptConnection(Vars.PersistentData.ip);
+            if (success)
             {
-                World world = (World) tree.CurrentScene;
-                GD.Print("Connecting to " + Vars.PersistentData.ip + " with username " + Vars.PersistentData.username);
-
-                try
+                GD.Print("Connected to " + Vars.PersistentData.ip + " with username " + Vars.PersistentData.username);
+                
+                /*
+                ThreadManager.ExecuteOnMainThread(() =>
                 {
-                    world.StartClient();
-                }
-                catch (Exception e)
-                {
-                    GD.Print("error starting client ! " + e);
-                    
-                    // todo: display connection failed popup
-                }
-            });
+                    World world = (World) tree.CurrentScene;
+                });
+                */
+            }
         }
     }
 }

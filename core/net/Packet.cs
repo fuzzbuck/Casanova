@@ -4,6 +4,7 @@ using System.Numerics;
 using System.Text;
 using Casanova.core.net.client;
 using Godot;
+using Vector2 = Godot.Vector2;
 
 namespace Casanova.core.net
 {

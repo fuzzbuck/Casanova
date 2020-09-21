@@ -1,9 +1,11 @@
 using System;
 using Casanova.core;
 using Casanova.core.net;
+using Casanova.core.net.server;
 using Casanova.ui.fragments;
 using Godot;
 using Godot.Collections;
+using Client = Casanova.core.net.client.Client;
 using World = Casanova.core.main.world.World;
 
 namespace Casanova.ui
@@ -51,7 +53,15 @@ namespace Casanova.ui
 			public static Node SpawnOverlayFragment(string fragment)
 			{
 				var frag = CreateFragment(fragment);
-				tree.CurrentScene.AddChild(frag);
+
+				if (Vars.CurrentState == Vars.State.Menu)
+				{
+					tree.CurrentScene.AddChild(frag);
+				}
+				else
+				{
+					tree.CurrentScene.GetNode<CanvasLayer>("TopLayer").AddChild(frag);
+				}
 
 				return frag;
 			}
@@ -66,15 +76,18 @@ namespace Casanova.ui
 				{
 					0, () =>
 					{
+						Vars.CurrentState = Vars.State.World;
 						tree.ChangeScene(Vars.path_world + "/World.tscn");
 						
+						Server.Start(8, Vars.Networking.defaultPort);
+						Client.ConnectToServer("127.0.0.1", Vars.Networking.Port);
+
+						/*
 						ThreadManager.ExecuteOnMainThread(() =>
 						{
 							World world = (World) tree.CurrentScene;
-							
-							world.StartServer();
-							world.StartClient();
 						});
+						*/
 					}
 				},
 				{

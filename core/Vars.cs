@@ -1,3 +1,5 @@
+using System;
+using System.Net;
 using Godot;
 
 namespace Casanova.core
@@ -14,14 +16,10 @@ namespace Casanova.core
 		public static string path_ui = "res://ui";
 		public static string path_elems = path_ui + "/elements";
 		public static string path_frags = path_ui + "/fragments";
-		
-		// a place for hacky functions
-		public static void ChangeSceneToInstance(Node nd)
-		{
-			nd.GetNode("/root").AddChild(nd);
-			nd.GetTree().CurrentScene = nd;
-			nd.GetNode("/root").RemoveChild(nd);
-		}
+
+		public static string path_net = path_main + "/net";
+		public static string path_client = path_net + "/client";
+		public static string path_server = path_net + "/server";
 
 		public class PersistentData
 		{
@@ -45,13 +43,51 @@ namespace Casanova.core
 			public static float smoothness = 0.014f;
 		}
 
+		public enum State
+		{
+			Menu,
+			World,
+			Tutorial,
+			MultiplayerWorld
+		}
+
+		public static State CurrentState = State.Menu;
 		public class Networking
 		{
 			public static float unit_desync_treshold = 12f;
 			public static float unit_desync_interpolation = 0.05f;
 
 			public static bool isHeadless = false;
-			public static int defaultPort = 6969;
+			public static int defaultPort = 375;
+			public static int Port = defaultPort;
+
+			public static string[] ParseIpString(string ip)
+			{
+				try
+				{
+					string[] addy = ip.Split(":");
+					int port = defaultPort;
+
+					if (addy.Length > 1 && int.TryParse(addy[1], out int newport))
+						port = newport;
+
+					if (!IPAddress.TryParse(addy[0], out IPAddress address))
+					{
+						var ips = Dns.GetHostAddresses(addy[0]);
+						if (ips.Length > 0)
+						{
+							addy[0] = ips[0].ToString().Split(":")[0];
+						}
+					}
+
+					return new[] {addy[0], port.ToString()};
+				}
+				catch (Exception)
+				{
+					GD.Print($"Failed parsing IP: {ip}");
+					return null;
+				}
+			}
 		}
 		public class Pals
 		{

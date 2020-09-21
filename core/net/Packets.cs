@@ -22,10 +22,13 @@ namespace Casanova.core.net
                     int _myId = _packet.ReadInt();
 
                     GD.Print($"Message from server: {_msg}");
-                    Client.instance.myId = _myId;
+                    Client.myId = _myId;
                     Send.WelcomeConfirmation(Vars.PersistentData.username);
+                    
+                    // create world, etc.
+                    NetworkManager.ConfirmConnect();
 
-                    Client.instance.udp.Connect(((IPEndPoint)Client.instance.tcp.socket.Client.LocalEndPoint).Port);
+                    Client.udp.Connect(((IPEndPoint)Client.tcp.socket.Client.LocalEndPoint).Port);
                 }
 
                 public static void SpawnPlayer(Packet _packet)
@@ -98,10 +101,10 @@ namespace Casanova.core.net
                 {
                     using (Packet _packet = new Packet((int) ClientPackets.welcomeReceived))
                     {
-                        _packet.Write(Client.instance.myId);
+                        _packet.Write(Client.myId);
                         _packet.Write(_username);
 
-                        ClientSend.SendTCPData(_packet);
+                        Client.SendTCPData(_packet);
                     }
                 }
 
@@ -115,7 +118,7 @@ namespace Casanova.core.net
                         _packet.Write(_speed);
                         _packet.Write(_rotation);
 
-                        ClientSend.SendUDPData(_packet);
+                        Client.SendUDPData(_packet);
                     }
                 }
 
@@ -125,7 +128,7 @@ namespace Casanova.core.net
                     {
                         _packet.Write(_message);
 
-                        ClientSend.SendTCPData(_packet);
+                        Client.SendTCPData(_packet);
                     }
                 }
             }

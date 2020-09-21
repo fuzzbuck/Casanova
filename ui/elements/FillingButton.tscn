@@ -1,0 +1,29 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://ui/elements/Button.tscn" type="PackedScene" id=1]
+[ext_resource path="res://ui/elements/FillingButton.tres" type="StyleBox" id=2]
+
+[sub_resource type="StyleBoxFlat" id=1]
+content_margin_left = 15.0
+content_margin_right = 15.0
+content_margin_top = 5.0
+content_margin_bottom = 5.0
+bg_color = Color( 0.6, 0.6, 0.6, 0 )
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color( 0.682353, 0.682353, 0.682353, 1 )
+
+[node name="FillingButton" instance=ExtResource( 1 )]
+margin_top = 0.165375
+margin_right = 394.0
+margin_bottom = 44.1654
+size_flags_horizontal = 3
+custom_styles/hover = SubResource( 1 )
+custom_styles/pressed = ExtResource( 2 )
+custom_styles/normal = ExtResource( 2 )
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+custom_colors/font_color_hover = Color( 0.682353, 0.682353, 0.682353, 1 )
+custom_colors/font_color_pressed = Color( 1, 1, 1, 1 )
+text = "Filling Button"

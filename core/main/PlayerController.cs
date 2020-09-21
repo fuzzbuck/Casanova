@@ -1,6 +1,7 @@
 ﻿using Casanova.core.main.units;
 using Casanova.core.net;
 using Casanova.core.net.types;
+using Casanova.ui;
 using Godot;
 using Camera = Casanova.core.main.units.Camera;
 
@@ -13,6 +14,7 @@ namespace Casanova.core.main
         public static Player localPlayer;
 
         public static Node focus;
+        public static Vector2 axis;
 
         public override void _Process(float delta)
         {
@@ -32,9 +34,6 @@ namespace Casanova.core.main
         {
             if (localUnit != null && focus == null)
             {
-                var axis = new Vector2();
-                axis.x = Input.GetActionStrength("right") - Input.GetActionStrength("left");
-                axis.y = Input.GetActionStrength("down") - Input.GetActionStrength("up");
                 localUnit.Axis = axis;
             }
         }
@@ -69,10 +68,18 @@ namespace Casanova.core.main
         {
             if (@event is InputEventKey eventKey)
             {
+                axis.x = Input.GetActionStrength("right") - Input.GetActionStrength("left");
+                axis.y = Input.GetActionStrength("down") - Input.GetActionStrength("up");
+                
                 if (eventKey.Pressed)
                 {
                     if (eventKey.Scancode == (int) KeyList.F11)
                         OS.WindowFullscreen = !OS.WindowFullscreen;
+                    if (eventKey.Scancode == (int) KeyList.Escape)
+                    {
+                        // todo: open overlay ui
+                        Interface.Utils.SpawnOverlayFragment("EscOverlay");
+                    }
                 }
             }
         }

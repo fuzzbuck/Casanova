@@ -9,31 +9,19 @@ namespace Casanova.core.net.client
 {
     public class Client
     {
-        public static Client instance;
         public static int dataBufferSize = 4096;
 
-        public string ip = "127.0.0.1";
-        public int port = 6969;
-        public int myId = 0;
-        public TCP tcp;
-        public UDP udp;
+        public static string ip = "127.0.0.1";
+        public static int port = 6969;
+        public static int myId = 0;
+        public static TCP tcp;
+        public static UDP udp;
         
-        private bool isConnected = false;
+        private static bool isConnected = false;
         private delegate void PacketHandler(Packet _packet);
         private static Dictionary<int, PacketHandler> packetHandlers;
 
-        public void Awake()
-        {
-            if (instance == null)
-            {
-                instance = this;
-            }else if (instance != this)
-            {
-                GD.Print("fatal error! client instance already exists.");
-            }
-        }
-
-        public void ConnectToServer(string _ip, int _port)
+        public static void ConnectToServer(string _ip, int _port)
         {
             GD.Print($"Attempting connection to {_ip}:{_port}");
             try
@@ -51,12 +39,26 @@ namespace Casanova.core.net.client
             }
             catch (Exception e)
             {
-                isConnected = false;
-                tcp = null;
-                udp = null;
-                
+                DisconnectAndDispose();
                 throw new Exception("An error occured while connecting to the server: " + e.Message);
             }
+        }
+
+        public static void DisconnectAndDispose()
+        {
+            try
+            {
+                tcp.Disconnect();
+                udp.Disconnect();
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
+
+            isConnected = false;
+            tcp = null;
+            udp = null;
         }
 
         public class TCP
@@ -76,12 +78,19 @@ namespace Casanova.core.net.client
                 };
 
                 receiveBuffer = new byte[dataBufferSize];
-                socket.BeginConnect(instance.ip, instance.port, ConnectCallback, socket);
+                socket.BeginConnect(ip, port, ConnectCallback, socket);
             }
 
             private void ConnectCallback(IAsyncResult _result)
             {
-                socket.EndConnect(_result);
+                try
+                {
+                    socket.EndConnect(_result);
+                }
+                catch (Exception e)
+                {
+                    DisconnectAndDispose();
+                }
 
                 if (!socket.Connected)
                 {
@@ -119,7 +128,7 @@ namespace Casanova.core.net.client
                     int _byteLength = stream.EndRead(_result);
                     if (_byteLength <= 0)
                     {
-                        instance.Disconnect();
+                        Disconnect();
                         return;
                     }
 
@@ -188,8 +197,6 @@ namespace Casanova.core.net.client
 
             public void Disconnect()
             {
-                instance.Disconnect();
-
                 stream = null;
                 receivedData = null;
                 receiveBuffer = null;
@@ -204,7 +211,7 @@ namespace Casanova.core.net.client
 
             public UDP()
             {
-                endPoint = new IPEndPoint(IPAddress.Parse(instance.ip), instance.port);
+                endPoint = new IPEndPoint(IPAddress.Parse(ip), port);
             }
 
             public void Connect(int _localPort)
@@ -224,7 +231,7 @@ namespace Casanova.core.net.client
             {
                 try
                 {
-                    _packet.InsertInt(instance.myId);
+                    _packet.InsertInt(myId);
                     if (socket != null)
                     {
                         socket.BeginSend(_packet.ToArray(), _packet.Length(), null, null);
@@ -245,7 +252,7 @@ namespace Casanova.core.net.client
 
                     if (_data.Length < 4)
                     {
-                        instance.Disconnect();
+                        Disconnect();
                         return;
                     }
 
@@ -277,14 +284,24 @@ namespace Casanova.core.net.client
             
             public void Disconnect()
             {
-                instance.Disconnect();
-
                 endPoint = null;
                 socket = null;
             }
         }
+        
+        public static void SendTCPData(Packet _packet)
+        {
+            _packet.WriteLength();
+            tcp.SendData(_packet);
+        }
 
-        private void InitializeClientData()
+        public static void SendUDPData(Packet _packet)
+        {
+            _packet.WriteLength();
+            udp.SendData(_packet);
+        }
+
+        private static void InitializeClientData()
         {
             packetHandlers = new Dictionary<int, PacketHandler>()
             {
