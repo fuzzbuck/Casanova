@@ -84,8 +84,7 @@ namespace Casanova.core
 				}
 				catch (Exception)
 				{
-					GD.Print($"Failed parsing IP: {ip}");
-					return null;
+					throw new Exception($"Failed parsing IP: {ip}");
 				}
 			}
 		}

@@ -26,6 +26,7 @@ namespace Casanova.core.main.world
 
         public static void ConfirmConnect()
         {
+            Vars.CurrentState = Vars.State.World;
             Interface.tree.ChangeScene(Vars.path_world + "/World.tscn");
         }
         

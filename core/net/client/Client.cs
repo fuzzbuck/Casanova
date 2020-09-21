@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using Casanova.core.net.server;
+using Casanova.ui;
 using Godot;
 
 namespace Casanova.core.net.client
@@ -84,26 +85,23 @@ namespace Casanova.core.net.client
             private void ConnectCallback(IAsyncResult _result)
             {
                 try
-                {
+                { 
                     socket.EndConnect(_result);
+                    if (!socket.Connected)
+                    {
+                        return;
+                    }
+
+                    receivedData = new Packet();
+                    
+                    stream = socket.GetStream();
+                    stream.BeginRead(receiveBuffer, 0, dataBufferSize, ReceiveCallback, null);
                 }
                 catch (Exception e)
                 {
+                    Interface.Utils.CreateInformalMessage(e.Message, 10);
                     DisconnectAndDispose();
                 }
-
-                if (!socket.Connected)
-                {
-                    return;
-                }
-
-                GD.Print("Connection to server established");
-
-                stream = socket.GetStream();
-
-                receivedData = new Packet();
-
-                stream.BeginRead(receiveBuffer, 0, dataBufferSize, ReceiveCallback, null);
             }
 
             public void SendData(Packet _packet)

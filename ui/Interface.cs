@@ -1,7 +1,10 @@
 using System;
+using System.Data;
+using System.Linq;
 using Casanova.core;
 using Casanova.core.net;
 using Casanova.core.net.server;
+using Casanova.ui.elements;
 using Casanova.ui.fragments;
 using Godot;
 using Godot.Collections;
@@ -15,6 +18,8 @@ namespace Casanova.ui
 		public static Array<Godot.Button> ButtonGroup = new Array<Godot.Button>();
 		public static Array<Label> LabelGroup = new Array<Label>();
 		public static Array<Panel> CardsGroup = new Array<Panel>();
+		public static InformalMessage LatestInformalMessage;
+		
 		public static int CurrentSelected = -1; // current button/category selected   -1 = none,  0 = play, 1 = settings, 2 = about, 3 = exit (dont select)
 		public static SceneTree tree;
 		public static LoadingOverlay CurrentLoading;
@@ -35,6 +40,11 @@ namespace Casanova.ui
 				return frag;
 			}
 
+			public static Node CreateElement(string element)
+			{
+				return ResourceLoader.Load<PackedScene>(Vars.path_elems + $"/{element}.tscn").Instance();
+			}
+
 			public static MobileTextInput SpawnMte(string text)
 			{
 				MobileTextInput mte = (MobileTextInput) CreateFragment("MobileTextInput");
@@ -50,20 +60,42 @@ namespace Casanova.ui
 				return mte;
 			}
 
-			public static Node SpawnOverlayFragment(string fragment)
+			public static void AddHudElement(Node elem)
 			{
-				var frag = CreateFragment(fragment);
-
 				if (Vars.CurrentState == Vars.State.Menu)
 				{
-					tree.CurrentScene.AddChild(frag);
+					tree.CurrentScene.AddChild(elem);
 				}
 				else
 				{
-					tree.CurrentScene.GetNode<CanvasLayer>("TopLayer").AddChild(frag);
+					tree.CurrentScene.GetNode<CanvasLayer>("TopLayer").AddChild(elem);
 				}
+			}
+
+			public static Node SpawnOverlayFragment(string fragment)
+			{
+				var frag = CreateFragment(fragment);
+				AddHudElement(frag);
 
 				return frag;
+			}
+
+			public static InformalMessage CreateInformalMessage(string text, float time)
+			{
+				LatestInformalMessage?.Skip();
+
+				InformalMessage msg = (InformalMessage) CreateElement("InformalMessage"); // what the hell
+				
+				ThreadManager.ExecuteOnMainThread(() =>
+				{
+					msg.SetMessage(text);
+					msg.SetTime(time);
+				});
+
+				AddHudElement(msg);
+				LatestInformalMessage = msg;
+				
+				return msg;
 			}
 		}
 
@@ -76,9 +108,6 @@ namespace Casanova.ui
 				{
 					0, () =>
 					{
-						Vars.CurrentState = Vars.State.World;
-						tree.ChangeScene(Vars.path_world + "/World.tscn");
-						
 						Server.Start(8, Vars.Networking.defaultPort);
 						Client.ConnectToServer("127.0.0.1", Vars.Networking.Port);
 

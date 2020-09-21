@@ -225,19 +225,21 @@ namespace Casanova.ui.fragments
                 var ms = msgInstances[0];
                 msgInstances.Remove(ms);
                 
-                GD.Print($"Freeing {ms.Name}");
-                GD.Print(msgInstances);
-                GD.Print(messageBox.GetChildren());
                 ms.Free();
             }
         }
+
+        private bool processing;
 
         public void MessageTimeout(RichTextLabel msgInstance)
         {
             var anim = msgInstance.GetNode<AnimationPlayer>("Animation");
 
-            anim.Stop();
-            anim.Play("Leave");
+            if (processing)
+            {
+                anim.Stop();
+                anim.Play("Leave");
+            }
         }
 
         public void ShowAllMessages()
@@ -247,6 +249,7 @@ namespace Casanova.ui.fragments
                 if (msgInstance.GetNode<Timer>("Timer").TimeLeft > 0)
                 {
                     msgInstance.GetNode<Timer>("Timer").SetProcess(false);
+                    processing = false;
                     continue;
                 }
                 
@@ -271,6 +274,7 @@ namespace Casanova.ui.fragments
                     continue;
                 }
                 timer.SetProcess(true);
+                processing = true;
             }
         }
     }

@@ -56,9 +56,9 @@ namespace Casanova.ui.fragments
             }
             catch (Exception e)
             {
-                // todo: display error
                 Client.DisconnectAndDispose();
-                GD.Print(e);
+                Interface.Utils.CreateInformalMessage(e.Message, 10);
+                
                 return false;
             }
         }
