@@ -8,7 +8,7 @@ namespace Casanova.core.net.types
         public int id;
         public string username;
         public Unit unit;
-        public bool isLocal = false;
+        public bool isLocal;
 
         public Player(int _id, string _username, Unit _unit, bool _isLocal = false)
         {

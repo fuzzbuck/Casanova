@@ -11,7 +11,7 @@ namespace Casanova.ui.fragments
 		public override void _Ready()
 		{
 			container = GetNode<HBoxContainer>("Container");
-
+			
 			for (int i = 0; i < container.GetChildCount(); i++)
 			{
 				Panel cardPanel = container.GetChildren()[i] as Panel;
@@ -32,8 +32,6 @@ namespace Casanova.ui.fragments
 				detector.Connect("gui_input", this, "_on_Detector_gui_input", new Array {i});
 				
 			}
-			
-			Vars.load();
 		}
 
 		public void _cardHover(Array args)
@@ -56,14 +54,14 @@ namespace Casanova.ui.fragments
 
 		private void _on_Detector_mouse_entered(int index)
 		{
-			AnimationPlayer animation = Interface.CardsGroup[index].GetNode<AnimationPlayer>("AnimationPlayer");;
+			AnimationPlayer animation = Interface.CardsGroup[index].GetNode<AnimationPlayer>("AnimationPlayer");
 			animation.Stop();
 			animation.Play("hover");
 		}
 		
 		private void _on_Detector_mouse_exited(int index)
 		{
-			AnimationPlayer animation = Interface.CardsGroup[index].GetNode<AnimationPlayer>("AnimationPlayer");;
+			AnimationPlayer animation = Interface.CardsGroup[index].GetNode<AnimationPlayer>("AnimationPlayer");
 			animation.Stop();
 			animation.Play("unhover");
 		}

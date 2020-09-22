@@ -171,6 +171,9 @@ namespace Casanova.core.net.server
 
             public void HandleData(Packet _packetData)
             {
+                if (!Server.IsHosting)
+                    return;
+                
                 int _packetLength = _packetData.ReadInt();
                 byte[] _packetBytes = _packetData.ReadBytes(_packetLength);
 
@@ -221,12 +224,11 @@ namespace Casanova.core.net.server
         {
             GD.Print($"{tcp.socket.Client.RemoteEndPoint} has disconnected.");
             
-            ThreadManager.ExecuteOnMainThread(() =>
+            if (Server.IsHosting)
             {
-                // replicate disconnections across all clients
                 Packets.ServerHandle.Send.PlayerDisconnect(id);
                 player = null;
-            });
+            }
 
             tcp.Disconnect();
             udp.Disconnect();

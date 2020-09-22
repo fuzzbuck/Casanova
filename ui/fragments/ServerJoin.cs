@@ -56,7 +56,7 @@ namespace Casanova.ui.fragments
             }
             catch (Exception e)
             {
-                Client.DisconnectAndDispose();
+                Client.Disconnect();
                 Interface.Utils.CreateInformalMessage(e.Message, 10);
                 
                 return false;

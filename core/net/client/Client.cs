@@ -18,7 +18,7 @@ namespace Casanova.core.net.client
         public static TCP tcp;
         public static UDP udp;
         
-        private static bool isConnected = false;
+        public static bool isConnected = false;
         private delegate void PacketHandler(Packet _packet);
         private static Dictionary<int, PacketHandler> packetHandlers;
 
@@ -40,26 +40,9 @@ namespace Casanova.core.net.client
             }
             catch (Exception e)
             {
-                DisconnectAndDispose();
+                Disconnect();
                 throw new Exception("An error occured while connecting to the server: " + e.Message);
             }
-        }
-
-        public static void DisconnectAndDispose()
-        {
-            try
-            {
-                tcp.Disconnect();
-                udp.Disconnect();
-            }
-            catch (Exception)
-            {
-                // ignored
-            }
-
-            isConnected = false;
-            tcp = null;
-            udp = null;
         }
 
         public class TCP
@@ -100,7 +83,7 @@ namespace Casanova.core.net.client
                 catch (Exception e)
                 {
                     Interface.Utils.CreateInformalMessage(e.Message, 10);
-                    DisconnectAndDispose();
+                    Disconnect();
                 }
             }
 
@@ -161,6 +144,8 @@ namespace Casanova.core.net.client
                 while (_packetLength > 0 && _packetLength <= receivedData.UnreadLength())
                 {
                     byte[] _packetBytes = receivedData.ReadBytes(_packetLength);
+                    if (!isConnected)
+                        continue;
 
                     ThreadManager.ExecuteOnMainThread(() =>
                     {
@@ -272,6 +257,9 @@ namespace Casanova.core.net.client
 
                 ThreadManager.ExecuteOnMainThread(() =>
                 {
+                    if (!isConnected)
+                        return;
+                    
                     using (Packet _packet = new Packet(_data))
                     {
                         int _packetId = _packet.ReadInt();
@@ -289,12 +277,18 @@ namespace Casanova.core.net.client
         
         public static void SendTCPData(Packet _packet)
         {
+            if (!isConnected)
+                return;
+            
             _packet.WriteLength();
             tcp.SendData(_packet);
         }
 
         public static void SendUDPData(Packet _packet)
         {
+            if (!isConnected)
+                return;
+            
             _packet.WriteLength();
             udp.SendData(_packet);
         }
@@ -311,15 +305,13 @@ namespace Casanova.core.net.client
             };
         }
 
-        private void Disconnect()
+        public static void Disconnect()
         {
             if (isConnected)
             {
                 isConnected = false;
                 tcp.socket.Close();
                 udp.socket.Close();
-                
-                GD.Print("Disconnected from server.");
             }
         }
     }

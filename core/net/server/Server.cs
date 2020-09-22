@@ -19,11 +19,7 @@ namespace Casanova.core.net.server
         private static UdpClient udpListener;
 
         
-        // is server currently running and doing stuff
-        public static bool IsRunning = false;
-        
-        // is currently hosting a map/world and playing on it
-        public static bool IsHosting = false;
+        public static bool IsHosting;
         public static bool IsDedicated = false;
         public static void Start(int _maxClients, int _port)
         {
@@ -34,13 +30,12 @@ namespace Casanova.core.net.server
             
             tcpListener = new TcpListener(IPAddress.Any, Port);
             tcpListener.Start();
-            tcpListener.BeginAcceptTcpClient(TCPConnectCallback, null);
+            tcpListener.BeginAcceptTcpClient(TcpConnectCallback, null);
             
             udpListener = new UdpClient(Port);
             udpListener.BeginReceive(UDPReceiveCallback, null);
             
             GD.Print($"Server started on {tcpListener.LocalEndpoint}:");
-            IsRunning = true;
             IsHosting = true;
         }
 
@@ -51,27 +46,37 @@ namespace Casanova.core.net.server
             tcpListener.Stop();
             udpListener.Close();
             
-            IsRunning = false;
+            Clients.Clear();
             IsHosting = false;
         }
 
-        private static void TCPConnectCallback(IAsyncResult _result)
+        private static void TcpConnectCallback(IAsyncResult _result)
         {
-            TcpClient _client = tcpListener.EndAcceptTcpClient(_result);
-            tcpListener.BeginAcceptTcpClient(TCPConnectCallback, null);
-            GD.Print($"{_client.Client.RemoteEndPoint} is attempting to connect.");
-
-            for (int i = 1; i < MaxClients; i++)
+            try
             {
-                if (Clients[i].tcp.socket == null) // no client is assigned to this id
+                TcpClient _client = tcpListener.EndAcceptTcpClient(_result);
+                tcpListener.BeginAcceptTcpClient(TcpConnectCallback, null);
+
+                GD.Print($"{_client.Client.RemoteEndPoint} is attempting to connect.");
+
+                for (int i = 1; i < MaxClients; i++)
                 {
-                    Clients[i].tcp.Connect(_client);
-                    GD.Print($"{_client.Client.RemoteEndPoint} connected as id {i}.");
-                    return;
+                    if (Clients[i].tcp.socket == null) // no client is assigned to this id
+                    {
+                        Clients[i].tcp.Connect(_client);
+                        GD.Print($"{_client.Client.RemoteEndPoint} connected as id {i}.");
+                        return;
+                    }
                 }
+
+                // no free ids, server reached MaxClients
+                GD.Print($"{_client.Client.RemoteEndPoint} failed to connect! Max Clients reached.");
+
             }
-            // no free ids, server reached MaxClients
-            GD.Print($"{_client.Client.RemoteEndPoint} failed to connect! Max Clients reached.");
+            catch (Exception e)
+            {
+                GD.Print($"Failed to accept connection: {e}");
+            }
         }
         
         private static void UDPReceiveCallback(IAsyncResult _result)

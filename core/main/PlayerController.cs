@@ -1,5 +1,6 @@
 ﻿using Casanova.core.main.units;
 using Casanova.core.net;
+using Casanova.core.net.server;
 using Casanova.core.net.types;
 using Casanova.ui;
 using Godot;
@@ -18,8 +19,6 @@ namespace Casanova.core.main
 
         public override void _Process(float delta)
         {
-            ThreadManager.UpdateMain();
-
             if (!Vars.PersistentData.isMobile)
             {
                 ProcessMovement();
@@ -27,6 +26,14 @@ namespace Casanova.core.main
             else
             {
                 ProcessMobileMovement();
+            }
+        }
+
+        public override void _PhysicsProcess(float delta)
+        {
+            if (localUnit != null && !Server.IsHosting)
+            {
+                Packets.ClientHandle.Send.PlayerMovement(localUnit.InWorldPosition, localUnit.Axis, localUnit.Speed, localUnit.kinematicBody.Rotation);
             }
         }
 
@@ -56,14 +63,6 @@ namespace Casanova.core.main
             }
         }
 
-        public override void _PhysicsProcess(float delta)
-        {
-            if (localUnit != null)
-            {
-                Packets.ClientHandle.Send.PlayerMovement(localUnit.InWorldPosition, localUnit.Axis, localUnit.Speed, localUnit.kinematicBody.Rotation);
-            }
-        }
-
         public override void _Input(InputEvent @event)
         {
             if (@event is InputEventKey eventKey)
@@ -77,8 +76,8 @@ namespace Casanova.core.main
                         OS.WindowFullscreen = !OS.WindowFullscreen;
                     if (eventKey.Scancode == (int) KeyList.Escape)
                     {
-                        // todo: open overlay ui
-                        Interface.Utils.SpawnOverlayFragment("EscOverlay");
+                        if(Vars.CurrentState != Vars.State.Menu)
+                            Interface.Utils.SpawnOverlayFragment("EscOverlay");
                     }
                 }
             }

@@ -37,7 +37,8 @@ namespace Casanova.ui.fragments
             }
             else
             {
-                throw new Exception("Can't instance multiple chat objects!");
+                instance.Dispose();
+                instance = this;
             }
             
             if(Vars.PersistentData.isMobile)

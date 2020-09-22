@@ -97,7 +97,7 @@ profiler/enabled=true
 
 [physics]
 
-2d/thread_model=2
+common/physics_jitter_fix=1.0
 2d/default_gravity=0
 
 [rendering]

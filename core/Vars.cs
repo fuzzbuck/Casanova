@@ -1,6 +1,10 @@
 using System;
 using System.Net;
+using Casanova.core.net;
+using Casanova.core.net.server;
+using Casanova.ui;
 using Godot;
+using Client = Casanova.core.net.client.Client;
 
 namespace Casanova.core
 {
@@ -20,6 +24,16 @@ namespace Casanova.core
 		public static string path_net = path_main + "/net";
 		public static string path_client = path_net + "/client";
 		public static string path_server = path_net + "/server";
+
+		public override void _Ready()
+		{
+			Load();
+		}
+
+		public override void _Process(float delta)
+		{
+			ThreadManager.UpdateMain();
+		}
 
 		public class PersistentData
 		{
@@ -94,7 +108,7 @@ namespace Casanova.core
 			public static Color highlight = new Color(255, 255, 255);
 		}
 		
-		public static void load()
+		public static void Load()
 		{
 			bundleHandler.updateBundle("en");
 
@@ -103,6 +117,25 @@ namespace Casanova.core
 				PersistentData.isMobile = true;
 				OS.WindowSize = new Vector2(1080, 720);
 			}
+		}
+
+		public static void Reload()
+		{
+			Interface.LabelGroup.Clear();
+			Interface.CardsGroup.Clear();
+			Interface.ButtonGroup.Clear();
+			
+			CurrentState = State.Menu;
+			Interface.tree.ChangeScene(Vars.path_frags + "/Menu.tscn");
+		}
+
+		public static void Unload()
+		{
+			if(Server.IsHosting || Client.isConnected)
+				Reload();
+			
+			// todo: save important data, do pre-exit things
+			Interface.tree.Quit();
 		}
 	}
 }

@@ -22,7 +22,7 @@ namespace Casanova.ui.fragments
 			
 			buttons.Add(_botButtons.GetNode("About") as Godot.Button);
 			buttons.Add(_botButtons.GetNode("Exit") as Godot.Button);
-
+			
 			for (int i = 0; i < buttons.Count; i++)
 			{
 				Godot.Button button = buttons[i];
@@ -37,8 +37,7 @@ namespace Casanova.ui.fragments
 			GD.Print(index);
 			if (index == 3) // 3 = exit button index
 			{
-				// todo: save important data, do pre-exit things
-				GetTree().Quit();
+				Vars.Unload();
 				return;
 			}
 			if (Interface.CurrentSelected == index) // cards selected, close them

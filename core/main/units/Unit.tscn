@@ -24,7 +24,6 @@ font_data = SubResource( 3 )
 script = ExtResource( 2 )
 
 [node name="Unit" type="KinematicBody2D" parent="."]
-position = Vector2( 2, 0 )
 scale = Vector2( 0.3, 0.3 )
 
 [node name="Sprite" type="Sprite" parent="Unit"]

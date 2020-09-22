@@ -34,11 +34,13 @@
     <Compile Include="core\net\types\Player.cs" />
     <Compile Include="core\Vars.cs" />
     <Compile Include="ui\elements\Button.cs" />
+    <Compile Include="ui\elements\FillingButton.cs" />
     <Compile Include="ui\elements\InformalMessage.cs" />
     <Compile Include="ui\elements\LineEdit.cs" />
     <Compile Include="ui\fragments\CardsContainer.cs" />
     <Compile Include="ui\fragments\Chat.cs" />
     <Compile Include="ui\fragments\DebugLabel.cs" />
+    <Compile Include="ui\fragments\EscContent.cs" />
     <Compile Include="ui\fragments\LoadingOverlay.cs" />
     <Compile Include="ui\fragments\MenuButtonsContainer.cs" />
     <Compile Include="ui\fragments\MobileTextInput.cs" />

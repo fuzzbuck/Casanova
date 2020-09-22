@@ -29,7 +29,21 @@ namespace Casanova.core.main.world
             Vars.CurrentState = Vars.State.World;
             Interface.tree.ChangeScene(Vars.path_world + "/World.tscn");
         }
-        
+
+        public static void DisconnectToMenu()
+        {
+            Client.Disconnect();
+            ThreadManager.ExecuteOnMainThread(() =>
+            {
+                if (Server.IsHosting)
+                {
+                    Server.Stop();
+                }
+            });
+
+            Vars.Reload();
+        }
+
         public enum loc
         {
             SERVER, CLIENT

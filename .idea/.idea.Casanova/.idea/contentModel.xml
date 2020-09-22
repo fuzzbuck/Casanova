@@ -51,6 +51,7 @@
       <e p="ui" t="Include">
         <e p="elements" t="Include">
           <e p="Button.cs" t="Include" />
+          <e p="FillingButton.cs" t="Include" />
           <e p="InformalMessage.cs" t="Include" />
           <e p="LineEdit.cs" t="Include" />
         </e>
@@ -58,6 +59,7 @@
           <e p="CardsContainer.cs" t="Include" />
           <e p="Chat.cs" t="Include" />
           <e p="DebugLabel.cs" t="Include" />
+          <e p="EscContent.cs" t="Include" />
           <e p="LoadingOverlay.cs" t="Include" />
           <e p="MenuButtonsContainer.cs" t="Include" />
           <e p="MobileTextInput.cs" t="Include" />

@@ -142,7 +142,6 @@ namespace Casanova.ui
 				for (var i = 0; i < CardsGroup.Count; i++)
 				{
 					CardsGroup[i].GetNode<AnimationPlayer>("AnimationPlayer").Play("exit");
-					
 				}
 			}
 		}
