@@ -7,14 +7,14 @@ namespace Casanova.core.main.units
 	public class Unit : Node
 	{
 		// These variables are declared in units/second
-		protected float Acceleration = 1200f;
-		protected float Decellaration = 600f;
-		protected float MaxSpeed = 185f;
+		protected float Acceleration = 1800f;
+		protected float Decellaration = 1200f;
+		protected float MaxSpeed = 685f;
 		public float Speed = 0f;
 		public Vector2 InWorldPosition;
 		
 		// Declared in lerp fraction/delta
-		protected float RotationSpeed = 6.5f;
+		protected float RotationSpeed = 7.5f;
 		
 		// Declared as a fraction of 1.0f
 		protected float Bounciness = 0.7f;
@@ -42,7 +42,7 @@ namespace Casanova.core.main.units
 				tagLabel.BbcodeText = $"[center]{tag}[/center]";
 				
 				tagFakeLabel.Text = String.Empty;
-				tagFakeLabel.RectPosition = new Vector2(0, -17);
+				tagFakeLabel.RectPosition = new Vector2(0, 67);
 				tagFakeLabel.RectSize = Vector2.Zero;
 				
 				tagFakeLabel.Text = tagLabel.Text;
@@ -90,7 +90,7 @@ namespace Casanova.core.main.units
 			else
 			{
 				ApplyMovement(Axis * delta * Acceleration);
-				kinematicBody.Rotation = Mathf.LerpAngle(kinematicBody.Rotation, Axis.Angle(), RotationSpeed * delta);
+				kinematicBody.Rotation = Mathf.LerpAngle(kinematicBody.Rotation, Axis.Angle() + Mathf.Deg2Rad(90), RotationSpeed * delta);
 			}
 			
 			
