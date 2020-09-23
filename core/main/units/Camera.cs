@@ -31,7 +31,7 @@ namespace Casanova.core.main.units
 		}
 		
 		public override void _Input(InputEvent @event){
-			if (@event is InputEventMouseButton && PlayerController.focus == null){
+			if (@event is InputEventMouseButton && PlayerController.Focus == null){
 				InputEventMouseButton emb = (InputEventMouseButton) @event;
 				
 				// leave these brackets for future keybinds

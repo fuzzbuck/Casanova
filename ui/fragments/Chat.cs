@@ -71,7 +71,7 @@ namespace Casanova.ui.fragments
         // called from anywhere, sends a message & activates chat if necessary
         public void SendMessage(string text, Player sender = null)
         {
-            string sendername = sender == null ? "Server" : sender.username;
+            string sendername = sender == null ? "Server" : sender.Username;
             string message = $"[color=#fa9e48]<[/color]{sendername}[color=#fa9e48]>[/color]: {text}";
             AddMessage(message);
             lastMessage = text;
@@ -84,12 +84,12 @@ namespace Casanova.ui.fragments
 
         private void _onSenderBoxFocusEnter()
         {
-            PlayerController.focus = _lineEdit;
+            PlayerController.Focus = _lineEdit;
         }
         
         private void _onFocusLost()
         {
-            PlayerController.focus = null;
+            PlayerController.Focus = null;
             
             _lineEdit.SetProcess(false);
             senderBox.Modulate = new Color(0, 0, 0, 0);
@@ -141,7 +141,7 @@ namespace Casanova.ui.fragments
             {
                 if (key.Scancode == (int) KeyList.Enter && key.Pressed)
                 {
-                    if (PlayerController.focus == _lineEdit)
+                    if (PlayerController.Focus == _lineEdit)
                     {
                         if (_lineEdit.Text == String.Empty)
                         {
@@ -173,7 +173,7 @@ namespace Casanova.ui.fragments
                 
                 if (key.Scancode == (int) KeyList.Up && key.Pressed)
                 {
-                    if (PlayerController.focus == _lineEdit)
+                    if (PlayerController.Focus == _lineEdit)
                     {
                         _lineEdit.Text = lastMessage;
                         _lineEdit.CaretPosition = lastMessage.Length;

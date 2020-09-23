@@ -48,7 +48,7 @@ namespace Casanova.core.net
                 {
                     int id = _packet.ReadInt();
 
-                    if (!NetworkManager.playersGroup.ContainsKey(id))
+                    if (!NetworkManager.PlayersGroup.ContainsKey(id))
                         return;
                     
                     Vector2 pos = _packet.ReadVector2();
@@ -57,15 +57,15 @@ namespace Casanova.core.net
                     float rotation = _packet.ReadFloat();
                     // todo: use UnitType for rotation speed, prediction & etc..
 
-                    var player = NetworkManager.playersGroup[id];
-                    var unit = player?.PlayerUnit;
-                    if (unit != null && !player.isLocal)
+                    var player = NetworkManager.PlayersGroup[id];
+                    var unitBody = player?.PlayerUnit.Body;
+                    if (unitBody != null && !player.IsLocal)
                     {
-                        unit.Axis = axis;
+                        unitBody.Axis = axis;
                         //unit.Speed = speed;
 
-                        if (unit.kinematicBody.Position.DistanceTo(pos) > Vars.Networking.unit_desync_treshold)
-                            unit.kinematicBody.Position = unit.kinematicBody.Position.LinearInterpolate(pos, Vars.Networking.unit_desync_interpolation);
+                        if (unitBody.Position.DistanceTo(pos) > Vars.Networking.unit_desync_treshold)
+                            unitBody.Position = unitBody.Position.LinearInterpolate(pos, Vars.Networking.unit_desync_interpolation);
 
                     }
                 }
@@ -74,7 +74,7 @@ namespace Casanova.core.net
                 {
                     int _id = _packet.ReadInt();
                     
-                    if (!NetworkManager.playersGroup.ContainsKey(_id))
+                    if (!NetworkManager.PlayersGroup.ContainsKey(_id))
                         return;
 
                     NetworkManager.DestroyPlayer(_id);
@@ -84,14 +84,14 @@ namespace Casanova.core.net
                 {
                     int _id = _packet.ReadInt();
                     
-                    if (_id != 0 && !NetworkManager.playersGroup.ContainsKey(_id))
+                    if (_id != 0 && !NetworkManager.PlayersGroup.ContainsKey(_id))
                         return;
                     
                     string message = _packet.ReadString();
                     
                     GD.Print($"Received chat message from {_id}: {message}");
                     
-                    Chat.instance?.SendMessage(message, _id == 0 ? new Player(0, "server", null, false) : NetworkManager.playersGroup[_id]);
+                    Chat.instance?.SendMessage(message, _id == 0 ? new Player(0, "server", null, false) : NetworkManager.PlayersGroup[_id]);
                 }
                 
             }
@@ -162,15 +162,15 @@ namespace Casanova.core.net
                     // todo: use UnitType for rotation speed, prediction & etc..
 
                     var _plr = Server.Clients[_fromClient].player;
-                    var unit = _plr.PlayerUnit;
-                    if (!_plr.isLocal && unit != null)
+                    var unitBody = _plr.PlayerUnit.Body;
+                    if (!_plr.IsLocal && unitBody != null)
                     {
-                        unit.Axis = axis;
-                        unit.Speed = speed;
-                        unit.kinematicBody.Rotation = rotation;
-                        unit.kinematicBody.Position = pos;
+                        unitBody.Axis = axis;
+                        unitBody.Speed = speed;
+                        unitBody.Rotation = rotation;
+                        unitBody.Position = pos;
                     }
-                    if (unit != null)
+                    if (unitBody != null)
                         Send.PlayerMovement(_plr);
                 }
 
@@ -199,8 +199,8 @@ namespace Casanova.core.net
                 {
                     using (Packet _packet = new Packet((int)ServerPackets.spawnPlayer))
                     {
-                        _packet.Write(_player.id);
-                        _packet.Write(_player.username);
+                        _packet.Write(_player.Id);
+                        _packet.Write(_player.Username);
                         _packet.Write(_toClient);
 
                         ServerSend.SendTCPData(_toClient, _packet);
@@ -211,14 +211,15 @@ namespace Casanova.core.net
                 {
                     using (Packet _packet = new Packet((int)ServerPackets.playerMovement))
                     {
-                        var unit = _player.PlayerUnit;
-                        _packet.Write(_player.id);
-                        _packet.Write(unit.kinematicBody.Position);
-                        _packet.Write(unit.Axis);
-                        _packet.Write(unit.Speed);
-                        _packet.Write(unit.kinematicBody.Rotation);
+                        var unitBody = _player.PlayerUnit.Body;
+                        
+                        _packet.Write(_player.Id);
+                        _packet.Write(unitBody.Position);
+                        _packet.Write(unitBody.Axis);
+                        _packet.Write(unitBody.Speed);
+                        _packet.Write(unitBody.Rotation);
 
-                        ServerSend.SendUDPDataToAll(_player.id, _packet);
+                        ServerSend.SendUDPDataToAll(_player.Id, _packet);
                     }
                 }
                 

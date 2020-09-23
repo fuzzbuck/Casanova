@@ -5,17 +5,17 @@ namespace Casanova.core.net.types
 {
     public class Player
     {
-        public int id;
-        public string username;
+        public readonly int Id;
+        public readonly string Username;
         public PlayerUnit PlayerUnit;
-        public bool isLocal;
+        public readonly bool IsLocal;
 
-        public Player(int _id, string _username, PlayerUnit playerUnit, bool _isLocal = false)
+        public Player(int id, string username, PlayerUnit playerUnit, bool isLocal = false)
         {
-            id = _id;
-            username = _username;
+            Id = id;
+            Username = username;
             PlayerUnit = playerUnit;
-            isLocal = _isLocal;
+            IsLocal = isLocal;
         }
     }
 }

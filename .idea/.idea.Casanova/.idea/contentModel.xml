@@ -16,8 +16,10 @@
             <e p="Camera.cs" t="Include" />
             <e p="PlayerUnit.cs" t="Include" />
             <e p="Tag.cs" t="Include" />
+            <e p="Unit.cs" t="Include" />
           </e>
           <e p="world" t="Include">
+            <e p="blocks" t="Include" />
             <e p="NetworkManager.cs" t="Include" />
             <e p="World.cs" t="Include" />
           </e>
@@ -41,7 +43,10 @@
             <e p="Player.cs" t="Include" />
           </e>
         </e>
-        <e p="types" t="Include" />
+        <e p="types" t="Include">
+          <e p="Body.cs" t="Include" />
+          <e p="FlyingBody.cs" t="Include" />
+        </e>
         <e p="Vars.cs" t="Include" />
       </e>
       <e p="packages" t="ExcludeRecursive" />

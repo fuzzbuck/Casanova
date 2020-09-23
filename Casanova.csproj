@@ -13,6 +13,9 @@
     <Deterministic>false</Deterministic>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="GodotSharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>.mono\assemblies\Debug\GodotSharp.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
@@ -21,6 +24,7 @@
     <Compile Include="core\main\units\Camera.cs" />
     <Compile Include="core\main\units\Tag.cs" />
     <Compile Include="core\main\units\PlayerUnit.cs" />
+    <Compile Include="core\main\units\Unit.cs" />
     <Compile Include="core\main\world\NetworkManager.cs" />
     <Compile Include="core\main\world\World.cs" />
     <Compile Include="core\net\client\Client.cs" />
@@ -32,6 +36,8 @@
     <Compile Include="core\net\server\Server.cs" />
     <Compile Include="core\net\ThreadManager.cs" />
     <Compile Include="core\net\types\Player.cs" />
+    <Compile Include="core\types\Body.cs" />
+    <Compile Include="core\types\FlyingBody.cs" />
     <Compile Include="core\Vars.cs" />
     <Compile Include="ui\elements\Button.cs" />
     <Compile Include="ui\elements\FillingButton.cs" />
@@ -52,6 +58,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="core\main\world\blocks" />
     <Folder Include="core\net\headless_server" />
     <Folder Include="core\types" />
     <Folder Include="ui" />

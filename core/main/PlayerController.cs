@@ -12,20 +12,26 @@ namespace Casanova.core.main
     {
         
         public static PlayerUnit LocalPlayerUnit;
-        public static Player localPlayer;
+        public static Player LocalPlayer;
 
-        public static Node focus;
-        public static Vector2 axis;
+        public static Node Focus;
+        public static Vector2 Axis;
 
         public override void _Process(float delta)
         {
-            if (!Vars.PersistentData.isMobile)
+            if (LocalPlayerUnit == null)
+                return;
+
+            if (LocalPlayerUnit.Body != null)
             {
-                ProcessMovement();
-            }
-            else
-            {
-                ProcessMobileMovement();
+                if (!Vars.PersistentData.isMobile)
+                {
+                    ProcessMovement();
+                }
+                else
+                {
+                    ProcessMobileMovement();
+                }
             }
         }
 
@@ -33,32 +39,34 @@ namespace Casanova.core.main
         {
             if (LocalPlayerUnit != null && !Server.IsHosting)
             {
-                Packets.ClientHandle.Send.PlayerMovement(LocalPlayerUnit.InWorldPosition, LocalPlayerUnit.Axis, LocalPlayerUnit.Speed, LocalPlayerUnit.kinematicBody.Rotation);
+                Packets.ClientHandle.Send.PlayerMovement(LocalPlayerUnit.Body.InWorldPosition, LocalPlayerUnit.Body.Axis, LocalPlayerUnit.Body.Speed, LocalPlayerUnit.Rotation);
             }
         }
 
         public void ProcessMovement()
         {
-            if (LocalPlayerUnit != null && focus == null)
+            if (Focus == null)
             {
-                LocalPlayerUnit.Axis = axis;
+                LocalPlayerUnit.Body.Axis = Axis;
             }
         }
 
         public void ProcessMobileMovement()
         {
-            if (LocalPlayerUnit != null && Camera.instance != null)
+            if (Camera.instance != null)
             {
-                var p1 = LocalPlayerUnit.InWorldPosition;
+                // todo: check if player flew too far away and move the camera there
+                
+                var p1 = LocalPlayerUnit.Body.InWorldPosition;
                 var p2 = Camera.instance.GlobalPosition;
 
                 if (p1.DistanceTo(p2) > Vars.PlayerCamera.mobile_cam_distance_treshold)
                 {
-                    LocalPlayerUnit.Axis = p1.DirectionTo(p2);
+                    LocalPlayerUnit.Body.Axis = p1.DirectionTo(p2);
                 }
                 else
                 {
-                    LocalPlayerUnit.Axis = Vector2.Zero;
+                    LocalPlayerUnit.Body.Axis = Vector2.Zero;
                 }
             }
         }
@@ -67,8 +75,8 @@ namespace Casanova.core.main
         {
             if (@event is InputEventKey eventKey)
             {
-                axis.x = Input.GetActionStrength("right") - Input.GetActionStrength("left");
-                axis.y = Input.GetActionStrength("down") - Input.GetActionStrength("up");
+                Axis.x = Input.GetActionStrength("right") - Input.GetActionStrength("left");
+                Axis.y = Input.GetActionStrength("down") - Input.GetActionStrength("up");
                 
                 if (eventKey.Pressed)
                 {

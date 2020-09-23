@@ -15,12 +15,12 @@ namespace Casanova.core.main.world
 {
     public class NetworkManager
     {
-        public static Dictionary<int, Player> playersGroup = new Dictionary<int, Player>();
-        public static Player hostPlayer;
+        public static Dictionary<int, Player> PlayersGroup = new Dictionary<int, Player>();
+        public static Player HostPlayer;
 
         public static PlayerUnit CreatePlayerInstance()
         {
-            var scene = (PackedScene) ResourceLoader.Load(Vars.path_main + "/units/Unit.tscn");
+            var scene = (PackedScene) ResourceLoader.Load(Vars.path_main + "/units/PlayerUnit.tscn");
             return (PlayerUnit) scene.Instance();
         }
 
@@ -52,10 +52,10 @@ namespace Casanova.core.main.world
         // SERVER & CLIENT
         public static void DestroyPlayer(int _id)
         {
-            if (playersGroup.ContainsKey(_id))
+            if (PlayersGroup.ContainsKey(_id))
             {
-                playersGroup[_id].PlayerUnit?.QueueFree();
-                playersGroup.Remove(_id);
+                PlayersGroup[_id].PlayerUnit?.QueueFree();
+                PlayersGroup.Remove(_id);
             }
         }
 
@@ -69,11 +69,9 @@ namespace Casanova.core.main.world
              3. tell the client which player instance to control
              */
             GD.Print($"Spawning unit for player {_id}");
-
-            PlayerUnit _instance = CreatePlayerInstance();
-
-            PlayerUnit playerUnit = World.instance.SpawnPlayer(_instance);
-            playerUnit.Tag = _username;
+            
+            PlayerUnit instance = World.instance.SpawnPlayer(CreatePlayerInstance());
+            instance.Tag = _username;
 
             bool willBeLocal = false;
             if (loc == loc.CLIENT && Server.IsHosting)
@@ -82,18 +80,18 @@ namespace Casanova.core.main.world
             }
             else
             {
-                if (loc == loc.SERVER && !Server.IsDedicated && hostPlayer == null)
+                if (loc == loc.SERVER && !Server.IsDedicated && HostPlayer == null)
                 {
                     willBeLocal = true;
                 }
             }
             
-            Player player = new Player(_id, _username, _instance, willBeLocal);
-            player.PlayerUnit = _instance;
-            playersGroup[_id] = player;
+            Player player = new Player(_id, _username, instance, willBeLocal);
+            player.PlayerUnit = instance;
+            PlayersGroup[_id] = player;
             
-            if (hostPlayer == null && loc == loc.SERVER)
-                hostPlayer = player;
+            if (HostPlayer == null && loc == loc.SERVER)
+                HostPlayer = player;
 
             ThreadManager.ExecuteOnMainThread(() =>
             {
@@ -103,23 +101,17 @@ namespace Casanova.core.main.world
                     {
                         // make camera
                         Camera cam = (Camera) ResourceLoader.Load<PackedScene>(Vars.path_main + "/units/Camera.tscn").Instance();
-
-                        if (Vars.PersistentData.isMobile)
-                        {
-                            _instance.AddChild(cam);
-                            cam.GlobalPosition = _instance.kinematicBody.Position;
-                        }
-                        else
-                        {
-                            _instance.kinematicBody.AddChild(cam);
-                        }
                         
-                        PlayerController.localPlayer = player;
-                        PlayerController.LocalPlayerUnit = _instance;
+                        instance.Body.AddChild(cam);
+                        cam.GlobalPosition = instance.Position;
+
+                        PlayerController.LocalPlayer = player;
+                        PlayerController.LocalPlayerUnit = instance;
                     }
                 }
                 catch (Exception e)
                 {
+                    GD.PrintErr(e);
                     // this is not my unit
                 }
 

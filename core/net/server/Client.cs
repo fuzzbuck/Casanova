@@ -197,7 +197,6 @@ namespace Casanova.core.net.server
         {
             player = NetworkManager.CreatePlayer(NetworkManager.loc.SERVER, id, _username);
 
-            
             // send info to all clients except ours that we spawned
             foreach (Client _client in Server.Clients.Values)
             {
@@ -213,7 +212,7 @@ namespace Casanova.core.net.server
             // send info from all clients except ours about others existance
             foreach (Client _client in Server.Clients.Values)
             {
-                if (_client.player != null && !_client.player.isLocal)
+                if (_client.player != null && !_client.player.IsLocal)
                 {
                     Packets.ServerHandle.Send.SpawnPlayer(_client.id, player);
                 }
