@@ -4,16 +4,16 @@ namespace Casanova.core.content
 {
     public class UnitTypes
     {
-        public static UnitType groundUnit, airUnit;
+        public static UnitType crimson, airUnit;
         
         public static void Init()
         {
-            groundUnit = new UnitType
+            crimson = new UnitType
             {
-                Name = "GroundUnit",
-                Description = "A Default unit used for testing.",
-                MaxSpeed = 9f,
-                RotationSpeed = 4f,
+                Name = "Crimson",
+                Description = "Starting bot equipped with a high powered Projector.",
+                MaxSpeed = 12f,
+                RotationSpeed = 6f,
                 Health = 100f,
                 MovementType = Enums.MovementType.Ground
             };

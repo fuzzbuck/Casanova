@@ -1,3 +1,4 @@
+using System;
 using Godot;
 
 namespace Casanova.core.types.bodies
@@ -17,6 +18,7 @@ namespace Casanova.core.types.bodies
         
         public float Acceleration;
         public float Decelleration;
+        public float DiagonalLimit = 0.72f;
         
         public float Speed;
         public Vector2 InWorldPosition;
@@ -30,10 +32,13 @@ namespace Casanova.core.types.bodies
                 Vel = Vector2.Zero;
             else
             {
+                if (Axis.x != 0 && Axis.y != 0)
+                    Axis *= DiagonalLimit;
+                
                 Vel = Axis * MaxSpeed;
                 Rotation = Mathf.LerpAngle(Rotation, Axis.Angle() + Mathf.Deg2Rad(90), RotationSpeed * delta);
             }
-            
+
             MoveAndCollide(Vel * MaxSpeed * delta);
             Speed = Vel.Length();
             InWorldPosition = Position;

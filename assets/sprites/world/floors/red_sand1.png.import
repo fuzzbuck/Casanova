@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/concrete.png-2163a9bdabe4cf7373e2cf59cf87a8ef.stex"
+path="res://.import/red_sand1.png-e6aae603e42f21ff35f9f25bfd89f863.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/world/blocks/misc/concrete.png"
-dest_files=[ "res://.import/concrete.png-2163a9bdabe4cf7373e2cf59cf87a8ef.stex" ]
+source_file="res://assets/sprites/world/floors/red_sand1.png"
+dest_files=[ "res://.import/red_sand1.png-e6aae603e42f21ff35f9f25bfd89f863.stex" ]
 
 [params]
 
