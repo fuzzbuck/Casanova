@@ -11,7 +11,7 @@ namespace Casanova.core.main
     public class PlayerController : Node
     {
         
-        public static Unit localUnit;
+        public static PlayerUnit LocalPlayerUnit;
         public static Player localPlayer;
 
         public static Node focus;
@@ -31,34 +31,34 @@ namespace Casanova.core.main
 
         public override void _PhysicsProcess(float delta)
         {
-            if (localUnit != null && !Server.IsHosting)
+            if (LocalPlayerUnit != null && !Server.IsHosting)
             {
-                Packets.ClientHandle.Send.PlayerMovement(localUnit.InWorldPosition, localUnit.Axis, localUnit.Speed, localUnit.kinematicBody.Rotation);
+                Packets.ClientHandle.Send.PlayerMovement(LocalPlayerUnit.InWorldPosition, LocalPlayerUnit.Axis, LocalPlayerUnit.Speed, LocalPlayerUnit.kinematicBody.Rotation);
             }
         }
 
         public void ProcessMovement()
         {
-            if (localUnit != null && focus == null)
+            if (LocalPlayerUnit != null && focus == null)
             {
-                localUnit.Axis = axis;
+                LocalPlayerUnit.Axis = axis;
             }
         }
 
         public void ProcessMobileMovement()
         {
-            if (localUnit != null && Camera.instance != null)
+            if (LocalPlayerUnit != null && Camera.instance != null)
             {
-                var p1 = localUnit.InWorldPosition;
+                var p1 = LocalPlayerUnit.InWorldPosition;
                 var p2 = Camera.instance.GlobalPosition;
 
                 if (p1.DistanceTo(p2) > Vars.PlayerCamera.mobile_cam_distance_treshold)
                 {
-                    localUnit.Axis = p1.DirectionTo(p2);
+                    LocalPlayerUnit.Axis = p1.DirectionTo(p2);
                 }
                 else
                 {
-                    localUnit.Axis = Vector2.Zero;
+                    LocalPlayerUnit.Axis = Vector2.Zero;
                 }
             }
         }

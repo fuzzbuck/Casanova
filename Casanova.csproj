@@ -20,7 +20,7 @@
     <Compile Include="core\main\PlayerController.cs" />
     <Compile Include="core\main\units\Camera.cs" />
     <Compile Include="core\main\units\Tag.cs" />
-    <Compile Include="core\main\units\Unit.cs" />
+    <Compile Include="core\main\units\PlayerUnit.cs" />
     <Compile Include="core\main\world\NetworkManager.cs" />
     <Compile Include="core\main\world\World.cs" />
     <Compile Include="core\net\client\Client.cs" />

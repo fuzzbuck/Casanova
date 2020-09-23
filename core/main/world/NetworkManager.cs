@@ -18,10 +18,10 @@ namespace Casanova.core.main.world
         public static Dictionary<int, Player> playersGroup = new Dictionary<int, Player>();
         public static Player hostPlayer;
 
-        public static Unit CreatePlayerInstance()
+        public static PlayerUnit CreatePlayerInstance()
         {
             var scene = (PackedScene) ResourceLoader.Load(Vars.path_main + "/units/Unit.tscn");
-            return (Unit) scene.Instance();
+            return (PlayerUnit) scene.Instance();
         }
 
         public static void ConfirmConnect()
@@ -54,7 +54,7 @@ namespace Casanova.core.main.world
         {
             if (playersGroup.ContainsKey(_id))
             {
-                playersGroup[_id].unit?.QueueFree();
+                playersGroup[_id].PlayerUnit?.QueueFree();
                 playersGroup.Remove(_id);
             }
         }
@@ -70,10 +70,10 @@ namespace Casanova.core.main.world
              */
             GD.Print($"Spawning unit for player {_id}");
 
-            Unit _instance = CreatePlayerInstance();
+            PlayerUnit _instance = CreatePlayerInstance();
 
-            Unit unit = World.instance.SpawnPlayer(_instance);
-            unit.Tag = _username;
+            PlayerUnit playerUnit = World.instance.SpawnPlayer(_instance);
+            playerUnit.Tag = _username;
 
             bool willBeLocal = false;
             if (loc == loc.CLIENT && Server.IsHosting)
@@ -89,7 +89,7 @@ namespace Casanova.core.main.world
             }
             
             Player player = new Player(_id, _username, _instance, willBeLocal);
-            player.unit = _instance;
+            player.PlayerUnit = _instance;
             playersGroup[_id] = player;
             
             if (hostPlayer == null && loc == loc.SERVER)
@@ -115,7 +115,7 @@ namespace Casanova.core.main.world
                         }
                         
                         PlayerController.localPlayer = player;
-                        PlayerController.localUnit = _instance;
+                        PlayerController.LocalPlayerUnit = _instance;
                     }
                 }
                 catch (Exception e)

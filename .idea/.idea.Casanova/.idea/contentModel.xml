@@ -14,8 +14,8 @@
           <e p="PlayerController.cs" t="Include" />
           <e p="units" t="Include">
             <e p="Camera.cs" t="Include" />
+            <e p="PlayerUnit.cs" t="Include" />
             <e p="Tag.cs" t="Include" />
-            <e p="Unit.cs" t="Include" />
           </e>
           <e p="world" t="Include">
             <e p="NetworkManager.cs" t="Include" />

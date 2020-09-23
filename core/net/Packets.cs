@@ -58,7 +58,7 @@ namespace Casanova.core.net
                     // todo: use UnitType for rotation speed, prediction & etc..
 
                     var player = NetworkManager.playersGroup[id];
-                    var unit = player?.unit;
+                    var unit = player?.PlayerUnit;
                     if (unit != null && !player.isLocal)
                     {
                         unit.Axis = axis;
@@ -162,7 +162,7 @@ namespace Casanova.core.net
                     // todo: use UnitType for rotation speed, prediction & etc..
 
                     var _plr = Server.Clients[_fromClient].player;
-                    var unit = _plr.unit;
+                    var unit = _plr.PlayerUnit;
                     if (!_plr.isLocal && unit != null)
                     {
                         unit.Axis = axis;
@@ -211,7 +211,7 @@ namespace Casanova.core.net
                 {
                     using (Packet _packet = new Packet((int)ServerPackets.playerMovement))
                     {
-                        var unit = _player.unit;
+                        var unit = _player.PlayerUnit;
                         _packet.Write(_player.id);
                         _packet.Write(unit.kinematicBody.Position);
                         _packet.Write(unit.Axis);

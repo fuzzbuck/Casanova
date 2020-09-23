@@ -103,6 +103,7 @@ common/physics_jitter_fix=1.0
 [rendering]
 
 quality/driver/driver_name="GLES2"
+quality/2d/use_nvidia_rect_flicker_workaround=true
 quality/2d/use_pixel_snap=true
 threads/thread_model=2
 vram_compression/import_etc=true

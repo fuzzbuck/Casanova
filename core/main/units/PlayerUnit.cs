@@ -4,7 +4,7 @@ using Godot;
 
 namespace Casanova.core.main.units
 {
-	public class Unit : Node
+	public class PlayerUnit : Node
 	{
 		// These variables are declared in units/second
 		protected float Acceleration = 1800f;
