@@ -10,6 +10,9 @@
       <e p="Casanova.sln" t="IncludeFlat" />
       <e p="core" t="Include">
         <e p="BundleHandler.cs" t="Include" />
+        <e p="content" t="Include">
+          <e p="UnitTypes.cs" t="Include" />
+        </e>
         <e p="main" t="Include">
           <e p="PlayerController.cs" t="Include" />
           <e p="units" t="Include">
@@ -19,7 +22,9 @@
             <e p="Unit.cs" t="Include" />
           </e>
           <e p="world" t="Include">
-            <e p="blocks" t="Include" />
+            <e p="blocks" t="Include">
+              <e p="Block.cs" t="Include" />
+            </e>
             <e p="NetworkManager.cs" t="Include" />
             <e p="World.cs" t="Include" />
           </e>
@@ -44,8 +49,11 @@
           </e>
         </e>
         <e p="types" t="Include">
-          <e p="Body.cs" t="Include" />
-          <e p="FlyingBody.cs" t="Include" />
+          <e p="bodies" t="Include">
+            <e p="Air.cs" t="Include" />
+            <e p="Body.cs" t="Include" />
+          </e>
+          <e p="UnitType.cs" t="Include" />
         </e>
         <e p="Vars.cs" t="Include" />
       </e>

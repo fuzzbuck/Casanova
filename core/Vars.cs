@@ -1,5 +1,6 @@
 using System;
 using System.Net;
+using Casanova.core.content;
 using Casanova.core.net;
 using Casanova.core.net.server;
 using Casanova.ui;
@@ -16,6 +17,8 @@ namespace Casanova.core
 		public static string path_core = "res://core";
 		public static string path_main = path_core + "/main";
 		public static string path_world = path_main + "/world";
+		public static string path_types = path_core + "/types";
+		public static string path_units = path_main + "/units";
 		
 		public static string path_ui = "res://ui";
 		public static string path_elems = path_ui + "/elements";
@@ -40,13 +43,13 @@ namespace Casanova.core
 			public static bool isMobile = false;
 			
 			public static string username = "unnamed";
-			public static string ip = "127.0.0.1:6969";
+			public static string ip = "fuzzbuck.dev:375";
 		}
 		
 		public class PlayerCamera
 		{
 			public static bool rotates_with_player = false;
-			public static float min_zoom_distance = 1f;
+			public static float min_zoom_distance = 0.7f;
 			public static float max_zoom_distance = 3f;
 			public static float mobile_zoom_offset_multiplier = 0.25f;
 
@@ -110,6 +113,9 @@ namespace Casanova.core
 		
 		public static void Load()
 		{
+			// todo: display loading screen
+			UnitTypes.Init();
+			
 			bundleHandler.updateBundle("en");
 
 			if (OS.HasTouchscreenUiHint())

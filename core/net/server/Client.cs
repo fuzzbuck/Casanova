@@ -1,6 +1,7 @@
 using System;
 using System.Net;
 using System.Net.Sockets;
+using Casanova.core.content;
 using Casanova.core.main.world;
 using Casanova.core.net.types;
 using Godot;

@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.Net;
+using Casanova.core.content;
 using Casanova.core.main;
 using Casanova.core.main.world;
 using Casanova.core.net.server;
@@ -39,8 +40,7 @@ namespace Casanova.core.net
 
                     if (Server.IsHosting)
                         return;
-
-                    GD.Print($"Received spawn packet from server for {_username} with id {_id}");
+                    
                     NetworkManager.CreatePlayer(NetworkManager.loc.CLIENT, _id, _username);
                 }
                 
@@ -88,9 +88,7 @@ namespace Casanova.core.net
                         return;
                     
                     string message = _packet.ReadString();
-                    
-                    GD.Print($"Received chat message from {_id}: {message}");
-                    
+
                     Chat.instance?.SendMessage(message, _id == 0 ? new Player(0, "server", null, false) : NetworkManager.PlayersGroup[_id]);
                 }
                 
@@ -149,7 +147,7 @@ namespace Casanova.core.net
                     {
                         GD.Print($"Player \"{_username}\" (ID: {_fromClient}) has assumed the wrong client ID ({_clientIdCheck})!");
                     }
-                    // TODO: send player into game
+                    
                     Server.Clients[_fromClient].SendIntoGame(_username);
                 }
 

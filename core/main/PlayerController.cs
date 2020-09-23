@@ -1,10 +1,12 @@
 ﻿using Casanova.core.main.units;
 using Casanova.core.net;
 using Casanova.core.net.server;
+using Casanova.core.net.client;
 using Casanova.core.net.types;
 using Casanova.ui;
 using Godot;
 using Camera = Casanova.core.main.units.Camera;
+using Client = Casanova.core.net.client.Client;
 
 namespace Casanova.core.main
 {
@@ -37,7 +39,7 @@ namespace Casanova.core.main
 
         public override void _PhysicsProcess(float delta)
         {
-            if (LocalPlayerUnit != null && !Server.IsHosting)
+            if (LocalPlayerUnit != null && !Server.IsHosting && Client.isConnected)
             {
                 Packets.ClientHandle.Send.PlayerMovement(LocalPlayerUnit.Body.InWorldPosition, LocalPlayerUnit.Body.Axis, LocalPlayerUnit.Body.Speed, LocalPlayerUnit.Rotation);
             }
