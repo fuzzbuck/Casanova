@@ -9,12 +9,15 @@ namespace Casanova.core.main.units
         
         public Label TagFakeLabel;
         public RichTextLabel TagLabel;
-        public override void _Ready()
+
+        public void Init()
         {
             _kinematicBody2D = GetParent().GetNode<KinematicBody2D>("Body");
             
             TagFakeLabel = GetNode<Label>("FakeLabel");
             TagLabel = TagFakeLabel.GetNode<RichTextLabel>("Text");
+            
+            SetProcess(true);
         }
 
         public override void _Process(float delta)
@@ -28,9 +31,9 @@ namespace Casanova.core.main.units
             TagLabel.BbcodeText = $"[center]{text}[/center]";
 				
             TagFakeLabel.Text = String.Empty;
-            TagFakeLabel.RectPosition = new Vector2(0, 67);
+            TagFakeLabel.RectPosition = new Vector2(-52, 97); // if you ever want to hire me please look at this and reconsider your choices
             TagFakeLabel.RectSize = Vector2.Zero;
-            TagFakeLabel.Text = TagLabel.Text;
+            TagFakeLabel.Text = TagLabel.Text + ", ";
 				
 
             if (text == String.Empty)

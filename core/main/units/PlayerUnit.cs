@@ -13,8 +13,11 @@ namespace Casanova.core.main.units
 		}
 		public override void _Ready()
 		{
-			base._Ready();
 			_tagNode = GetNode<Tag>("Tag");
+			_tagNode.SetProcess(false);
+			
+			base._Ready();
+			_tagNode.Init();
 		}
 	}
 }

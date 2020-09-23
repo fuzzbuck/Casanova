@@ -30,10 +30,10 @@ namespace Casanova.core.main.world
         
         */
         
-        public PlayerUnit SpawnPlayer(PlayerUnit playerUnit)
+        public Unit SpawnUnit(Unit unit)
         {
-            GetNode<Node2D>("Units").AddChild(playerUnit);
-            return playerUnit;
+            GetNode<Node2D>("Units").AddChild(unit);
+            return unit;
         }
     }
 }

@@ -23,11 +23,10 @@ use_mipmaps = true
 font_data = SubResource( 4 )
 
 [node name="PlayerUnit" instance=ExtResource( 1 )]
-scale = Vector2( 0.3, 0.3 )
 script = ExtResource( 3 )
 
-[node name="Tag" type="Node2D" parent="." index="1"]
-position = Vector2( 0, 120 )
+[node name="Tag" type="Node2D" parent="." index="0"]
+scale = Vector2( 0.15, 0.15 )
 script = ExtResource( 2 )
 
 [node name="FakeLabel" type="Label" parent="Tag" index="0"]

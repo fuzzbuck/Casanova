@@ -86,6 +86,13 @@ control={
  ]
 }
 
+[layer_names]
+
+2d_physics/layer_1="floors"
+2d_physics/layer_2="blocks"
+2d_physics/layer_3="ground_units"
+2d_physics/layer_4="air_units"
+
 [locale]
 
 translations=PoolStringArray( "res://assets/translations/translation.en.translation", "res://assets/translations/translation.hr.translation", "res://assets/translations/translation.pl.translation", "res://assets/translations/translation.sr.translation", "res://assets/translations/translation.zh_TW.translation" )

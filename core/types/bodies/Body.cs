@@ -1,19 +1,30 @@
 using Godot;
 
-namespace Casanova.core.types
+namespace Casanova.core.types.bodies
 {
-    public class Body : KinematicBody2D
+    public abstract class Body : KinematicBody2D
     {
-        private float MaxSpeed = 15f;
-        private float RotationSpeed = 15f;
+        public void Init(float maxSpeed, float rotationSpeed, float acceleration, float decelleration)
+        {
+            MaxSpeed = maxSpeed;
+            RotationSpeed = rotationSpeed;
+            Acceleration = acceleration;
+            Decelleration = decelleration;
+        }
+
+        public float MaxSpeed;
+        public float RotationSpeed;
+        
+        public float Acceleration;
+        public float Decelleration;
         
         public float Speed;
         public Vector2 InWorldPosition;
 
-        private Vector2 Vel;
+        protected Vector2 Vel;
         public Vector2 Axis;
 
-        private void ProcessMovement(float delta)
+        public virtual void ProcessMovement(float delta)
         {
             if (Axis == Vector2.Zero)
                 Vel = Vector2.Zero;
