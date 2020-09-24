@@ -34,6 +34,7 @@ script = ExtResource( 1 )
 [node name="Sprite" parent="." index="1"]
 material = SubResource( 2 )
 position = Vector2( 0, -1 )
+z_index = 4
 texture = ExtResource( 3 )
 
 [node name="CollisionPolygon2D" parent="." index="2"]
