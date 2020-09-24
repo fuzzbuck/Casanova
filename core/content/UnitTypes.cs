@@ -1,6 +1,7 @@
 using Casanova.core.types;
 using Godot;
 using Godot.Collections;
+using Particles = Casanova.core.types.Particles;
 
 namespace Casanova.core.content
 {
@@ -30,6 +31,13 @@ namespace Casanova.core.content
                 Curve = wheelSkidCurve,
                 Color = new Color(0, 0, 0),
             };
+
+            var explorerSmoke = new ParticleInfo
+            {
+                Direction = new Vector2(0, 1),
+                Velocity = 50f,
+                Amount = 64
+            };
             
             explorer = new UnitType
             {
@@ -47,6 +55,12 @@ namespace Casanova.core.content
                     {new Vector2(-4, 4), explorerSkid},
                     {new Vector2(4, 4), explorerSkid}
                 },
+                
+                ParticleEffects = new System.Collections.Generic.Dictionary<Vector2, ParticleInfo>
+                {
+                    {new Vector2(-4, 4), explorerSmoke},
+                    {new Vector2(4, 4), explorerSmoke}
+                }
             };
 
             var crimsonSkid = new Skid

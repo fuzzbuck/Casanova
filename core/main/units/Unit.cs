@@ -6,6 +6,7 @@ using Casanova.core.types;
 using Casanova.core.types.bodies;
 using Godot;
 using Godot.Collections;
+using Particles = Casanova.core.types.Particles;
 
 namespace Casanova.core.main.units
 {
@@ -30,11 +31,9 @@ namespace Casanova.core.main.units
             return body;
         }
 
-        public static SkidMark CreateSkidMark()
+        public static Node CreateTypeEffect(string name)
         {
-            SkidMark skid = (SkidMark) ResourceLoader.Load<PackedScene>(Vars.path_types + $"/SkidMark.tscn").Instance();
-
-            return skid;
+            return ResourceLoader.Load<PackedScene>(Vars.path_types + $"/{name}.tscn").Instance();
         }
     }
     
@@ -44,10 +43,32 @@ namespace Casanova.core.main.units
         public Node2D Content;
         public Body Body;
         private Array<SkidMark> SkidMarks = new Array<SkidMark>();
+        private Array<Particles> Particles = new Array<Particles>();
+        
         public override void _Ready()
         {
             Content = GetNode<Node2D>("Content");
             Body = Utils.CreateBody(Type);
+
+            if (Type.ParticleEffects != null)
+            {
+                foreach (KeyValuePair<Vector2, ParticleInfo> kvp in Type.ParticleEffects)
+                {
+                    var pos = kvp.Key;
+                    var particlesInfo = kvp.Value;
+                    var particles = (Particles) Utils.CreateTypeEffect("Particles");
+
+                    particles.Info = particlesInfo;
+                    particles.Pos = pos;
+
+                    particles.InitialVelocity = particlesInfo.Velocity;
+                    particles.Direction = particlesInfo.Direction;
+                    particles.Amount = particlesInfo.Amount;
+                    
+                    Particles.Add(particles);
+                    Content.AddChild(particles);
+                }
+            }
 
             if (Type.SkidMarks != null)
             {
@@ -55,8 +76,7 @@ namespace Casanova.core.main.units
                 {
                     var pos = kvp.Key;
                     var skid = kvp.Value;
-                    
-                    var skidMark = Utils.CreateSkidMark();
+                    var skidMark = (SkidMark) Utils.CreateTypeEffect("SkidMark");
                     
                     var grad = new Gradient();
 
@@ -92,6 +112,15 @@ namespace Casanova.core.main.units
                     skid.AddPoint(Body.InWorldPosition + skid.Pos.Rotated(Body.Rotation));
                     if (skid.Points.Length > skid.Info.Length)
                         skid.RemovePoint(0);
+                }
+            }
+
+            if (Particles != null)
+            {
+                foreach (Particles particles in Particles)
+                {
+                    particles.GlobalPosition = Body.InWorldPosition + particles.Pos.Rotated(Body.Rotation);
+                    particles.GlobalRotation = Body.Rotation;
                 }
             }
         }

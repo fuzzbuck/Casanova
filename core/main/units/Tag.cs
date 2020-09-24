@@ -31,7 +31,7 @@ namespace Casanova.core.main.units
             TagLabel.BbcodeText = $"[center]{text}[/center]";
 				
             TagFakeLabel.Text = String.Empty;
-            TagFakeLabel.RectPosition = new Vector2(-52, 97); // if you ever want to hire me please look at this and reconsider your choices
+            TagFakeLabel.RectPosition = new Vector2(-52, 72); // if you ever want to hire me please look at this and reconsider your choices
             TagFakeLabel.RectSize = Vector2.Zero;
             TagFakeLabel.Text = TagLabel.Text + ", ";
 				

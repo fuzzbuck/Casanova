@@ -33,9 +33,7 @@ namespace Casanova.core.types
         public float RotationSpeed;
         
         public Dictionary<Vector2, Skid> SkidMarks; // <Vector2> offset, <Skid> skid info
-        
-
-        //public Dictionary<Vector2, ParticleEffect> ParticleEffects;
+        public Dictionary<Vector2, ParticleInfo> ParticleEffects;
 
         public Enums.MovementType MovementType = Enums.MovementType.Ground;
     }

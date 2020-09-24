@@ -1,6 +1,87 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=11 format=2]
+
+[sub_resource type="DynamicFontData" id=6]
+font_path = "res://assets/fonts/RussoOne-Regular.ttf"
+
+[sub_resource type="DynamicFont" id=7]
+use_mipmaps = true
+use_filter = true
+font_data = SubResource( 6 )
+
+[sub_resource type="StyleBoxFlat" id=8]
+bg_color = Color( 0.6, 0.6, 0.6, 0 )
+draw_center = false
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+expand_margin_left = 6.0
+expand_margin_right = 6.0
+expand_margin_top = 4.0
+expand_margin_bottom = 4.0
+shadow_color = Color( 0, 0, 0, 0.129412 )
+
+[sub_resource type="StyleBoxFlat" id=10]
+bg_color = Color( 0.121569, 0.129412, 0.141176, 1 )
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color( 0.972549, 0.87451, 0.494118, 1 )
+border_blend = true
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+expand_margin_left = 6.0
+expand_margin_right = 6.0
+expand_margin_top = 4.0
+expand_margin_bottom = 4.0
+shadow_color = Color( 0, 0, 0, 0.129412 )
+shadow_size = 4
+shadow_offset = Vector2( 0, 5 )
+
+[sub_resource type="Theme" id=9]
+PopupMenu/colors/font_color = Color( 1, 1, 1, 1 )
+PopupMenu/colors/font_color_accel = Color( 0.7, 0.7, 0.7, 0.8 )
+PopupMenu/colors/font_color_disabled = Color( 0.4, 0.4, 0.4, 0.8 )
+PopupMenu/colors/font_color_hover = Color( 0.972549, 0.87451, 0.494118, 1 )
+PopupMenu/constants/hseparation = 4
+PopupMenu/constants/vseparation = 4
+PopupMenu/fonts/font = SubResource( 7 )
+PopupMenu/icons/checked = null
+PopupMenu/icons/radio_checked = null
+PopupMenu/icons/radio_unchecked = null
+PopupMenu/icons/submenu = null
+PopupMenu/icons/unchecked = null
+PopupMenu/styles/hover = SubResource( 8 )
+PopupMenu/styles/labeled_separator_left = null
+PopupMenu/styles/labeled_separator_right = null
+PopupMenu/styles/panel = SubResource( 10 )
+PopupMenu/styles/panel_disabled = null
+PopupMenu/styles/separator = null
 
 [sub_resource type="StyleBoxFlat" id=1]
+bg_color = Color( 0.972549, 0.87451, 0.494118, 0 )
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color( 1, 1, 1, 1 )
+border_blend = true
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+expand_margin_left = 6.0
+expand_margin_right = 6.0
+expand_margin_top = 4.0
+expand_margin_bottom = 4.0
+shadow_color = Color( 0, 0, 0, 0.129412 )
+shadow_size = 4
+shadow_offset = Vector2( 0, 5 )
+
+[sub_resource type="StyleBoxFlat" id=2]
 bg_color = Color( 0.972549, 0.87451, 0.494118, 0 )
 border_width_left = 4
 border_width_top = 4
@@ -20,21 +101,45 @@ shadow_color = Color( 0, 0, 0, 0.129412 )
 shadow_size = 4
 shadow_offset = Vector2( 0, 5 )
 
-[sub_resource type="DynamicFontData" id=2]
+[sub_resource type="StyleBoxFlat" id=3]
+bg_color = Color( 0, 0, 0, 0.392157 )
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color( 0.972549, 0.87451, 0.494118, 1 )
+border_blend = true
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+expand_margin_left = 6.0
+expand_margin_right = 6.0
+expand_margin_top = 4.0
+expand_margin_bottom = 4.0
+shadow_color = Color( 0, 0, 0, 0.129412 )
+shadow_size = 4
+shadow_offset = Vector2( 0, 5 )
+
+[sub_resource type="DynamicFontData" id=4]
 font_path = "res://assets/fonts/RussoOne-Regular.ttf"
 
-[sub_resource type="DynamicFont" id=3]
+[sub_resource type="DynamicFont" id=5]
 size = 22
 use_mipmaps = true
 use_filter = true
-font_data = SubResource( 2 )
+font_data = SubResource( 4 )
 
 [node name="OptionButton" type="OptionButton"]
 margin_right = 276.0
 margin_bottom = 47.0
 size_flags_horizontal = 3
-custom_styles/normal = SubResource( 1 )
-custom_fonts/font = SubResource( 3 )
+theme = SubResource( 9 )
+custom_styles/hover = SubResource( 1 )
+custom_styles/pressed = SubResource( 2 )
+custom_styles/focus = SubResource( 3 )
+custom_styles/normal = SubResource( 3 )
+custom_fonts/font = SubResource( 5 )
 shortcut_in_tooltip = false
 button_mask = 3
 text = "Unit Type"
