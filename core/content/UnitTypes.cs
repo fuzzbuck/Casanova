@@ -7,7 +7,11 @@ namespace Casanova.core.content
 {
     public class UnitTypes
     {
-        public static UnitType explorer, crimson;
+        // ground units
+        public static UnitType explorer;
+        
+        // air units
+        public static UnitType crimson;
 
         public static void Init()
         {

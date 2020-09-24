@@ -75,7 +75,7 @@ namespace Casanova.core
 		public static State CurrentState = State.Menu;
 		public class Networking
 		{
-			public static float unit_desync_treshold = 12f;
+			public static float unit_desync_treshold = 4f;
 			public static float unit_desync_interpolation = 0.1f;
 
 			public static bool isHeadless = false;
@@ -125,7 +125,7 @@ namespace Casanova.core
 			if (OS.HasTouchscreenUiHint())
 			{
 				PersistentData.isMobile = true;
-				OS.WindowSize = new Vector2(1080, 720);
+				// OS.WindowSize = new Vector2(1080, 720);
 			}
 		}
 
