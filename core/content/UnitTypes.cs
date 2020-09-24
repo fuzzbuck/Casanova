@@ -60,10 +60,10 @@ namespace Casanova.core.content
                 
                 SkidMarks = new System.Collections.Generic.Dictionary<Vector2, float>
                 {
-                    {new Vector2(6, 8), 6},
-                    {new Vector2(-6, 8), 6}
+                    {new Vector2(6, 8.7f), 6},
+                    {new Vector2(-6, 8.7f), 6}
                 },
-                SkidLength = 12,
+                SkidLength = 10,
                 SkidColor = new Color(255 / 255f, 254 / 255f, 152 / 255f),
                 SkidOpacity = 50,
                 SkidCurve = rocketEngineCurve

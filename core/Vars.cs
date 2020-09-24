@@ -1,6 +1,8 @@
 using System;
 using System.Net;
 using Casanova.core.content;
+using Casanova.core.main;
+using Casanova.core.main.world;
 using Casanova.core.net;
 using Casanova.core.net.server;
 using Casanova.ui;
@@ -130,6 +132,13 @@ namespace Casanova.core
 			Interface.LabelGroup.Clear();
 			Interface.CardsGroup.Clear();
 			Interface.ButtonGroup.Clear();
+
+			PlayerController.LocalPlayer = null;
+			PlayerController.LocalPlayerUnit = null;
+
+			NetworkManager.HostPlayer = null;
+			NetworkManager.PlayersGroup.Clear();
+			NetworkManager.UnitsGroup.Clear();
 			
 			CurrentState = State.Menu;
 			Interface.tree.ChangeScene(Vars.path_frags + "/Menu.tscn");

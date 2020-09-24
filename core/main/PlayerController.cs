@@ -21,10 +21,7 @@ namespace Casanova.core.main
 
         public override void _Process(float delta)
         {
-            if (LocalPlayerUnit == null)
-                return;
-
-            if (LocalPlayerUnit.Body != null)
+            if (LocalPlayerUnit?.Body != null)
             {
                 if (!Vars.PersistentData.isMobile)
                 {

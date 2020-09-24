@@ -8,7 +8,7 @@
 colors = PoolColorArray( 1, 0.443137, 0.443137, 1, 1, 0.443137, 0.443137, 0 )
 
 [node name="SkidMark" type="Line2D"]
-z_index = 1
+z_index = 2
 points = PoolVector2Array( 1740.92, -317.502 )
 width_curve = SubResource( 2 )
 default_color = Color( 0, 0, 0, 1 )

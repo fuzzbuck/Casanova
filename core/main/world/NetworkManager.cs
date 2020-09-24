@@ -101,6 +101,8 @@ namespace Casanova.core.main.world
             if (type == null)
                 type = UnitTypes.crimson;
             
+            GD.Print("Creating player with username: " + _username);
+            
             PlayerUnit instance = CreatePlayerInstance();
             instance.Type = type;
             instance.GlobalPosition = position;
@@ -129,10 +131,10 @@ namespace Casanova.core.main.world
 
             ThreadManager.ExecuteOnMainThread(() =>
             {
+                instance.Tag = _username; // needs to be done after player is spawned
+                
                 if (_id == Client.myId)
                 {
-                    instance.Tag = _username; // needs to be done after player is spawned
-                    
                     Camera cam = (Camera) ResourceLoader.Load<PackedScene>(Vars.path_main + "/units/Camera.tscn").Instance();
                         
                     instance.Body.AddChild(cam);
