@@ -165,6 +165,9 @@ namespace Casanova.core.net
 
                 public static void PlayerMovement(int _fromClient, Packet _packet)
                 {
+                    if (!Server.Clients.ContainsKey(_fromClient))
+                        return;
+                    
                     Vector2 pos = _packet.ReadVector2();
                     Vector2 axis = _packet.ReadVector2();
                     float speed = _packet.ReadFloat();
