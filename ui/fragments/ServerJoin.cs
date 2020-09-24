@@ -1,8 +1,10 @@
 using System;
 using System.Runtime.CompilerServices;
 using Casanova.core;
+using Casanova.core.content;
 using Casanova.core.net;
 using Casanova.core.net.client;
+using Casanova.core.types;
 using Godot;
 using LineEdit = Casanova.ui.elements.LineEdit;
 using World = Casanova.core.main.world.World;
@@ -13,9 +15,11 @@ namespace Casanova.ui.fragments
     {
         private HBoxContainer username;
         private HBoxContainer ip;
-
+        private HBoxContainer unit;
+        
         private LineEdit username_field;
         private LineEdit ip_field;
+        private OptionButton unit_field;
 
         private Button connect_button;
         
@@ -25,13 +29,20 @@ namespace Casanova.ui.fragments
             
             username = GetNode<HBoxContainer>("Username");
             ip = GetNode<HBoxContainer>("Ip");
+            unit = GetNode<HBoxContainer>("UnitSelector");
 
             username_field = username.GetNode<LineEdit>("LineEdit");
             ip_field = ip.GetNode<LineEdit>("LineEdit");
+            unit_field = unit.GetNode<OptionButton>("OptionButton");
+            
+            unit_field.AddItem("Explorer", 0);
+            unit_field.AddItem("Crimson", 1);
+            unit_field.Select(0);
 
             username_field.Connect("text_changed", this, "_onUsernameFieldTextChange");
             ip_field.Connect("text_changed", this, "_onIpFieldTextChange");
             connect_button.Connect("pressed", this, "_onConnectButtonPress");
+            unit_field.Connect("item_selected", this, "_onUnitOptionSelect");
 
             Vars.PersistentData.ip = ip_field.Text;
         }
@@ -43,6 +54,12 @@ namespace Casanova.ui.fragments
         private void _onIpFieldTextChange(string text)
         {
             Vars.PersistentData.ip = text;
+        }
+
+        private void _onUnitOptionSelect(int id)
+        {
+            Vars.PersistentData.UnitType = Enums.UnitTypes[id];
+            GD.Print("New type: " + Enums.UnitTypes[id].Name);
         }
 
         public bool AttemptConnection(string ip)

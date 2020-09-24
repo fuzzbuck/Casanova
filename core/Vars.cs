@@ -5,6 +5,7 @@ using Casanova.core.main;
 using Casanova.core.main.world;
 using Casanova.core.net;
 using Casanova.core.net.server;
+using Casanova.core.types;
 using Casanova.ui;
 using Godot;
 using Client = Casanova.core.net.client.Client;
@@ -46,6 +47,7 @@ namespace Casanova.core
 			
 			public static string username = "unnamed";
 			public static string ip = "fuzzbuck.dev:375";
+			public static UnitType UnitType = UnitTypes.explorer;
 		}
 		
 		public class PlayerCamera
@@ -74,7 +76,7 @@ namespace Casanova.core
 		public class Networking
 		{
 			public static float unit_desync_treshold = 12f;
-			public static float unit_desync_interpolation = 0.05f;
+			public static float unit_desync_interpolation = 0.1f;
 
 			public static bool isHeadless = false;
 			public static int defaultPort = 375;

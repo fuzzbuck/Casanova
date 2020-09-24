@@ -6,6 +6,8 @@ using Casanova.core.main;
 using Casanova.core.main.world;
 using Casanova.core.net.server;
 using Casanova.core.net.types;
+using Casanova.core.types;
+using Casanova.ui;
 using Casanova.ui.fragments;
 using Godot;
 using Client = Casanova.core.net.client.Client;
@@ -22,26 +24,30 @@ namespace Casanova.core.net
                 {
                     string _msg = _packet.ReadString();
                     int _myId = _packet.ReadInt();
-
-                    GD.Print($"Message from server: {_msg}");
+                    
                     Client.myId = _myId;
-                    Send.WelcomeConfirmation(Vars.PersistentData.username);
+                    Send.WelcomeConfirmation(Vars.PersistentData.username, Vars.PersistentData.UnitType);
                     
                     // create world, etc.
                     NetworkManager.ConfirmConnect();
-
                     Client.udp.Connect(((IPEndPoint)Client.tcp.socket.Client.LocalEndPoint).Port);
+                    
+                    ThreadManager.ExecuteOnMainThread(() =>
+                    {
+                        Interface.Utils.CreateInformalMessage($"Server: {_msg}", 10);
+                    });
                 }
 
                 public static void SpawnPlayer(Packet _packet)
                 {
                     int _id = _packet.ReadInt();
                     string _username = _packet.ReadString();
+                    UnitType _type = _packet.ReadUnitType();
 
                     if (Server.IsHosting)
                         return;
                     
-                    NetworkManager.CreatePlayer(NetworkManager.loc.CLIENT, _id, _username);
+                    NetworkManager.CreatePlayer(NetworkManager.loc.CLIENT, _id, _username, _type);
                 }
                 
                 public static void PlayerMovement(Packet _packet)
@@ -55,18 +61,22 @@ namespace Casanova.core.net
                     Vector2 axis = _packet.ReadVector2();
                     float speed = _packet.ReadFloat();
                     float rotation = _packet.ReadFloat();
-                    // todo: use UnitType for rotation speed, prediction & etc..
 
                     var player = NetworkManager.PlayersGroup[id];
                     var unitBody = player?.PlayerUnit.Body;
                     if (unitBody != null && !player.IsLocal)
                     {
                         unitBody.Axis = axis;
-                        //unit.Speed = speed;
-
                         if (unitBody.Position.DistanceTo(pos) > Vars.Networking.unit_desync_treshold)
-                            unitBody.Position = unitBody.Position.LinearInterpolate(pos, Vars.Networking.unit_desync_interpolation);
-
+                        {
+                            unitBody.CollisionHitbox.Disabled = true;
+                            unitBody.Position =
+                                unitBody.Position.LinearInterpolate(pos, Vars.Networking.unit_desync_interpolation);
+                        }
+                        else
+                        {
+                            unitBody.CollisionHitbox.Disabled = false;
+                        }
                     }
                 }
 
@@ -96,12 +106,13 @@ namespace Casanova.core.net
 
             public class Send
             {
-                public static void WelcomeConfirmation(string _username)
+                public static void WelcomeConfirmation(string _username, UnitType _type)
                 {
                     using (Packet _packet = new Packet((int) ClientPackets.welcomeReceived))
                     {
                         _packet.Write(Client.myId);
                         _packet.Write(_username);
+                        _packet.Write(_type);
 
                         Client.SendTCPData(_packet);
                     }
@@ -141,14 +152,15 @@ namespace Casanova.core.net
                 {
                     int _clientIdCheck = _packet.ReadInt();
                     string _username = _packet.ReadString();
+                    UnitType _type = _packet.ReadUnitType();
 
-                    GD.Print($"{Server.Clients[_fromClient].tcp.socket.Client.RemoteEndPoint} connected successfully and is now player {_fromClient}.");
+                    GD.Print($"{Server.Clients[_fromClient].tcp.socket.Client.RemoteEndPoint} connected successfully and is now player {_fromClient} with type {_type.Name}.");
                     if (_fromClient != _clientIdCheck)
                     {
                         GD.Print($"Player \"{_username}\" (ID: {_fromClient}) has assumed the wrong client ID ({_clientIdCheck})!");
                     }
                     
-                    Server.Clients[_fromClient].SendIntoGame(_username);
+                    Server.Clients[_fromClient].SendIntoGame(_username, _type);
                 }
 
                 public static void PlayerMovement(int _fromClient, Packet _packet)
@@ -199,6 +211,7 @@ namespace Casanova.core.net
                     {
                         _packet.Write(_player.Id);
                         _packet.Write(_player.Username);
+                        _packet.Write(_player.PlayerUnit.Type);
                         _packet.Write(_toClient);
 
                         ServerSend.SendTCPData(_toClient, _packet);

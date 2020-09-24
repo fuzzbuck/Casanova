@@ -1,3 +1,4 @@
+using System;
 using Godot;
 
 namespace Casanova.ui.elements
@@ -43,7 +44,14 @@ namespace Casanova.ui.elements
             if (name == "Leave")
             {
                 Interface.LatestInformalMessage = null;
-                QueueFree();
+                try // try for in case its already disposed
+                {
+                    QueueFree();
+                }
+                catch (Exception e)
+                {
+                    GD.Print(e.Message);
+                }
             }
         }
     }

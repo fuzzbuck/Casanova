@@ -14,6 +14,7 @@ namespace Casanova.core.types.bodies
             
             Sprite = GetNode<Sprite>("Sprite");
             Shadow = GetNode<Shadow>("Shadow");
+            CollisionHitbox = GetNode<CollisionPolygon2D>("CollisionPolygon2D");
 
             Shadow.Heigth = shadowHeight;
             Shadow.Blur = shadowBlur;
@@ -24,6 +25,7 @@ namespace Casanova.core.types.bodies
         public Sprite Sprite;
         public Shadow Shadow;
 
+        public CollisionPolygon2D CollisionHitbox;
         public float MaxSpeed;
         public float RotationSpeed;
         

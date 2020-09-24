@@ -7,7 +7,7 @@ namespace Casanova.core.content
     public class UnitTypes
     {
         public static UnitType explorer, crimson;
-        
+
         public static void Init()
         {
             var rocketEngineCurve = new Curve();
@@ -22,6 +22,15 @@ namespace Casanova.core.content
                 wheelSkidCurve.AddPoint(new Vector2(i/100f, rng.RandiRange(900, 1100)/1000f));
             }
 
+            var explorerSkid = new Skid
+            {
+                Length = 300,
+                Width = 4,
+                Opacity = 5,
+                Curve = wheelSkidCurve,
+                Color = new Color(0, 0, 0),
+            };
+            
             explorer = new UnitType
             {
                 Name = "Explorer",
@@ -29,22 +38,26 @@ namespace Casanova.core.content
                 MaxSpeed = 140f,
                 Acceleration = 900f,
                 Deceleration = 600f,
-                RotationSpeed = 5f,
+                RotationSpeed = 8f,
                 Health = 100f,
-                Height = 0.01f,
-                ShadowBlur = 1.1f,
                 MovementType = Enums.MovementType.Ground,
                 
-                SkidMarks = new System.Collections.Generic.Dictionary<Vector2, float>
+                SkidMarks = new System.Collections.Generic.Dictionary<Vector2, Skid>
                 {
-                    {new Vector2(-4, 4), 4},
-                    {new Vector2(4, 4), 4}
+                    {new Vector2(-4, 4), explorerSkid},
+                    {new Vector2(4, 4), explorerSkid}
                 },
-                SkidLength = 300,
-                SkidOpacity = 10,
-                SkidCurve = wheelSkidCurve
             };
-            
+
+            var crimsonSkid = new Skid
+            {
+                Length = 10,
+                Width = 6,
+                Color = new Color(255 / 255f, 254 / 255f, 152 / 255f),
+                Opacity = 75,
+                Curve = rocketEngineCurve
+            };
+                
             crimson = new UnitType
             {
                 Name = "Crimson",
@@ -58,15 +71,11 @@ namespace Casanova.core.content
                 ShadowBlur = 3f,
                 MovementType = Enums.MovementType.Air,
                 
-                SkidMarks = new System.Collections.Generic.Dictionary<Vector2, float>
+                SkidMarks = new System.Collections.Generic.Dictionary<Vector2, Skid>
                 {
-                    {new Vector2(6, 8.7f), 6},
-                    {new Vector2(-6, 8.7f), 6}
-                },
-                SkidLength = 10,
-                SkidColor = new Color(255 / 255f, 254 / 255f, 152 / 255f),
-                SkidOpacity = 50,
-                SkidCurve = rocketEngineCurve
+                    {new Vector2(6, 8.7f), crimsonSkid},
+                    {new Vector2(-6, 8.7f), crimsonSkid}
+                }
             };
         }
     }

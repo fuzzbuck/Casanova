@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Security.Permissions;
 using Casanova.core.content;
 using Casanova.core.types;
 using Casanova.core.types.bodies;
@@ -50,33 +51,33 @@ namespace Casanova.core.main.units
 
             if (Type.SkidMarks != null)
             {
-                foreach (KeyValuePair<Vector2, float> kvp in Type.SkidMarks)
+                foreach (KeyValuePair<Vector2, Skid> kvp in Type.SkidMarks)
                 {
                     var pos = kvp.Key;
-                    var size = kvp.Value;
+                    var skid = kvp.Value;
                     
-                    var skid = Utils.CreateSkidMark();
+                    var skidMark = Utils.CreateSkidMark();
                     
                     var grad = new Gradient();
 
-                    var fade = Type.SkidColor;
+                    var fade = skid.Color;
                     fade.a = 0;
                     
-                    grad.SetColor(1, Type.SkidColor);
+                    grad.SetColor(1, skid.Color);
                     grad.SetColor(0, fade);
                     
                     
-                    skid.Width = size;
-                    skid.Gradient = grad;
-                    skid.Pos = pos;
-                    skid.Modulate = new Color(1, 1, 1, Type.SkidOpacity / 100f);
-                    if (Type.SkidCurve != null)
-                        skid.WidthCurve = Type.SkidCurve;
-
-                    SkidMarks.Add(skid);
-                    GD.Print("Added skid marks");
+                    skidMark.Width = skid.Width;
+                    skidMark.Gradient = grad;
+                    skidMark.Pos = pos;
+                    skidMark.Info = skid;
+                    skidMark.Modulate = new Color(1, 1, 1, skid.Opacity / 100f);
                     
-                    Content.AddChild(skid);
+                    if (skid.Curve != null)
+                        skidMark.WidthCurve = skid.Curve;
+
+                    SkidMarks.Add(skidMark);
+                    Content.AddChild(skidMark);
                 }
             }
             
@@ -89,7 +90,7 @@ namespace Casanova.core.main.units
                 foreach (SkidMark skid in SkidMarks)
                 {
                     skid.AddPoint(Body.InWorldPosition + skid.Pos.Rotated(Body.Rotation));
-                    if (skid.Points.Length > Type.SkidLength)
+                    if (skid.Points.Length > skid.Info.Length)
                         skid.RemovePoint(0);
                 }
             }

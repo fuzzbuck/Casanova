@@ -85,15 +85,15 @@ namespace Casanova.ui
 				LatestInformalMessage?.Skip();
 
 				InformalMessage msg = (InformalMessage) CreateElement("InformalMessage"); // what the hell
+
+				AddHudElement(msg);
+				LatestInformalMessage = msg;
 				
 				ThreadManager.ExecuteOnMainThread(() =>
 				{
 					msg.SetMessage(text);
 					msg.SetTime(time);
 				});
-
-				AddHudElement(msg);
-				LatestInformalMessage = msg;
 				
 				return msg;
 			}

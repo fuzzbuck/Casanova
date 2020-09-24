@@ -4,6 +4,7 @@ using System.Net.Sockets;
 using Casanova.core.content;
 using Casanova.core.main.world;
 using Casanova.core.net.types;
+using Casanova.core.types;
 using Godot;
 
 namespace Casanova.core.net.server
@@ -194,9 +195,9 @@ namespace Casanova.core.net.server
             }
         }
 
-        public void SendIntoGame(string _username)
+        public void SendIntoGame(string _username, UnitType type)
         {
-            player = NetworkManager.CreatePlayer(NetworkManager.loc.SERVER, id, _username);
+            player = NetworkManager.CreatePlayer(NetworkManager.loc.SERVER, id, _username, type);
 
             // send info to all clients except ours that we spawned
             foreach (Client _client in Server.Clients.Values)

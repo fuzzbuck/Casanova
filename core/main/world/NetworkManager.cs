@@ -98,10 +98,10 @@ namespace Casanova.core.main.world
         
         public static Player CreatePlayer(loc loc, int _id, string _username, UnitType type = null, Vector2 position=new Vector2())
         {
+            GD.Print($"Creating player with username: {_username}, type: {type.Name}");
+            
             if (type == null)
                 type = UnitTypes.crimson;
-            
-            GD.Print("Creating player with username: " + _username);
             
             PlayerUnit instance = CreatePlayerInstance();
             instance.Type = type;

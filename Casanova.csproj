@@ -41,6 +41,7 @@
     <Compile Include="core\types\bodies\Body.cs" />
     <Compile Include="core\types\bodies\Air.cs" />
     <Compile Include="core\types\bodies\Shadow.cs" />
+    <Compile Include="core\types\Particles.cs" />
     <Compile Include="core\types\SkidMark.cs" />
     <Compile Include="core\types\UnitType.cs" />
     <Compile Include="core\Vars.cs" />

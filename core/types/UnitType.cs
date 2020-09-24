@@ -10,9 +10,16 @@ namespace Casanova.core.types
             Ground,
             Air
         }
+
+        public static Dictionary<int, UnitType> UnitTypes = new Dictionary<int, UnitType>();
     }
     public class UnitType
     {
+        public UnitType()
+        {
+            Enums.UnitTypes.Add(Enums.UnitTypes.Count, this);
+        }
+        
         public string Name = "Attacker";
         public string Description = "Attacks.";
         
@@ -25,11 +32,10 @@ namespace Casanova.core.types
         public float Deceleration;
         public float RotationSpeed;
         
-        public Dictionary<Vector2, float> SkidMarks; // <Vector2> offset, <float> width
-        public int SkidLength = 200;
-        public Curve SkidCurve = null;
-        public int SkidOpacity = 10;
-        public Color SkidColor = new Color(0, 0, 0);
+        public Dictionary<Vector2, Skid> SkidMarks; // <Vector2> offset, <Skid> skid info
+        
+
+        //public Dictionary<Vector2, ParticleEffect> ParticleEffects;
 
         public Enums.MovementType MovementType = Enums.MovementType.Ground;
     }

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 using System.Text;
 using Casanova.core.net.client;
+using Casanova.core.types;
 using Godot;
 using Vector2 = Godot.Vector2;
 
@@ -175,6 +177,13 @@ namespace Casanova.core.net
         {
             Write(_value.x);
             Write(_value.y);
+        }
+        
+        /// <summary>Adds a UnitType to the packet.</summary>
+        /// <param name="_value">The UnitType to add.</param>
+        public void Write(UnitType _value)
+        {
+            Write(Enums.UnitTypes.FirstOrDefault(x => x.Value == _value).Key);
         }
         #endregion
 
@@ -354,6 +363,13 @@ namespace Casanova.core.net
         public Vector2 ReadVector2(bool _moveReadPos = true)
         {
             return new Vector2(ReadFloat(_moveReadPos), ReadFloat(_moveReadPos));
+        }
+        
+        /// <summary>Reads a UnitType from the packet.</summary>
+        public UnitType ReadUnitType()
+        {
+            int id = ReadInt();
+            return Enums.UnitTypes[id];
         }
         
         #endregion
