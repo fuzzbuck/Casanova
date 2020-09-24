@@ -15,7 +15,7 @@ namespace Casanova.core
 	public class Vars : Node
 	{
 		public static BundleHandler bundleHandler = new BundleHandler("en");
-		public static string ver = "build 2 ver. indev";
+		public static string ver = "build 3 ver. indev";
 		
 		public static string path_core = "res://core";
 		public static string path_main = path_core + "/main";
