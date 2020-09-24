@@ -27,6 +27,7 @@ script = ExtResource( 3 )
 
 [node name="Tag" type="Node2D" parent="." index="0"]
 scale = Vector2( 0.15, 0.15 )
+z_index = 1
 script = ExtResource( 2 )
 
 [node name="FakeLabel" type="Label" parent="Tag" index="0"]

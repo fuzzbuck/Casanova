@@ -14,7 +14,9 @@ namespace Casanova.core.content
             {
                 Name = "Crimson",
                 Description = "Starting bot equipped with a high powered Projector.",
-                MaxSpeed = 12f,
+                MaxSpeed = 190f,
+                Acceleration = 1200f,
+                Deceleration = 900f,
                 RotationSpeed = 6f,
                 Health = 100f,
                 MovementType = Enums.MovementType.Ground,
@@ -35,14 +37,15 @@ namespace Casanova.core.content
                 Acceleration = 700f,
                 RotationSpeed = 3.5f,
                 Deceleration = 400f,
-                Health = 250f,
+                Health = 500f,
                 MovementType = Enums.MovementType.Air,
                 
                 SkidMarks = new Dictionary<Vector2, float>
                 {
-                    {new Vector2(0, 0), 14}
+                    {new Vector2(7, 8), 5},
+                    {new Vector2(-7, 8), 5}
                 },
-                SkidLength = 10,
+                SkidLength = 8,
                 SkidColor = new Color(255 / 255f, 254 / 255f, 152 / 255f),
                 SkidOpacity = 50
             };

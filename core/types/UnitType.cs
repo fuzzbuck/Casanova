@@ -23,7 +23,7 @@ namespace Casanova.core.types
         public float Deceleration;
         public float RotationSpeed;
         
-        public Dictionary<Vector2, float> SkidMarks;
+        public Dictionary<Vector2, float> SkidMarks; // <Vector2> offset, <float> width
         public int SkidLength = 200;
         public int SkidOpacity = 10;
         public Color SkidColor = new Color(0, 0, 0);

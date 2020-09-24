@@ -18,28 +18,48 @@ namespace Casanova.core.types.bodies
         
         public float Acceleration;
         public float Decelleration;
-        public float DiagonalLimit = 0.72f;
-        
+
         public float Speed;
         public Vector2 InWorldPosition;
 
         protected Vector2 Vel;
         public Vector2 Axis;
 
-        public virtual void ProcessMovement(float delta)
+        // Declared as a fraction of 1.0f
+        protected float Bounciness = 0.98f;
+
+        private void ApplyFriction(float amt)
+        {
+            if (Vel.Length() > amt)
+                Vel -= Vel.Normalized() * amt;
+            else
+                Vel = Vector2.Zero;
+        }
+
+        private void ApplyMovement(Vector2 amt)
+        {
+            Vel += amt;
+            Vel = Vel.Clamped(MaxSpeed);
+        }
+
+        public void ProcessMovement(float delta)
         {
             if (Axis == Vector2.Zero)
-                Vel = Vector2.Zero;
+                ApplyFriction(Decelleration * delta);
             else
             {
-                if (Axis.x != 0 && Axis.y != 0)
-                    Axis *= DiagonalLimit;
-                
-                Vel = Axis * MaxSpeed;
+                ApplyMovement(Axis * delta * Acceleration);
                 Rotation = Mathf.LerpAngle(Rotation, Axis.Angle() + Mathf.Deg2Rad(90), RotationSpeed * delta);
             }
-
-            MoveAndCollide(Vel * MaxSpeed * delta);
+			
+			
+            var collision = MoveAndCollide(Vel * delta);
+            if (collision != null)
+            {
+                Vel = Vel.Slide(collision.Normal) * Bounciness;
+            }
+			
+			
             Speed = Vel.Length();
             InWorldPosition = Position;
         }
