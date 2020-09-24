@@ -53,6 +53,7 @@
             <e p="Air.cs" t="Include" />
             <e p="Body.cs" t="Include" />
           </e>
+          <e p="SkidMark.cs" t="Include" />
           <e p="UnitType.cs" t="Include" />
         </e>
         <e p="Vars.cs" t="Include" />
