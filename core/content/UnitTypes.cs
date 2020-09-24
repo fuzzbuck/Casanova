@@ -75,11 +75,11 @@ namespace Casanova.core.content
             crimson = new UnitType
             {
                 Name = "Crimson",
-                Description = "A big drone equipped with a Mk1 Mining laser. Flies at high altitudes making it untrackable to missiles.",
-                MaxSpeed = 180f,
+                Description = "A big drone equipped with a Mk1 Mining laser. Flies at high altitudes.",
+                MaxSpeed = 140f,
                 Acceleration = 700f,
                 RotationSpeed = 3.5f,
-                Deceleration = 400f,
+                Deceleration = 200f,
                 Health = 500f,
                 Height = 20f,
                 ShadowBlur = 3f,

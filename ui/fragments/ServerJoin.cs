@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using Casanova.core;
 using Casanova.core.content;
@@ -32,12 +33,14 @@ namespace Casanova.ui.fragments
             unit = GetNode<HBoxContainer>("UnitSelector");
 
             username_field = username.GetNode<LineEdit>("LineEdit");
+            username_field.Text = Vars.PersistentData.username;
+            
             ip_field = ip.GetNode<LineEdit>("LineEdit");
             unit_field = unit.GetNode<OptionButton>("OptionButton");
             
             unit_field.AddItem("Explorer", 0);
             unit_field.AddItem("Crimson", 1);
-            unit_field.Select(0);
+            unit_field.Select(Enums.UnitTypes.FirstOrDefault(x => x.Value == Vars.PersistentData.UnitType).Key);
 
             username_field.Connect("text_changed", this, "_onUsernameFieldTextChange");
             ip_field.Connect("text_changed", this, "_onIpFieldTextChange");
@@ -59,7 +62,6 @@ namespace Casanova.ui.fragments
         private void _onUnitOptionSelect(int id)
         {
             Vars.PersistentData.UnitType = Enums.UnitTypes[id];
-            GD.Print("New type: " + Enums.UnitTypes[id].Name);
         }
 
         public bool AttemptConnection(string ip)
