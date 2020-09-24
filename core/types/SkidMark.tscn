@@ -1,12 +1,16 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://core/types/SkidMark.cs" type="Script" id=1]
+
+[sub_resource type="Curve" id=2]
 
 [sub_resource type="Gradient" id=1]
 colors = PoolColorArray( 1, 0.443137, 0.443137, 1, 1, 0.443137, 0.443137, 0 )
 
 [node name="SkidMark" type="Line2D"]
+z_index = 1
 points = PoolVector2Array( 1740.92, -317.502 )
+width_curve = SubResource( 2 )
 default_color = Color( 0, 0, 0, 1 )
 gradient = SubResource( 1 )
 script = ExtResource( 1 )

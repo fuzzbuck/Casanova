@@ -99,7 +99,7 @@ namespace Casanova.core.main.world
         public static Player CreatePlayer(loc loc, int _id, string _username, UnitType type = null, Vector2 position=new Vector2())
         {
             if (type == null)
-                type = UnitTypes.ulysses;
+                type = UnitTypes.crimson;
             
             PlayerUnit instance = CreatePlayerInstance();
             instance.Type = type;

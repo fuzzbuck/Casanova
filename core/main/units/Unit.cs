@@ -24,7 +24,7 @@ namespace Casanova.core.main.units
             }
             
             Body body = (Body) ResourceLoader.Load<PackedScene>(Vars.path_types + $"/bodies/{bodyType}.tscn").Instance();
-            body.Init(type.MaxSpeed, type.RotationSpeed, type.Acceleration, type.Deceleration);
+            body.Init(type.MaxSpeed, type.RotationSpeed, type.Acceleration, type.Deceleration, type.Height, type.ShadowBlur);
             
             return body;
         }
@@ -70,6 +70,8 @@ namespace Casanova.core.main.units
                     skid.Gradient = grad;
                     skid.Pos = pos;
                     skid.Modulate = new Color(1, 1, 1, Type.SkidOpacity / 100f);
+                    if (Type.SkidCurve != null)
+                        skid.WidthCurve = Type.SkidCurve;
 
                     SkidMarks.Add(skid);
                     GD.Print("Added skid marks");

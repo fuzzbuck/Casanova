@@ -5,13 +5,24 @@ namespace Casanova.core.types.bodies
 {
     public abstract class Body : KinematicBody2D
     {
-        public void Init(float maxSpeed, float rotationSpeed, float acceleration, float decelleration)
+        public void Init(float maxSpeed, float rotationSpeed, float acceleration, float deceleration, float shadowHeight, float shadowBlur)
         {
             MaxSpeed = maxSpeed;
             RotationSpeed = rotationSpeed;
             Acceleration = acceleration;
-            Decelleration = decelleration;
+            Decelleration = deceleration;
+            
+            Sprite = GetNode<Sprite>("Sprite");
+            Shadow = GetNode<Shadow>("Shadow");
+
+            Shadow.Heigth = shadowHeight;
+            Shadow.Blur = shadowBlur;
+
+            // todo: give unit different sprites based on name
         }
+
+        public Sprite Sprite;
+        public Shadow Shadow;
 
         public float MaxSpeed;
         public float RotationSpeed;
