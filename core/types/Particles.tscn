@@ -3,14 +3,14 @@
 [ext_resource path="res://assets/effects/smoke_1.png" type="Texture" id=1]
 [ext_resource path="res://core/types/Particles.cs" type="Script" id=2]
 
-[sub_resource type="Curve" id=3]
+[sub_resource type="Curve" id=1]
 max_value = 100.0
 _data = [ Vector2( 0, 0 ), 0.0, 0.0, 0, 0, Vector2( 0.456942, 45.8301 ), 0.0, 0.0, 0, 0 ]
 
-[sub_resource type="Curve" id=1]
+[sub_resource type="Curve" id=2]
 _data = [ Vector2( 0, 0.414773 ), 0.0, 0.0, 0, 0, Vector2( 0.175747, 0.714773 ), 0.0, 0.0, 0, 0, Vector2( 1, 1 ), 0.0, 0.0, 0, 0 ]
 
-[sub_resource type="Gradient" id=2]
+[sub_resource type="Gradient" id=3]
 offsets = PoolRealArray( 0, 0.663004, 1 )
 colors = PoolColorArray( 0, 0, 0, 1, 0.14902, 0.14902, 0.14902, 0, 0.367188, 0.367188, 0.367188, 0 )
 
@@ -34,10 +34,10 @@ angular_velocity = 189.03
 angular_velocity_random = 1.0
 damping = 1.0
 damping_random = 1.0
-damping_curve = SubResource( 3 )
+damping_curve = SubResource( 1 )
 angle = 360.0
 angle_random = 1.0
 scale_amount = 0.1
-scale_amount_curve = SubResource( 1 )
-color_ramp = SubResource( 2 )
+scale_amount_curve = SubResource( 2 )
+color_ramp = SubResource( 3 )
 script = ExtResource( 2 )
