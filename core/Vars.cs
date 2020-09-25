@@ -12,147 +12,144 @@ using Client = Casanova.core.net.client.Client;
 
 namespace Casanova.core
 {
-	public class Vars : Node
-	{
-		public static BundleHandler bundleHandler = new BundleHandler("en");
-		public static string ver = "build 3 ver. indev";
-		
-		public static string path_core = "res://core";
-		public static string path_main = path_core + "/main";
-		public static string path_world = path_main + "/world";
-		public static string path_types = path_core + "/types";
-		public static string path_units = path_main + "/units";
-		
-		public static string path_ui = "res://ui";
-		public static string path_elems = path_ui + "/elements";
-		public static string path_frags = path_ui + "/fragments";
+    public class Vars : Node
+    {
+        public enum State
+        {
+            Menu,
+            World,
+            Tutorial,
+            MultiplayerWorld
+        }
 
-		public static string path_net = path_main + "/net";
-		public static string path_client = path_net + "/client";
-		public static string path_server = path_net + "/server";
+        public static BundleHandler bundleHandler = new BundleHandler("en");
+        public static string ver = "build 3 ver. indev";
 
-		public override void _Ready()
-		{
-			Load();
-		}
+        public static string path_core = "res://core";
+        public static string path_main = path_core + "/main";
+        public static string path_world = path_main + "/world";
+        public static string path_types = path_core + "/types";
+        public static string path_units = path_main + "/units";
 
-		public override void _Process(float delta)
-		{
-			ThreadManager.UpdateMain();
-		}
+        public static string path_ui = "res://ui";
+        public static string path_elems = path_ui + "/elements";
+        public static string path_frags = path_ui + "/fragments";
 
-		public class PersistentData
-		{
-			public static bool isMobile = false;
-			
-			public static string username = "unnamed";
-			public static string ip = "fuzzbuck.dev:375";
-			public static UnitType UnitType = UnitTypes.explorer;
-		}
-		
-		public class PlayerCamera
-		{
-			public static bool rotates_with_player = false;
-			public static float min_zoom_distance = 0.44f;
-			public static float max_zoom_distance = 2f;
-			public static float mobile_zoom_offset_multiplier = 0.25f;
+        public static string path_net = path_main + "/net";
+        public static string path_client = path_net + "/client";
+        public static string path_server = path_net + "/server";
 
-			public static float mobile_cam_distance_treshold = 35f;
-			public static float zoom_sensitivity = 2f;
-			public static float zoom_speed = 0.02f;
-			public static float drag_sensitivity = 0.2f;
-			public static float smoothness = 0.034f;
-		}
+        public static State CurrentState = State.Menu;
 
-		public enum State
-		{
-			Menu,
-			World,
-			Tutorial,
-			MultiplayerWorld
-		}
+        public override void _Ready()
+        {
+            Load();
+        }
 
-		public static State CurrentState = State.Menu;
-		public class Networking
-		{
-			public static float unit_desync_treshold = 4f;
-			public static float unit_desync_interpolation = 0.1f;
+        public override void _Process(float delta)
+        {
+            ThreadManager.UpdateMain();
+        }
 
-			public static bool isHeadless = false;
-			public static int defaultPort = 375;
-			public static int Port = defaultPort;
+        public static void Load()
+        {
+            // todo: display loading screen
+            UnitTypes.Init();
 
-			public static string[] ParseIpString(string ip)
-			{
-				try
-				{
-					string[] addy = ip.Split(":");
-					int port = defaultPort;
+            bundleHandler.updateBundle("en");
 
-					if (addy.Length > 1 && int.TryParse(addy[1], out int newport))
-						port = newport;
+            if (OS.HasTouchscreenUiHint())
+                PersistentData.isMobile = true;
+            // OS.WindowSize = new Vector2(1080, 720);
+        }
 
-					if (!IPAddress.TryParse(addy[0], out IPAddress address))
-					{
-						var ips = Dns.GetHostAddresses(addy[0]);
-						if (ips.Length > 0)
-						{
-							addy[0] = ips[0].ToString().Split(":")[0];
-						}
-					}
+        public static void Reload()
+        {
+            Interface.LabelGroup.Clear();
+            Interface.CardsGroup.Clear();
+            Interface.ButtonGroup.Clear();
 
-					return new[] {addy[0], port.ToString()};
-				}
-				catch (Exception)
-				{
-					throw new Exception($"Failed parsing IP: {ip}");
-				}
-			}
-		}
-		public class Pals
-		{
-			public static Color accent = new Color(248, 248, 126);
-			public static Color highlight = new Color(255, 255, 255);
-		}
-		
-		public static void Load()
-		{
-			// todo: display loading screen
-			UnitTypes.Init();
-			
-			bundleHandler.updateBundle("en");
+            PlayerController.LocalPlayer = null;
+            PlayerController.LocalPlayerUnit = null;
 
-			if (OS.HasTouchscreenUiHint())
-			{
-				PersistentData.isMobile = true;
-				// OS.WindowSize = new Vector2(1080, 720);
-			}
-		}
+            NetworkManager.HostPlayer = null;
+            NetworkManager.PlayersGroup.Clear();
+            NetworkManager.UnitsGroup.Clear();
 
-		public static void Reload()
-		{
-			Interface.LabelGroup.Clear();
-			Interface.CardsGroup.Clear();
-			Interface.ButtonGroup.Clear();
+            CurrentState = State.Menu;
+            Interface.tree.ChangeScene(path_frags + "/Menu.tscn");
+        }
 
-			PlayerController.LocalPlayer = null;
-			PlayerController.LocalPlayerUnit = null;
+        public static void Unload()
+        {
+            if (Server.IsHosting || Client.isConnected)
+                Reload();
 
-			NetworkManager.HostPlayer = null;
-			NetworkManager.PlayersGroup.Clear();
-			NetworkManager.UnitsGroup.Clear();
-			
-			CurrentState = State.Menu;
-			Interface.tree.ChangeScene(Vars.path_frags + "/Menu.tscn");
-		}
+            // todo: save important data, do pre-exit things
+            Interface.tree.Quit();
+        }
 
-		public static void Unload()
-		{
-			if(Server.IsHosting || Client.isConnected)
-				Reload();
-			
-			// todo: save important data, do pre-exit things
-			Interface.tree.Quit();
-		}
-	}
+        public class PersistentData
+        {
+            public static bool isMobile;
+
+            public static string username = "unnamed";
+            public static string ip = "fuzzbuck.dev:375";
+            public static UnitType UnitType = UnitTypes.explorer;
+        }
+
+        public class PlayerCamera
+        {
+            public static bool rotates_with_player = false;
+            public static float min_zoom_distance = 0.44f;
+            public static float max_zoom_distance = 2f;
+            public static float mobile_zoom_offset_multiplier = 0.25f;
+
+            public static float mobile_cam_distance_treshold = 35f;
+            public static float zoom_sensitivity = 2f;
+            public static float zoom_speed = 0.02f;
+            public static float drag_sensitivity = 0.2f;
+            public static float smoothness = 0.034f;
+        }
+
+        public class Networking
+        {
+            public static float unit_desync_treshold = 4f;
+            public static float unit_desync_interpolation = 0.1f;
+
+            public static bool isHeadless = false;
+            public static int defaultPort = 375;
+            public static int Port = defaultPort;
+
+            public static string[] ParseIpString(string ip)
+            {
+                try
+                {
+                    var addy = ip.Split(":");
+                    var port = defaultPort;
+
+                    if (addy.Length > 1 && int.TryParse(addy[1], out var newport))
+                        port = newport;
+
+                    if (!IPAddress.TryParse(addy[0], out var address))
+                    {
+                        var ips = Dns.GetHostAddresses(addy[0]);
+                        if (ips.Length > 0) addy[0] = ips[0].ToString().Split(":")[0];
+                    }
+
+                    return new[] {addy[0], port.ToString()};
+                }
+                catch (Exception)
+                {
+                    throw new Exception($"Failed parsing IP: {ip}");
+                }
+            }
+        }
+
+        public class Pals
+        {
+            public static Color accent = new Color(248, 248, 126);
+            public static Color highlight = new Color(255, 255, 255);
+        }
+    }
 }

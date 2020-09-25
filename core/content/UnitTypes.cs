@@ -1,7 +1,6 @@
+using System.Collections.Generic;
 using Casanova.core.types;
 using Godot;
-using Godot.Collections;
-using Particles = Casanova.core.types.Particles;
 
 namespace Casanova.core.content
 {
@@ -9,7 +8,7 @@ namespace Casanova.core.content
     {
         // ground units
         public static UnitType explorer;
-        
+
         // air units
         public static UnitType crimson;
 
@@ -19,13 +18,11 @@ namespace Casanova.core.content
             rocketEngineCurve.AddPoint(new Vector2(1, 1f));
             rocketEngineCurve.AddPoint(new Vector2(0.5f, 1.5f));
             rocketEngineCurve.AddPoint(new Vector2(0, 0.2f));
-            
+
             var wheelSkidCurve = new Curve();
             var rng = new RandomNumberGenerator();
-            for (int i = 0; i < 100; i++)
-            {
-                wheelSkidCurve.AddPoint(new Vector2(i/100f, rng.RandiRange(900, 1100)/1000f));
-            }
+            for (var i = 0; i < 100; i++)
+                wheelSkidCurve.AddPoint(new Vector2(i / 100f, rng.RandiRange(900, 1100) / 1000f));
 
             var explorerSkid = new Skid
             {
@@ -33,7 +30,7 @@ namespace Casanova.core.content
                 Width = 4,
                 Opacity = 5,
                 Curve = wheelSkidCurve,
-                Color = new Color(0, 0, 0),
+                Color = new Color(0, 0, 0)
             };
 
             var explorerSmoke = new ParticleInfo
@@ -42,7 +39,7 @@ namespace Casanova.core.content
                 Velocity = 50f,
                 Amount = 64
             };
-            
+
             explorer = new UnitType
             {
                 Name = "Explorer",
@@ -53,14 +50,14 @@ namespace Casanova.core.content
                 RotationSpeed = 8f,
                 Health = 100f,
                 MovementType = Enums.MovementType.Ground,
-                
-                SkidMarks = new System.Collections.Generic.Dictionary<Vector2, Skid>
+
+                SkidMarks = new Dictionary<Vector2, Skid>
                 {
                     {new Vector2(-4, 4), explorerSkid},
                     {new Vector2(4, 4), explorerSkid}
                 },
-                
-                ParticleEffects = new System.Collections.Generic.Dictionary<Vector2, ParticleInfo>
+
+                ParticleEffects = new Dictionary<Vector2, ParticleInfo>
                 {
                     {new Vector2(-4, 4), explorerSmoke},
                     {new Vector2(4, 4), explorerSmoke}
@@ -75,7 +72,7 @@ namespace Casanova.core.content
                 Opacity = 75,
                 Curve = rocketEngineCurve
             };
-                
+
             crimson = new UnitType
             {
                 Name = "Crimson",
@@ -88,8 +85,8 @@ namespace Casanova.core.content
                 Height = 20f,
                 ShadowBlur = 3f,
                 MovementType = Enums.MovementType.Air,
-                
-                SkidMarks = new System.Collections.Generic.Dictionary<Vector2, Skid>
+
+                SkidMarks = new Dictionary<Vector2, Skid>
                 {
                     {new Vector2(6, 8.7f), crimsonSkid},
                     {new Vector2(-6, 8.7f), crimsonSkid}

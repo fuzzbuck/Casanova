@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
-using Casanova.core.net.server;
 using Casanova.ui;
 using Godot;
 
@@ -17,9 +16,8 @@ namespace Casanova.core.net.client
         public static int myId = 0;
         public static TCP tcp;
         public static UDP udp;
-        
-        public static bool isConnected = false;
-        private delegate void PacketHandler(Packet _packet);
+
+        public static bool isConnected;
         private static Dictionary<int, PacketHandler> packetHandlers;
 
         public static void ConnectToServer(string _ip, int _port)
@@ -45,13 +43,55 @@ namespace Casanova.core.net.client
             }
         }
 
+        public static void SendTCPData(Packet _packet)
+        {
+            if (!isConnected)
+                return;
+
+            _packet.WriteLength();
+            tcp.SendData(_packet);
+        }
+
+        public static void SendUDPData(Packet _packet)
+        {
+            if (!isConnected)
+                return;
+
+            _packet.WriteLength();
+            udp.SendData(_packet);
+        }
+
+        private static void InitializeClientData()
+        {
+            packetHandlers = new Dictionary<int, PacketHandler>
+            {
+                {(int) ServerPackets.welcome, Packets.ClientHandle.Receive.Welcome},
+                {(int) ServerPackets.spawnPlayer, Packets.ClientHandle.Receive.SpawnPlayer},
+                {(int) ServerPackets.playerMovement, Packets.ClientHandle.Receive.PlayerMovement},
+                {(int) ServerPackets.disconnectPlayer, Packets.ClientHandle.Receive.PlayerDisconnect},
+                {(int) ServerPackets.chatMessage, Packets.ClientHandle.Receive.ChatMessage}
+            };
+        }
+
+        public static void Disconnect()
+        {
+            if (isConnected)
+            {
+                isConnected = false;
+                tcp.socket.Close();
+                udp.socket.Close();
+            }
+        }
+
+        private delegate void PacketHandler(Packet _packet);
+
         public class TCP
         {
+            private byte[] receiveBuffer;
+            private Packet receivedData;
             public TcpClient socket;
 
             private NetworkStream stream;
-            private Packet receivedData;
-            private byte[] receiveBuffer;
 
             public void Connect()
             {
@@ -68,15 +108,12 @@ namespace Casanova.core.net.client
             private void ConnectCallback(IAsyncResult _result)
             {
                 try
-                { 
+                {
                     socket.EndConnect(_result);
-                    if (!socket.Connected)
-                    {
-                        return;
-                    }
+                    if (!socket.Connected) return;
 
                     receivedData = new Packet();
-                    
+
                     stream = socket.GetStream();
                     stream.BeginRead(receiveBuffer, 0, dataBufferSize, ReceiveCallback, null);
                 }
@@ -91,10 +128,7 @@ namespace Casanova.core.net.client
             {
                 try
                 {
-                    if (socket != null)
-                    {
-                        stream.BeginWrite(_packet.ToArray(), 0, _packet.Length(), null, null);
-                    }
+                    if (socket != null) stream.BeginWrite(_packet.ToArray(), 0, _packet.Length(), null, null);
                 }
                 catch (Exception _ex)
                 {
@@ -106,16 +140,16 @@ namespace Casanova.core.net.client
             {
                 try
                 {
-                    int _byteLength = stream.EndRead(_result);
+                    var _byteLength = stream.EndRead(_result);
                     if (_byteLength <= 0)
                     {
                         Disconnect();
                         return;
                     }
 
-                    byte[] _data = new byte[_byteLength];
+                    var _data = new byte[_byteLength];
                     Array.Copy(receiveBuffer, _data, _byteLength);
-                    
+
                     receivedData.Reset(HandleData(_data));
                     stream.BeginRead(receiveBuffer, 0, dataBufferSize, ReceiveCallback, null);
                 }
@@ -125,33 +159,30 @@ namespace Casanova.core.net.client
                     Disconnect();
                 }
             }
-            
+
             private bool HandleData(byte[] _data)
             {
-                int _packetLength = 0;
+                var _packetLength = 0;
 
                 receivedData.SetBytes(_data);
 
                 if (receivedData.UnreadLength() >= 4)
                 {
                     _packetLength = receivedData.ReadInt();
-                    if (_packetLength <= 0)
-                    {
-                        return true;
-                    }
+                    if (_packetLength <= 0) return true;
                 }
 
                 while (_packetLength > 0 && _packetLength <= receivedData.UnreadLength())
                 {
-                    byte[] _packetBytes = receivedData.ReadBytes(_packetLength);
+                    var _packetBytes = receivedData.ReadBytes(_packetLength);
                     if (!isConnected)
                         continue;
 
                     ThreadManager.ExecuteOnMainThread(() =>
                     {
-                        using (Packet _packet = new Packet(_packetBytes))
+                        using (var _packet = new Packet(_packetBytes))
                         {
-                            int _packetId = _packet.ReadInt();
+                            var _packetId = _packet.ReadInt();
                             packetHandlers[_packetId](_packet); // Call appropriate method to handle the packet
                         }
 
@@ -162,17 +193,11 @@ namespace Casanova.core.net.client
                     if (receivedData.UnreadLength() >= 4)
                     {
                         _packetLength = receivedData.ReadInt();
-                        if (_packetLength <= 0)
-                        {
-                            return true;
-                        }
+                        if (_packetLength <= 0) return true;
                     }
                 }
 
-                if (_packetLength <= 1)
-                {
-                    return true;
-                }
+                if (_packetLength <= 1) return true;
 
                 // malformed/not-understood packet, drop it
                 return false;
@@ -189,8 +214,8 @@ namespace Casanova.core.net.client
 
         public class UDP
         {
-            public UdpClient socket;
             public IPEndPoint endPoint;
+            public UdpClient socket;
 
             public UDP()
             {
@@ -204,21 +229,18 @@ namespace Casanova.core.net.client
                 socket.Connect(endPoint);
                 socket.BeginReceive(ReceiveCallback, null);
 
-                using (Packet _packet = new Packet())
+                using (var _packet = new Packet())
                 {
                     SendData(_packet);
                 }
             }
-            
+
             public void SendData(Packet _packet)
             {
                 try
                 {
                     _packet.InsertInt(myId);
-                    if (socket != null)
-                    {
-                        socket.BeginSend(_packet.ToArray(), _packet.Length(), null, null);
-                    }
+                    if (socket != null) socket.BeginSend(_packet.ToArray(), _packet.Length(), null, null);
                 }
                 catch (Exception _ex)
                 {
@@ -230,7 +252,7 @@ namespace Casanova.core.net.client
             {
                 try
                 {
-                    byte[] _data = socket.EndReceive(_result, ref endPoint);
+                    var _data = socket.EndReceive(_result, ref endPoint);
                     socket.BeginReceive(ReceiveCallback, null);
 
                     if (_data.Length < 4)
@@ -249,9 +271,9 @@ namespace Casanova.core.net.client
 
             private void HandleData(byte[] _data)
             {
-                using (Packet _packet = new Packet(_data))
+                using (var _packet = new Packet(_data))
                 {
-                    int _packetLength = _packet.ReadInt();
+                    var _packetLength = _packet.ReadInt();
                     _data = _packet.ReadBytes(_packetLength);
                 }
 
@@ -259,59 +281,19 @@ namespace Casanova.core.net.client
                 {
                     if (!isConnected)
                         return;
-                    
-                    using (Packet _packet = new Packet(_data))
+
+                    using (var _packet = new Packet(_data))
                     {
-                        int _packetId = _packet.ReadInt();
+                        var _packetId = _packet.ReadInt();
                         packetHandlers[_packetId](_packet);
                     }
                 });
             }
-            
+
             public void Disconnect()
             {
                 endPoint = null;
                 socket = null;
-            }
-        }
-        
-        public static void SendTCPData(Packet _packet)
-        {
-            if (!isConnected)
-                return;
-            
-            _packet.WriteLength();
-            tcp.SendData(_packet);
-        }
-
-        public static void SendUDPData(Packet _packet)
-        {
-            if (!isConnected)
-                return;
-            
-            _packet.WriteLength();
-            udp.SendData(_packet);
-        }
-
-        private static void InitializeClientData()
-        {
-            packetHandlers = new Dictionary<int, PacketHandler>()
-            {
-                { (int)ServerPackets.welcome, Packets.ClientHandle.Receive.Welcome },
-                { (int)ServerPackets.spawnPlayer, Packets.ClientHandle.Receive.SpawnPlayer },
-                { (int)ServerPackets.playerMovement, Packets.ClientHandle.Receive.PlayerMovement },
-                { (int)ServerPackets.disconnectPlayer, Packets.ClientHandle.Receive.PlayerDisconnect },
-                { (int)ServerPackets.chatMessage, Packets.ClientHandle.Receive.ChatMessage }
-            };
-        }
-
-        public static void Disconnect()
-        {
-            if (isConnected)
-            {
-                isConnected = false;
-                tcp.socket.Close();
-                udp.socket.Close();
             }
         }
     }
