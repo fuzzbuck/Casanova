@@ -22,7 +22,7 @@ namespace Casanova.core
             MultiplayerWorld
         }
 
-        public static BundleHandler bundleHandler = new BundleHandler();
+        public static BundleHandler bundleHandler = new BundleHandler("en");
         public static string ver = "build 3 ver. indev";
 
         public static string path_core = "res://core";

@@ -17,6 +17,7 @@ _global_script_class_icons={
 
 config/name="Casanova"
 run/main_scene="res://ui/fragments/Menu.tscn"
+boot_splash/image="res://assets/sprites/interface/logo.png"
 boot_splash/fullsize=false
 boot_splash/bg_color=Color( 0, 0, 0, 1 )
 config/quit_on_go_back=false
