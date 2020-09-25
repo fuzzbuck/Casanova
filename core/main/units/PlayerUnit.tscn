@@ -22,7 +22,7 @@ size = 64
 use_mipmaps = true
 font_data = SubResource( 4 )
 
-[node name="PlayerUnit" instance=ExtResource( 1 )]
+[node name="PlayerUnit" type="Node2D" instance=ExtResource( 1 )]
 script = ExtResource( 3 )
 
 [node name="Tag" type="Node2D" parent="." index="0"]
