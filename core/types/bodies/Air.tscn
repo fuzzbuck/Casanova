@@ -4,40 +4,19 @@
 [ext_resource path="res://core/types/bodies/Body.tscn" type="PackedScene" id=2]
 [ext_resource path="res://assets/sprites/units/miner_mk1.png" type="Texture" id=3]
 
-[sub_resource type="Shader" id=1]
-code = "shader_type canvas_item;
-render_mode blend_mix;
-
-uniform vec2 offset = vec2(28.0, 28.0);
-uniform vec4 modulate : hint_color;
-
-void fragment() {
-	vec2 ps = TEXTURE_PIXEL_SIZE;
-
-	vec4 shadow = vec4(modulate.rgb, texture(TEXTURE, UV - offset * ps).a * modulate.a);
-	vec4 col = texture(TEXTURE, UV);
-
-	COLOR = mix(shadow, col, col.a);
-}"
-
-[sub_resource type="ShaderMaterial" id=2]
-shader = SubResource( 1 )
-shader_param/offset = Vector2( 28, 28 )
-shader_param/modulate = null
-
-[node name="Body" instance=ExtResource( 2 )]
+[node name="Body" type="KinematicBody2D" instance=ExtResource( 2 )]
 scale = Vector2( 1, 1 )
 collision_layer = 8
 collision_mask = 8
 script = ExtResource( 1 )
 
-[node name="Sprite" parent="." index="1"]
+[node name="Sprite" type="Sprite" parent="." index="1"]
 material = SubResource( 2 )
 position = Vector2( 0, -1 )
 z_index = 4
 texture = ExtResource( 3 )
 
-[node name="CollisionPolygon2D" parent="." index="2"]
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="." index="2"]
 position = Vector2( 0, -1 )
 scale = Vector2( 1, 1 )
 polygon = PoolVector2Array( 24, 32, 24, -8, 0, -32, -24, -8, -24, 32, 0, 17 )

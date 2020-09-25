@@ -1,29 +1,27 @@
 using Casanova.ui;
 using Godot;
 
-public class BundleHandler : Node
+namespace Casanova.core
 {
-    public BundleHandler(string locale)
+    public class BundleHandler : Node
     {
-        TranslationServer.SetLocale(locale);
-    }
-
-    public void updateBundle(string locale)
-    {
-        TranslationServer.SetLocale(locale);
-
-        // update buttons
-        for (var i = 0; i < Interface.ButtonGroup.Count; i++)
+        public void updateBundle(string locale)
         {
-            var button = Interface.ButtonGroup[i];
-            button.Text = Tr(button.Name.ToUpper());
-        }
+            TranslationServer.SetLocale(locale);
 
-        // update labels
-        for (var i = 0; i < Interface.LabelGroup.Count; i++)
-        {
-            var label = Interface.LabelGroup[i];
-            label.Text = Tr(label.Name.ToUpper());
+            // update buttons
+            for (var i = 0; i < Interface.ButtonGroup.Count; i++)
+            {
+                var button = Interface.ButtonGroup[i];
+                button.Text = Tr(button.Name.ToUpper());
+            }
+
+            // update labels
+            for (var i = 0; i < Interface.LabelGroup.Count; i++)
+            {
+                var label = Interface.LabelGroup[i];
+                label.Text = Tr(label.Name.ToUpper());
+            }
         }
     }
 }
