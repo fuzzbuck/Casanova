@@ -1,7 +1,6 @@
 using System;
 using System.Net;
 using System.Net.Sockets;
-using Casanova.core.content;
 using Casanova.core.main.world;
 using Casanova.core.net.types;
 using Casanova.core.types;
@@ -9,10 +8,10 @@ using Godot;
 
 namespace Casanova.core.net.server
 {
-    class Client
+    internal class Client
     {
         public static int dataBufferSize = 4096;
-        
+
         public int id;
         public Player player;
         public TCP tcp;
@@ -25,14 +24,43 @@ namespace Casanova.core.net.server
             udp = new UDP(id);
         }
 
+        public void SendIntoGame(string _username, UnitType type)
+        {
+            player = NetworkManager.CreatePlayer(NetworkManager.loc.SERVER, id, _username, type);
+
+            // send info to all clients except ours that we spawned
+            foreach (var _client in Server.Clients.Values)
+                if (_client.player != null)
+                    if (_client.id != id)
+                        Packets.ServerHandle.Send.SpawnPlayer(id, _client.player);
+
+            // send info from all clients except ours about others existance
+            foreach (var _client in Server.Clients.Values)
+                if (_client.player != null && !_client.player.IsLocal)
+                    Packets.ServerHandle.Send.SpawnPlayer(_client.id, player);
+        }
+
+        private void Disconnect()
+        {
+            GD.Print($"{tcp.socket.Client.RemoteEndPoint} has disconnected.");
+
+            if (Server.IsHosting)
+            {
+                Packets.ServerHandle.Send.PlayerDisconnect(id);
+                player = null;
+            }
+
+            tcp.Disconnect();
+            udp.Disconnect();
+        }
+
         public class TCP
         {
-            public TcpClient socket;
-
             private readonly int id;
-            private NetworkStream stream;
-            private Packet receivedData;
             private byte[] receiveBuffer;
+            private Packet receivedData;
+            public TcpClient socket;
+            private NetworkStream stream;
 
             public TCP(int _id)
             {
@@ -60,10 +88,8 @@ namespace Casanova.core.net.server
                 try
                 {
                     if (socket != null)
-                    {
                         stream.BeginWrite(_packet.ToArray(), 0, _packet.Length(), null,
                             null); // Send data to appropriate client
-                    }
                 }
                 catch (Exception _ex)
                 {
@@ -75,14 +101,14 @@ namespace Casanova.core.net.server
             {
                 try
                 {
-                    int _byteLength = stream.EndRead(_result);
+                    var _byteLength = stream.EndRead(_result);
                     if (_byteLength <= 0)
                     {
                         Server.Clients[id].Disconnect();
                         return;
                     }
 
-                    byte[] _data = new byte[_byteLength];
+                    var _data = new byte[_byteLength];
                     Array.Copy(receiveBuffer, _data, _byteLength);
 
                     receivedData.Reset(HandleData(_data));
@@ -97,27 +123,24 @@ namespace Casanova.core.net.server
 
             private bool HandleData(byte[] _data)
             {
-                int _packetLength = 0;
+                var _packetLength = 0;
 
                 receivedData.SetBytes(_data);
 
                 if (receivedData.UnreadLength() >= 4)
                 {
                     _packetLength = receivedData.ReadInt();
-                    if (_packetLength <= 0)
-                    {
-                        return true;
-                    }
+                    if (_packetLength <= 0) return true;
                 }
 
                 while (_packetLength > 0 && _packetLength <= receivedData.UnreadLength())
                 {
-                    byte[] _packetBytes = receivedData.ReadBytes(_packetLength);
+                    var _packetBytes = receivedData.ReadBytes(_packetLength);
                     ThreadManager.ExecuteOnMainThread(() =>
                     {
-                        using (Packet _packet = new Packet(_packetBytes))
+                        using (var _packet = new Packet(_packetBytes))
                         {
-                            int _packetId = _packet.ReadInt();
+                            var _packetId = _packet.ReadInt();
                             Server.packetHandlers[_packetId](id, _packet);
                         }
                     });
@@ -126,17 +149,11 @@ namespace Casanova.core.net.server
                     if (receivedData.UnreadLength() >= 4)
                     {
                         _packetLength = receivedData.ReadInt();
-                        if (_packetLength <= 0)
-                        {
-                            return true;
-                        }
+                        if (_packetLength <= 0) return true;
                     }
                 }
 
-                if (_packetLength <= 1)
-                {
-                    return true;
-                }
+                if (_packetLength <= 1) return true;
 
                 return false;
             }
@@ -150,11 +167,12 @@ namespace Casanova.core.net.server
                 socket = null;
             }
         }
+
         public class UDP
         {
             public IPEndPoint endPoint;
 
-            private int id;
+            private readonly int id;
 
             public UDP(int _id)
             {
@@ -175,15 +193,15 @@ namespace Casanova.core.net.server
             {
                 if (!Server.IsHosting)
                     return;
-                
-                int _packetLength = _packetData.ReadInt();
-                byte[] _packetBytes = _packetData.ReadBytes(_packetLength);
+
+                var _packetLength = _packetData.ReadInt();
+                var _packetBytes = _packetData.ReadBytes(_packetLength);
 
                 ThreadManager.ExecuteOnMainThread(() =>
                 {
-                    using (Packet _packet = new Packet(_packetBytes))
+                    using (var _packet = new Packet(_packetBytes))
                     {
-                        int _packetId = _packet.ReadInt();
+                        var _packetId = _packet.ReadInt();
                         Server.packetHandlers[_packetId](id, _packet);
                     }
                 });
@@ -193,46 +211,6 @@ namespace Casanova.core.net.server
             {
                 endPoint = null;
             }
-        }
-
-        public void SendIntoGame(string _username, UnitType type)
-        {
-            player = NetworkManager.CreatePlayer(NetworkManager.loc.SERVER, id, _username, type);
-
-            // send info to all clients except ours that we spawned
-            foreach (Client _client in Server.Clients.Values)
-            {
-                if (_client.player != null)
-                {
-                    if (_client.id != id)
-                    {
-                        Packets.ServerHandle.Send.SpawnPlayer(id, _client.player);
-                    }
-                }
-            }
-            
-            // send info from all clients except ours about others existance
-            foreach (Client _client in Server.Clients.Values)
-            {
-                if (_client.player != null && !_client.player.IsLocal)
-                {
-                    Packets.ServerHandle.Send.SpawnPlayer(_client.id, player);
-                }
-            }
-        }
-
-        private void Disconnect()
-        {
-            GD.Print($"{tcp.socket.Client.RemoteEndPoint} has disconnected.");
-            
-            if (Server.IsHosting)
-            {
-                Packets.ServerHandle.Send.PlayerDisconnect(id);
-                player = null;
-            }
-
-            tcp.Disconnect();
-            udp.Disconnect();
         }
     }
 }

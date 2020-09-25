@@ -6,7 +6,7 @@ namespace Casanova.ui.fragments
     public class MobileUnderhead : CenterContainer
     {
         public Button chatButton;
-        
+
         public override void _Ready()
         {
             chatButton = GetNode<Button>("ChatButton");
@@ -24,7 +24,7 @@ namespace Casanova.ui.fragments
 
         public void _onChatButtonPress()
         {
-            if(Chat.instance.senderBox.Modulate != new Color(1, 1, 1))
+            if (Chat.instance.senderBox.Modulate != new Color(1, 1, 1))
                 Chat.instance.TriggerSendBox();
         }
     }

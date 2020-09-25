@@ -1,11 +1,9 @@
-using System;
 using Casanova.core;
 using Casanova.core.main;
 using Casanova.core.net;
 using Casanova.core.net.types;
 using Godot;
 using Godot.Collections;
-using Array = Godot.Collections.Array;
 using LineEdit = Casanova.ui.elements.LineEdit;
 
 namespace Casanova.ui.fragments
@@ -13,22 +11,24 @@ namespace Casanova.ui.fragments
     public class Chat : PanelContainer
     {
         public static Chat instance;
-        
-        private VBoxContainer content;
-        private ScrollContainer messageScrollerBox;
-        private VBoxContainer messageBox;
-        public HBoxContainer senderBox;
-        private Button button;
         private LineEdit _lineEdit;
+        private Button button;
 
         private RichTextLabel chatMessage;
-        private RandomNumberGenerator rnd;
 
-        private int MaxMessages = 50;
-        private Array<RichTextLabel> msgInstances = new Array<RichTextLabel>();
-        
-        private string lastMessage = String.Empty;
-    
+        private VBoxContainer content;
+
+        private string lastMessage = string.Empty;
+
+        private readonly int MaxMessages = 50;
+        private VBoxContainer messageBox;
+        private ScrollContainer messageScrollerBox;
+        private readonly Array<RichTextLabel> msgInstances = new Array<RichTextLabel>();
+
+        private bool processing;
+        private RandomNumberGenerator rnd;
+        public HBoxContainer senderBox;
+
         public override void _Ready()
         {
             if (instance == null)
@@ -40,8 +40,8 @@ namespace Casanova.ui.fragments
                 instance.Dispose();
                 instance = this;
             }
-            
-            if(Vars.PersistentData.isMobile)
+
+            if (Vars.PersistentData.isMobile)
                 RectPosition = new Vector2(9, 0);
 
             content = GetNode("MarginContainer").GetNode<VBoxContainer>("Content");
@@ -66,16 +66,16 @@ namespace Casanova.ui.fragments
             button.Connect("pressed", this, "SendPressed");
             messageScrollerBox.GetVScrollbar().Modulate = new Color(0, 0, 0, 0);
         }
-        
-        
+
+
         // called from anywhere, sends a message & activates chat if necessary
         public void SendMessage(string text, Player sender = null)
         {
-            string sendername = sender == null ? "Server" : sender.Username;
-            string message = $"[color=#fa9e48]<[/color]{sendername}[color=#fa9e48]>[/color]: {text}";
+            var sendername = sender == null ? "Server" : sender.Username;
+            var message = $"[color=#fa9e48]<[/color]{sendername}[color=#fa9e48]>[/color]: {text}";
             AddMessage(message);
             lastMessage = text;
-            
+
             ThreadManager.ExecuteOnMainThread(() =>
             {
                 messageScrollerBox.GetVScrollbar().Value = messageScrollerBox.GetVScrollbar().MaxValue;
@@ -86,11 +86,11 @@ namespace Casanova.ui.fragments
         {
             PlayerController.Focus = _lineEdit;
         }
-        
+
         private void _onFocusLost()
         {
             PlayerController.Focus = null;
-            
+
             _lineEdit.SetProcess(false);
             senderBox.Modulate = new Color(0, 0, 0, 0);
         }
@@ -98,13 +98,9 @@ namespace Casanova.ui.fragments
         private void _onTextChanged(string text)
         {
             if (text.Length > 0)
-            {
                 button.Disabled = false;
-            }
             else
-            {
                 button.Disabled = true;
-            }
         }
 
         private void CancelSend()
@@ -117,17 +113,17 @@ namespace Casanova.ui.fragments
 
         private void SendPressed()
         {
-            if (_lineEdit.Text == String.Empty)
+            if (_lineEdit.Text == string.Empty)
             {
                 CancelSend();
             }
             else
             {
                 Packets.ClientHandle.Send.ChatMessage(_lineEdit.Text);
-                            
-                _lineEdit.Text = String.Empty;
+
+                _lineEdit.Text = string.Empty;
                 CancelSend();
-                            
+
                 ThreadManager.ExecuteOnMainThread(() =>
                 {
                     messageScrollerBox.GetVScrollbar().Value = messageScrollerBox.GetVScrollbar().MaxValue;
@@ -143,20 +139,21 @@ namespace Casanova.ui.fragments
                 {
                     if (PlayerController.Focus == _lineEdit)
                     {
-                        if (_lineEdit.Text == String.Empty)
+                        if (_lineEdit.Text == string.Empty)
                         {
                             CancelSend();
                         }
                         else
                         {
                             Packets.ClientHandle.Send.ChatMessage(_lineEdit.Text);
-                            
-                            _lineEdit.Text = String.Empty;
+
+                            _lineEdit.Text = string.Empty;
                             CancelSend();
-                            
+
                             ThreadManager.ExecuteOnMainThread(() =>
                             {
-                                messageScrollerBox.GetVScrollbar().Value = messageScrollerBox.GetVScrollbar().MaxValue;
+                                messageScrollerBox.GetVScrollbar().Value =
+                                    messageScrollerBox.GetVScrollbar().MaxValue;
                             });
                         }
                     }
@@ -166,71 +163,62 @@ namespace Casanova.ui.fragments
                     }
                 }
 
-                if ((key.Scancode == (int) KeyList.Escape) && senderBox.Modulate == new Color(1, 1, 1))
-                {
-                    CancelSend();
-                }
-                
+                if (key.Scancode == (int) KeyList.Escape && senderBox.Modulate == new Color(1, 1, 1)) CancelSend();
+
                 if (key.Scancode == (int) KeyList.Up && key.Pressed)
-                {
                     if (PlayerController.Focus == _lineEdit)
                     {
                         _lineEdit.Text = lastMessage;
                         _lineEdit.CaretPosition = lastMessage.Length;
                     }
-                }
             }
-
         }
 
         public void TriggerSendBox()
         {
             button.Disabled = true;
-            
+
             senderBox.Modulate = new Color(1, 1, 1);
             _lineEdit.SetProcess(true);
-                        
+
             ShowAllMessages();
             _lineEdit.GrabFocus();
-                        
+
             ThreadManager.ExecuteOnMainThread(() =>
             {
                 messageScrollerBox.GetVScrollbar().Value = messageScrollerBox.GetVScrollbar().MaxValue;
             });
         }
+
         public void Clear()
         {
             foreach (RichTextLabel msgInstance in messageBox.GetChildren())
-            {
-                if(msgInstance != chatMessage)
+                if (msgInstance != chatMessage)
                     msgInstance.QueueFree();
-            }
         }
 
         public void AddMessage(string message)
         {
-            RichTextLabel msgInstance = chatMessage.Duplicate() as RichTextLabel;
+            var msgInstance = chatMessage.Duplicate() as RichTextLabel;
             msgInstance.Name = rnd.RandiRange(1000, 99999999).ToString();
             messageBox.AddChild(msgInstance);
             msgInstance.BbcodeText = message;
             msgInstance.GetNode<AnimationPlayer>("Animation").Play("Enter");
             msgInstance.Visible = true;
 
-            Timer msgTimer = msgInstance.GetNode<Timer>("Timer");
-            msgTimer.Connect("timeout", this, "MessageTimeout", new Array { msgInstance });
+            var msgTimer = msgInstance.GetNode<Timer>("Timer");
+            msgTimer.Connect("timeout", this, "MessageTimeout", new Array {msgInstance});
             msgTimer.Start();
-            
+
             msgInstances.Add(msgInstance);
             if (msgInstances.Count > MaxMessages)
             {
                 var ms = msgInstances[0];
                 msgInstances.Remove(ms);
-                
+
                 ms.Free();
             }
         }
-
-        private bool processing;
 
         public void MessageTimeout(RichTextLabel msgInstance)
         {
@@ -253,7 +241,7 @@ namespace Casanova.ui.fragments
                     processing = false;
                     continue;
                 }
-                
+
                 var anim = msgInstance.GetNode<AnimationPlayer>("Animation");
                 anim.Stop();
                 anim.Play("Enter");
@@ -266,7 +254,7 @@ namespace Casanova.ui.fragments
             {
                 var anim = msgInstance.GetNode<AnimationPlayer>("Animation");
                 var timer = msgInstance.GetNode<Timer>("Timer");
-    
+
                 // if message finished its timeout
                 if (timer.TimeLeft <= 0)
                 {
@@ -274,6 +262,7 @@ namespace Casanova.ui.fragments
                     anim.Play("Leave");
                     continue;
                 }
+
                 timer.SetProcess(true);
                 processing = true;
             }

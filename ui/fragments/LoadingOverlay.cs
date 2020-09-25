@@ -5,14 +5,8 @@ namespace Casanova.ui.fragments
     public class LoadingOverlay : Overlay
     {
         public int percent;
-        public TextureProgress tp;
         public Label title;
-
-        public override void _Ready()
-        {
-            tp = (TextureProgress) GetNode("CenterContainer").GetNode("ProgressBar");
-            title = (Label) GetNode("Title");
-        }
+        public TextureProgress tp;
 
         public int Percent
         {
@@ -22,6 +16,12 @@ namespace Casanova.ui.fragments
                 percent = value;
                 tp.Value = value;
             }
+        }
+
+        public override void _Ready()
+        {
+            tp = (TextureProgress) GetNode("CenterContainer").GetNode("ProgressBar");
+            title = (Label) GetNode("Title");
         }
     }
 }

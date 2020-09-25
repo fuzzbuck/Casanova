@@ -1,7 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Runtime.InteropServices.ComTypes;
-using System.Runtime.Remoting.Messaging;
 using Casanova.core.content;
 using Casanova.core.main.units;
 using Casanova.core.net;
@@ -17,9 +14,15 @@ namespace Casanova.core.main.world
 {
     public class NetworkManager
     {
+        public enum loc
+        {
+            SERVER,
+            CLIENT
+        }
+
         public static Dictionary<int, Player> PlayersGroup = new Dictionary<int, Player>();
         public static Dictionary<int, Unit> UnitsGroup = new Dictionary<int, Unit>();
-        
+
         public static Player HostPlayer;
 
         public static PlayerUnit CreatePlayerInstance()
@@ -33,8 +36,8 @@ namespace Casanova.core.main.world
         public static Unit CreateUnitInstance(UnitType Type)
         {
             var scene = (PackedScene) ResourceLoader.Load(Vars.path_main + $"/units/{Type.Name}.tscn");
-            Unit instance = (Unit) scene.Instance();
-            
+            var instance = (Unit) scene.Instance();
+
             instance.Type = Type;
             return instance;
         }
@@ -59,11 +62,6 @@ namespace Casanova.core.main.world
             Vars.Reload();
         }
 
-        public enum loc
-        {
-            SERVER, CLIENT
-        }
-        
         public static void DestroyUnit(int _id)
         {
             if (UnitsGroup.ContainsKey(_id))
@@ -72,21 +70,22 @@ namespace Casanova.core.main.world
                 UnitsGroup.Remove(_id);
             }
         }
+
         public static Unit CreateUnit(loc loc, int _id, UnitType type, Vector2 position = new Vector2())
         {
             if (UnitsGroup.ContainsKey(_id))
                 DestroyUnit(_id);
-            
-            Unit instance = CreateUnitInstance(type);
+
+            var instance = CreateUnitInstance(type);
             instance.Type = type;
             instance.GlobalPosition = position;
 
             UnitsGroup[_id] = instance;
-            
+
             World.instance.SpawnUnit(instance);
             return instance;
         }
-        
+
         public static void DestroyPlayer(int _id)
         {
             if (PlayersGroup.ContainsKey(_id))
@@ -95,19 +94,20 @@ namespace Casanova.core.main.world
                 PlayersGroup.Remove(_id);
             }
         }
-        
-        public static Player CreatePlayer(loc loc, int _id, string _username, UnitType type = null, Vector2 position=new Vector2())
+
+        public static Player CreatePlayer(loc loc, int _id, string _username, UnitType type = null,
+            Vector2 position = new Vector2())
         {
             GD.Print($"Creating player with username: {_username}, type: {type.Name}");
-            
+
             if (type == null)
                 type = UnitTypes.crimson;
-            
-            PlayerUnit instance = CreatePlayerInstance();
+
+            var instance = CreatePlayerInstance();
             instance.Type = type;
             instance.GlobalPosition = position;
 
-            bool willBeLocal = false;
+            var willBeLocal = false;
             if (loc == loc.CLIENT && Server.IsHosting)
             {
                 willBeLocal = true;
@@ -119,11 +119,11 @@ namespace Casanova.core.main.world
                     willBeLocal = true;
                 }
             }
-            
-            Player player = new Player(_id, _username, instance, willBeLocal);
+
+            var player = new Player(_id, _username, instance, willBeLocal);
             player.PlayerUnit = instance;
             PlayersGroup[_id] = player;
-            
+
             if (HostPlayer == null && loc == loc.SERVER)
                 HostPlayer = player;
 
@@ -132,11 +132,12 @@ namespace Casanova.core.main.world
             ThreadManager.ExecuteOnMainThread(() =>
             {
                 instance.Tag = _username; // needs to be done after player is spawned
-                
+
                 if (_id == Client.myId)
                 {
-                    Camera cam = (Camera) ResourceLoader.Load<PackedScene>(Vars.path_main + "/units/Camera.tscn").Instance();
-                        
+                    var cam = (Camera) ResourceLoader.Load<PackedScene>(Vars.path_main + "/units/Camera.tscn")
+                        .Instance();
+
                     instance.Body.AddChild(cam);
                     cam.GlobalPosition = instance.Position;
 
@@ -144,7 +145,7 @@ namespace Casanova.core.main.world
                     PlayerController.LocalPlayerUnit = instance;
                 }
             });
-            
+
 
             return player;
         }

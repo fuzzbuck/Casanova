@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Casanova.core;
 using Casanova.core.main.world;
 using Casanova.ui.elements;
@@ -9,7 +8,6 @@ namespace Casanova.ui.fragments
 {
     public class EscContent : MarginContainer
     {
-        
         public override void _Ready()
         {
             var vbox = GetNode("VBox");
@@ -18,14 +16,10 @@ namespace Casanova.ui.fragments
             var all = vbox.GetChildren();
             foreach (var c in hbox.GetChildren())
                 all.Add(c);
-            
+
             foreach (Node node in all)
-            {
                 if (node is FillingButton button)
-                {
-                    button.Connect("pressed", this, "_onButtonPressed", new Array {button.Name} );
-                }
-            }
+                    button.Connect("pressed", this, "_onButtonPressed", new Array {button.Name});
         }
 
         public void _onButtonPressed(string name)
@@ -37,7 +31,7 @@ namespace Casanova.ui.fragments
                     Vars.Unload();
                     break;
                 case "Leave":
-                    if(Vars.CurrentState != Vars.State.Menu)
+                    if (Vars.CurrentState != Vars.State.Menu)
                         NetworkManager.DisconnectToMenu();
                     break;
             }

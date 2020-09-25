@@ -5,12 +5,12 @@ namespace Casanova.ui.fragments
 {
     public class MobileTextInput : Control
     {
-        public TextEdit texteditor;
         public Godot.Button button;
-        public RichTextLabel preview;
-        
+
         // label to change real-time
         public LineEdit label;
+        public RichTextLabel preview;
+        public TextEdit texteditor;
 
         public override void _Ready()
         {

@@ -6,7 +6,6 @@ namespace Casanova.core.main.world.blocks
     {
         public override void _Ready()
         {
-        
         }
     }
 }

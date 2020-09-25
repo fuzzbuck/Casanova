@@ -4,7 +4,6 @@ namespace Casanova.ui.elements
     {
         public override void _Ready()
         {
-        
         }
     }
 }

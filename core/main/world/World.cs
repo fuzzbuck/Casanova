@@ -1,6 +1,3 @@
-using System;
-using Casanova.core.net.client;
-using Casanova.core.net.server;
 using Casanova.core.main.units;
 using Godot;
 
@@ -29,7 +26,7 @@ namespace Casanova.core.main.world
         }
         
         */
-        
+
         public Unit SpawnUnit(Unit unit)
         {
             GetNode<Node2D>("Units").AddChild(unit);

@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using Godot;
 
 namespace Casanova.core.net
 {
-    class ThreadManager
+    internal class ThreadManager
     {
         private static readonly List<Action> executeOnMainThread = new List<Action>();
         private static readonly List<Action> executeCopiedOnMainThread = new List<Action>();
-        private static bool actionToExecuteOnMainThread = false;
+        private static bool actionToExecuteOnMainThread;
 
         /// <summary>Sets an action to be executed on the main thread.</summary>
         /// <param name="_action">The action to be executed on the main thread.</param>
@@ -41,10 +39,7 @@ namespace Casanova.core.net
                     actionToExecuteOnMainThread = false;
                 }
 
-                for (int i = 0; i < executeCopiedOnMainThread.Count; i++)
-                {
-                    executeCopiedOnMainThread[i]();
-                }
+                for (var i = 0; i < executeCopiedOnMainThread.Count; i++) executeCopiedOnMainThread[i]();
             }
         }
     }

@@ -4,12 +4,13 @@ namespace Casanova.core.types
 {
     public class Skid
     {
-        public int Length;
-        public float Width;
-        public Curve Curve;
         public Color Color;
+        public Curve Curve;
+        public int Length;
         public float Opacity;
+        public float Width;
     }
+
     public abstract class SkidMark : Line2D
     {
         public Skid Info;
