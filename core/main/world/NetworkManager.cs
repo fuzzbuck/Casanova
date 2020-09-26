@@ -138,8 +138,14 @@ namespace Casanova.core.main.world
                     var cam = (Camera) ResourceLoader.Load<PackedScene>(Vars.path_main + "/units/Camera.tscn")
                         .Instance();
 
-                    instance.Body.AddChild(cam);
-                    cam.GlobalPosition = instance.Position;
+                    cam.GlobalPosition = instance.GlobalPosition;
+                    
+                    if(!Vars.PersistentData.isMobile)
+                        instance.Body.AddChild(cam);
+                    else
+                    {
+                        instance.AddChild(cam);
+                    }
 
                     PlayerController.LocalPlayer = player;
                     PlayerController.LocalPlayerUnit = instance;

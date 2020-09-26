@@ -24,7 +24,7 @@ namespace Casanova.core.main.units
             {
                 Zoom = new Vector2(min_zoom_distance, min_zoom_distance);
             }
-
+            
             instance = this;
         }
 
