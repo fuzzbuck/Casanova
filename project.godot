@@ -31,6 +31,7 @@ ServerLauncher="*res://core/net/headless_server/ServerLauncher.cs"
 
 [debug]
 
+settings/fps/force_fps=144
 settings/stdout/verbose_stdout=true
 
 [display]

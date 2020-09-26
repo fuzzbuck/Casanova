@@ -55,6 +55,11 @@ namespace Casanova.core.types.bodies
             Vel = Vel.Clamped(MaxSpeed);
         }
 
+        public virtual void ApplyRotation(float delta)
+        {
+            Rotation = Mathf.LerpAngle(Rotation, Mathf.LerpAngle(Axis.Angle(), Vel.Angle(), 0.2f) + Mathf.Deg2Rad(90), RotationSpeed * delta);
+        }
+
         public void ProcessMovement(float delta)
         {
             if (Axis == Vector2.Zero)
@@ -64,9 +69,10 @@ namespace Casanova.core.types.bodies
             else
             {
                 ApplyMovement(Axis * delta * Acceleration);
-                Rotation = Mathf.LerpAngle(Rotation, Axis.Angle() + Mathf.Deg2Rad(90), RotationSpeed * delta);
             }
-
+            
+            if(Vel.Length() > 0f)
+                ApplyRotation(delta);
 
             var collision = MoveAndCollide(Vel * delta);
             if (collision != null) Vel = Vel.Slide(collision.Normal) * Bounciness;

@@ -28,7 +28,7 @@ namespace Casanova.core.content
             {
                 Length = 300,
                 Width = 4,
-                Opacity = 5,
+                Opacity = 10,
                 Curve = wheelSkidCurve,
                 Color = new Color(0, 0, 0)
             };
@@ -45,8 +45,8 @@ namespace Casanova.core.content
                 Name = "Explorer",
                 Description = "Starting bot equipped with a low-power building Projector.",
                 MaxSpeed = 140f,
-                Acceleration = 900f,
-                Deceleration = 600f,
+                Acceleration = 600f,
+                Deceleration = 400f,
                 RotationSpeed = 8f,
                 Health = 100f,
                 MovementType = Enums.MovementType.Ground,
@@ -66,8 +66,8 @@ namespace Casanova.core.content
 
             var crimsonSkid = new Skid
             {
-                Length = 10,
-                Width = 6,
+                Length = 15,
+                Width = 5,
                 Color = new Color(255 / 255f, 254 / 255f, 152 / 255f),
                 Opacity = 75,
                 Curve = rocketEngineCurve
@@ -77,10 +77,10 @@ namespace Casanova.core.content
             {
                 Name = "Crimson",
                 Description = "A big drone equipped with a Mk1 Mining laser. Flies at high altitudes.",
-                MaxSpeed = 140f,
-                Acceleration = 700f,
+                MaxSpeed = 90f,
+                Acceleration = 170f,
                 RotationSpeed = 3.5f,
-                Deceleration = 200f,
+                Deceleration = 50f,
                 Health = 500f,
                 Height = 20f,
                 ShadowBlur = 3f,
