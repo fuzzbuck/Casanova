@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/miner_mk1.png-1d55654787372879eb483e12aec8d166.stex"
+path="res://.import/explorer.png-453d42f899077a14e7f29b6a3a1c38f6.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/units/miner_mk1.png"
-dest_files=[ "res://.import/miner_mk1.png-1d55654787372879eb483e12aec8d166.stex" ]
+source_file="res://assets/sprites/units/explorer.png"
+dest_files=[ "res://.import/explorer.png-453d42f899077a14e7f29b6a3a1c38f6.stex" ]
 
 [params]
 

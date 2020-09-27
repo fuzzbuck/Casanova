@@ -1,6 +1,6 @@
 using Godot;
 
-namespace Casanova.core.types
+namespace Casanova.core.types.bodies.effects
 {
     public class Skid
     {

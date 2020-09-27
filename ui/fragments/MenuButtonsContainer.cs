@@ -33,7 +33,6 @@ namespace Casanova.ui.fragments
 
         public void _onButtonPress(int index)
         {
-            GD.Print(index);
             if (index == 3) // 3 = exit button index
             {
                 Vars.Unload();

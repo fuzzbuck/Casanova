@@ -1,3 +1,4 @@
+using Casanova.core.types.bodies.effects;
 using Godot;
 
 namespace Casanova.core.types.bodies
@@ -11,6 +12,7 @@ namespace Casanova.core.types.bodies
         protected float Bounciness = 0.98f;
 
         public CollisionPolygon2D CollisionHitbox;
+        
         public float Decelleration;
         public Vector2 InWorldPosition;
         public float MaxSpeed;
@@ -19,26 +21,26 @@ namespace Casanova.core.types.bodies
 
         public float Speed;
 
+        public UnitType Type;
         public Sprite Sprite;
 
         protected Vector2 Vel;
 
-        public void Init(float maxSpeed, float rotationSpeed, float acceleration, float deceleration,
-            float shadowHeight, float shadowBlur)
+        public void Init(UnitType type)
         {
-            MaxSpeed = maxSpeed;
-            RotationSpeed = rotationSpeed;
-            Acceleration = acceleration;
-            Decelleration = deceleration;
+            MaxSpeed = type.MaxSpeed;
+            RotationSpeed = type.RotationSpeed;
+            Acceleration = type.Acceleration;
+            Decelleration = type.Deceleration;
 
             Sprite = GetNode<Sprite>("Sprite");
             Shadow = GetNode<Shadow>("Shadow");
             CollisionHitbox = GetNode<CollisionPolygon2D>("CollisionPolygon2D");
-
-            Shadow.Heigth = shadowHeight;
-            Shadow.Blur = shadowBlur;
-
-            // todo: give unit different sprites based on name
+            
+            Sprite.Texture = type.SpriteTexture;
+            
+            Shadow.Texture = type.ShadowTexture;
+            Shadow.Offset = type.ShadowOffset;
         }
 
         private void ApplyFriction(float amt)
@@ -55,12 +57,13 @@ namespace Casanova.core.types.bodies
             Vel = Vel.Clamped(MaxSpeed);
         }
 
-        public virtual void ApplyRotation(float delta)
+        protected virtual void ApplyRotation(float delta)
         {
-            Rotation = Mathf.LerpAngle(Rotation, Mathf.LerpAngle(Axis.Angle(), Vel.Angle(), 0.2f) + Mathf.Deg2Rad(90), RotationSpeed * delta);
+            if(Axis != Vector2.Zero)
+                Rotation = Mathf.LerpAngle(Rotation, Axis.Angle() + Mathf.Deg2Rad(90), RotationSpeed * delta);
         }
 
-        public void ProcessMovement(float delta)
+        protected virtual void ProcessMovement(float delta)
         {
             if (Axis == Vector2.Zero)
             {

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Casanova.core.types;
 using Godot;
+using static Casanova.core.Vars.Enums;
 
 namespace Casanova.core.net
 {
@@ -214,7 +215,7 @@ namespace Casanova.core.net
         /// <param name="_value">The UnitType to add.</param>
         public void Write(UnitType _value)
         {
-            Write(Enums.UnitTypes.FirstOrDefault(x => x.Value == _value).Key);
+            Write(UnitTypes.FirstOrDefault(x => x.Value == _value).Key);
         }
 
         #endregion
@@ -375,7 +376,7 @@ namespace Casanova.core.net
         public UnitType ReadUnitType()
         {
             var id = ReadInt();
-            return Enums.UnitTypes[id];
+            return UnitTypes[id];
         }
 
         #endregion

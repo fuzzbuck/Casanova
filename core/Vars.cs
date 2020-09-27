@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Net;
 using Casanova.core.content;
 using Casanova.core.main;
@@ -18,8 +19,7 @@ namespace Casanova.core
         {
             Menu,
             World,
-            Tutorial,
-            MultiplayerWorld
+            Tutorial
         }
 
         public static BundleHandler bundleHandler = new BundleHandler("en");
@@ -38,6 +38,9 @@ namespace Casanova.core
         public static string path_net = path_main + "/net";
         public static string path_client = path_net + "/client";
         public static string path_server = path_net + "/server";
+        
+        public static string path_assets = "res://assets";
+        public static string path_sprites = path_assets + "/sprites";
 
         public static State CurrentState = State.Menu;
 
@@ -51,10 +54,27 @@ namespace Casanova.core
             ThreadManager.UpdateMain();
         }
 
+        
+        public class Enums
+        {
+            public enum MovementType
+            {
+                Ground,
+                Air
+            }
+
+            public static Dictionary<int, UnitType> UnitTypes = new Dictionary<int, UnitType>();
+            
+            public static Dictionary<int, Texture> UnitSprites = new Dictionary<int, Texture>();
+            public static Dictionary<int, Texture> UnitShadows = new Dictionary<int, Texture>();
+        }
         public static void Load()
         {
-            // todo: display loading screen
             UnitTypes.Init();
+            
+            // todo: display loading screen
+            
+            UnitTypes.Load();
 
             bundleHandler.updateBundle("en");
 
@@ -120,30 +140,6 @@ namespace Casanova.core
             public static bool isHeadless = false;
             public static int defaultPort = 375;
             public static int Port = defaultPort;
-
-            public static string[] ParseIpString(string ip)
-            {
-                try
-                {
-                    var addy = ip.Split(":");
-                    var port = defaultPort;
-
-                    if (addy.Length > 1 && int.TryParse(addy[1], out var newport))
-                        port = newport;
-
-                    if (!IPAddress.TryParse(addy[0], out var address))
-                    {
-                        var ips = Dns.GetHostAddresses(addy[0]);
-                        if (ips.Length > 0) addy[0] = ips[0].ToString().Split(":")[0];
-                    }
-
-                    return new[] {addy[0], port.ToString()};
-                }
-                catch (Exception)
-                {
-                    throw new Exception($"Failed parsing IP: {ip}");
-                }
-            }
         }
 
         public class Pals

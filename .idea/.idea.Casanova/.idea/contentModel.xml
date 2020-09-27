@@ -52,11 +52,17 @@
           <e p="bodies" t="Include">
             <e p="Air.cs" t="Include" />
             <e p="Body.cs" t="Include" />
-            <e p="Shadow.cs" t="Include" />
+            <e p="effects" t="Include">
+              <e p="Particles.cs" t="Include" />
+              <e p="Shadow.cs" t="Include" />
+              <e p="SkidMark.cs" t="Include" />
+              <e p="Wheel.cs" t="Include" />
+            </e>
           </e>
-          <e p="Particles.cs" t="Include" />
-          <e p="SkidMark.cs" t="Include" />
           <e p="UnitType.cs" t="Include" />
+        </e>
+        <e p="utils" t="Include">
+          <e p="Funcs.cs" t="Include" />
         </e>
         <e p="Vars.cs" t="Include" />
       </e>

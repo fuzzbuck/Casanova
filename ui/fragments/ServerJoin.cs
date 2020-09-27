@@ -35,7 +35,7 @@ namespace Casanova.ui.fragments
 
             unit_field.AddItem("Explorer", 0);
             unit_field.AddItem("Crimson", 1);
-            unit_field.Select(Enums.UnitTypes.FirstOrDefault(x => x.Value == Vars.PersistentData.UnitType).Key);
+            unit_field.Select(Vars.Enums.UnitTypes.FirstOrDefault(x => x.Value == Vars.PersistentData.UnitType).Key);
 
             username_field.Connect("text_changed", this, "_onUsernameFieldTextChange");
             ip_field.Connect("text_changed", this, "_onIpFieldTextChange");
@@ -57,14 +57,14 @@ namespace Casanova.ui.fragments
 
         private void _onUnitOptionSelect(int id)
         {
-            Vars.PersistentData.UnitType = Enums.UnitTypes[id];
+            Vars.PersistentData.UnitType = Vars.Enums.UnitTypes[id];
         }
 
         public bool AttemptConnection(string ip)
         {
             try
             {
-                var addy = Vars.Networking.ParseIpString(ip);
+                var addy =  Funcs.ParseIpString(ip);
                 Client.ConnectToServer(addy[0], int.Parse(addy[1]));
 
                 return true;

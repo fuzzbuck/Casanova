@@ -1,21 +1,18 @@
 ﻿using System.Collections.Generic;
+using Casanova.core.types.bodies.effects;
 using Godot;
+using static Casanova.core.Vars.Enums;
 
 namespace Casanova.core.types
 {
-    public class Enums
-    {
-        public enum MovementType
-        {
-            Ground,
-            Air
-        }
-
-        public static Dictionary<int, UnitType> UnitTypes = new Dictionary<int, UnitType>();
-    }
-
+    
     public class UnitType
     {
+        public int Id;
+        
+        public Texture SpriteTexture;
+        public Texture ShadowTexture;
+
         public float Acceleration;
         public float Deceleration;
         public string Description = "Attacks.";
@@ -25,18 +22,23 @@ namespace Casanova.core.types
 
         public float MaxSpeed;
 
-        public Enums.MovementType MovementType = Enums.MovementType.Ground;
+        public MovementType MovementType = MovementType.Ground;
 
         public string Name = "Attacker";
         public Dictionary<Vector2, ParticleInfo> ParticleEffects;
         public float RotationSpeed;
-        public float ShadowBlur;
+        
+        public int ShadowBlur;
+        public Vector2 ShadowOffset = Vector2.Zero;
 
         public Dictionary<Vector2, Skid> SkidMarks; // <Vector2> offset, <Skid> skid info
 
-        public UnitType()
+        public UnitType(string spriteName)
         {
-            Enums.UnitTypes.Add(Enums.UnitTypes.Count, this);
+            SpriteTexture = ResourceLoader.Load<Texture>(Vars.path_sprites + $"/units/{spriteName}");
+            Id = UnitTypes.Count;
+
+            UnitTypes.Add(UnitTypes.Count, this);
         }
     }
 }

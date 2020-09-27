@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using Casanova.core.types;
+using Casanova.core.types.bodies.effects;
 using Godot;
+using static Casanova.core.Vars.Enums;
 
 namespace Casanova.core.content
 {
@@ -14,6 +16,9 @@ namespace Casanova.core.content
 
         public static void Init()
         {
+            
+            #region effects
+            
             var rocketEngineCurve = new Curve();
             rocketEngineCurve.AddPoint(new Vector2(1, 1f));
             rocketEngineCurve.AddPoint(new Vector2(0.5f, 1.5f));
@@ -39,8 +44,19 @@ namespace Casanova.core.content
                 Velocity = 50f,
                 Amount = 64
             };
+            
+            var crimsonSkid = new Skid
+            {
+                Length = 15,
+                Width = 5,
+                Color = new Color(255 / 255f, 254 / 255f, 152 / 255f),
+                Opacity = 75,
+                Curve = rocketEngineCurve
+            };
+            
+            #endregion
 
-            explorer = new UnitType
+            explorer = new UnitType("explorer.png")
             {
                 Name = "Explorer",
                 Description = "Starting bot equipped with a low-power building Projector.",
@@ -49,7 +65,9 @@ namespace Casanova.core.content
                 Deceleration = 400f,
                 RotationSpeed = 8f,
                 Health = 100f,
-                MovementType = Enums.MovementType.Ground,
+                ShadowBlur = 4,
+                ShadowOffset = new Vector2(0, 0.2f),
+                MovementType = MovementType.Ground,
 
                 SkidMarks = new Dictionary<Vector2, Skid>
                 {
@@ -64,16 +82,7 @@ namespace Casanova.core.content
                 }
             };
 
-            var crimsonSkid = new Skid
-            {
-                Length = 15,
-                Width = 5,
-                Color = new Color(255 / 255f, 254 / 255f, 152 / 255f),
-                Opacity = 75,
-                Curve = rocketEngineCurve
-            };
-
-            crimson = new UnitType
+            crimson = new UnitType("crimson.png")
             {
                 Name = "Crimson",
                 Description = "A big drone equipped with a Mk1 Mining laser. Flies at high altitudes.",
@@ -82,9 +91,8 @@ namespace Casanova.core.content
                 RotationSpeed = 3.5f,
                 Deceleration = 50f,
                 Health = 500f,
-                Height = 20f,
-                ShadowBlur = 3f,
-                MovementType = Enums.MovementType.Air,
+                ShadowOffset = new Vector2(-15, 20),
+                MovementType = MovementType.Air,
 
                 SkidMarks = new Dictionary<Vector2, Skid>
                 {
@@ -92,6 +100,22 @@ namespace Casanova.core.content
                     {new Vector2(-6, 8.7f), crimsonSkid}
                 }
             };
+        }
+
+        public static void Load()
+        {
+            // load shadows
+            foreach (UnitType type in Vars.Enums.UnitTypes.Values)
+            {
+                if (type.ShadowBlur > 0)
+                {
+                    type.ShadowTexture = Funcs.BlurTexture(type.SpriteTexture, type.ShadowBlur);
+                }
+                else
+                {
+                    type.ShadowTexture = type.SpriteTexture;
+                }
+            }
         }
     }
 }

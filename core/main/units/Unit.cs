@@ -1,8 +1,10 @@
 using Casanova.core.types;
 using Casanova.core.types.bodies;
+using Casanova.core.types.bodies.effects;
 using Godot;
 using Godot.Collections;
-using Particles = Casanova.core.types.Particles;
+using static Casanova.core.Vars.Enums;
+using Particles = Casanova.core.types.bodies.effects.Particles;
 
 namespace Casanova.core.main.units
 {
@@ -13,17 +15,16 @@ namespace Casanova.core.main.units
             var bodyType = string.Empty;
             switch (type.MovementType)
             {
-                case Enums.MovementType.Air:
+                case MovementType.Air:
                     bodyType = "Air";
                     break;
-                case Enums.MovementType.Ground:
+                case MovementType.Ground:
                     bodyType = "Body";
                     break;
             }
 
             var body = (Body) ResourceLoader.Load<PackedScene>(Vars.path_types + $"/bodies/{bodyType}.tscn").Instance();
-            body.Init(type.MaxSpeed, type.RotationSpeed, type.Acceleration, type.Deceleration, type.Height,
-                type.ShadowBlur);
+            body.Init(type);
 
             return body;
         }

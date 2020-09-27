@@ -40,10 +40,11 @@
     <Compile Include="core\net\types\Player.cs" />
     <Compile Include="core\types\bodies\Body.cs" />
     <Compile Include="core\types\bodies\Air.cs" />
-    <Compile Include="core\types\bodies\Shadow.cs" />
-    <Compile Include="core\types\Particles.cs" />
-    <Compile Include="core\types\SkidMark.cs" />
+    <Compile Include="core\types\bodies\effects\Particles.cs" />
+    <Compile Include="core\types\bodies\effects\Shadow.cs" />
+    <Compile Include="core\types\bodies\effects\SkidMark.cs" />
     <Compile Include="core\types\UnitType.cs" />
+    <Compile Include="core\utils\Funcs.cs" />
     <Compile Include="core\Vars.cs" />
     <Compile Include="ui\elements\Button.cs" />
     <Compile Include="ui\elements\FillingButton.cs" />
@@ -70,5 +71,7 @@
     <Folder Include="ui\elements" />
     <Folder Include="ui\fragments" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <PackageReference Include="SixLabors.ImageSharp" Version="1.0.1" />
+  </ItemGroup>
 </Project>
