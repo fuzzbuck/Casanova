@@ -1,7 +1,7 @@
-using System.Collections.Generic;
 using Casanova.core.types;
 using Casanova.core.types.bodies.effects;
 using Godot;
+using Godot.Collections;
 using static Casanova.core.Vars.Enums;
 
 namespace Casanova.core.content
@@ -65,17 +65,24 @@ namespace Casanova.core.content
                 Deceleration = 400f,
                 RotationSpeed = 8f,
                 Health = 100f,
+                CollisionShape = new []
+                {
+                    new Vector2(26, 22),
+                    new Vector2(26, -25),
+                    new Vector2(-26, -25),
+                    new Vector2(-26, -21)
+                },
                 ShadowBlur = 4,
                 ShadowOffset = new Vector2(0, 0.2f),
                 MovementType = MovementType.Ground,
 
-                SkidMarks = new Dictionary<Vector2, Skid>
+                SkidMarks = new System.Collections.Generic.Dictionary<Vector2, Skid>
                 {
                     {new Vector2(-4, 4), explorerSkid},
                     {new Vector2(4, 4), explorerSkid}
                 },
 
-                ParticleEffects = new Dictionary<Vector2, ParticleInfo>
+                ParticleEffects = new System.Collections.Generic.Dictionary<Vector2, ParticleInfo>
                 {
                     {new Vector2(-4, 4), explorerSmoke},
                     {new Vector2(4, 4), explorerSmoke}
@@ -91,10 +98,19 @@ namespace Casanova.core.content
                 RotationSpeed = 3.5f,
                 Deceleration = 50f,
                 Health = 500f,
+                CollisionShape = new []
+                {
+                    new Vector2(24, 32),
+                    new Vector2(24, -8),
+                    new Vector2(0, -32),
+                    new Vector2(-24, -8),
+                    new Vector2(-24, -32),
+                    new Vector2(0, 12)
+                },
                 ShadowOffset = new Vector2(-15, 20),
                 MovementType = MovementType.Air,
 
-                SkidMarks = new Dictionary<Vector2, Skid>
+                SkidMarks = new System.Collections.Generic.Dictionary<Vector2, Skid>
                 {
                     {new Vector2(6, 8.7f), crimsonSkid},
                     {new Vector2(-6, 8.7f), crimsonSkid}

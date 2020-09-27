@@ -1,5 +1,6 @@
 using Casanova.core.types.bodies.effects;
 using Godot;
+using Godot.Collections;
 
 namespace Casanova.core.types.bodies
 {
@@ -12,6 +13,7 @@ namespace Casanova.core.types.bodies
         protected float Bounciness = 0.98f;
 
         public CollisionPolygon2D CollisionHitbox;
+        public Vector2[] CollisionHull;
         
         public float Decelleration;
         public Vector2 InWorldPosition;
@@ -36,6 +38,9 @@ namespace Casanova.core.types.bodies
             Sprite = GetNode<Sprite>("Sprite");
             Shadow = GetNode<Shadow>("Shadow");
             CollisionHitbox = GetNode<CollisionPolygon2D>("CollisionPolygon2D");
+
+            CollisionHull = type.CollisionShape;
+            CollisionHitbox.Polygon = CollisionHull;
             
             Sprite.Texture = type.SpriteTexture;
             
