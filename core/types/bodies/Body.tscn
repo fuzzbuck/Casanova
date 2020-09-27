@@ -2,7 +2,7 @@
 
 [ext_resource path="res://core/types/bodies/Body.cs" type="Script" id=1]
 [ext_resource path="res://assets/sprites/units/explorer.png" type="Texture" id=2]
-[ext_resource path="res://core/types/bodies/Shadow.cs" type="Script" id=3]
+[ext_resource path="res://core/types/effects/Shadow.cs" type="Script" id=3]
 
 [node name="Body" type="KinematicBody2D"]
 scale = Vector2( 0.6, 0.6 )

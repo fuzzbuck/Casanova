@@ -56,7 +56,6 @@
               <e p="Particles.cs" t="Include" />
               <e p="Shadow.cs" t="Include" />
               <e p="SkidMark.cs" t="Include" />
-              <e p="Wheel.cs" t="Include" />
             </e>
           </e>
           <e p="UnitType.cs" t="Include" />

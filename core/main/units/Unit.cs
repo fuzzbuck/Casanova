@@ -31,7 +31,7 @@ namespace Casanova.core.main.units
 
         public static Node CreateTypeEffect(string name)
         {
-            return ResourceLoader.Load<PackedScene>(Vars.path_types + $"/{name}.tscn").Instance();
+            return ResourceLoader.Load<PackedScene>(Vars.path_types + $"/effects/{name}.tscn").Instance();
         }
     }
 
