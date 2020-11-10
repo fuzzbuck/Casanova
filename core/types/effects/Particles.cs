@@ -1,6 +1,6 @@
 using Godot;
 
-namespace Casanova.core.types.bodies.effects
+namespace Casanova.core.types.effects
 {
     public class ParticleInfo
     {

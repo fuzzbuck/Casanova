@@ -1,5 +1,5 @@
 using Casanova.core.types;
-using Casanova.core.types.bodies.effects;
+using Casanova.core.types.effects;
 using Godot;
 using Godot.Collections;
 using static Casanova.core.Vars.Enums;
@@ -84,8 +84,7 @@ namespace Casanova.core.content
 
                 ParticleEffects = new System.Collections.Generic.Dictionary<Vector2, ParticleInfo>
                 {
-                    {new Vector2(-4, 4), explorerSmoke},
-                    {new Vector2(4, 4), explorerSmoke}
+                    {new Vector2(0, 4), explorerSmoke}
                 }
             };
 

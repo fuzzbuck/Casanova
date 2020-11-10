@@ -1,4 +1,4 @@
-using Casanova.core.types.bodies.effects;
+using Casanova.core.types.effects;
 using Godot;
 using Godot.Collections;
 

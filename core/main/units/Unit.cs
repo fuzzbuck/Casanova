@@ -1,10 +1,10 @@
 using Casanova.core.types;
 using Casanova.core.types.bodies;
-using Casanova.core.types.bodies.effects;
+using Casanova.core.types.effects;
 using Godot;
 using Godot.Collections;
 using static Casanova.core.Vars.Enums;
-using Particles = Casanova.core.types.bodies.effects.Particles;
+using Particles = Casanova.core.types.effects.Particles;
 
 namespace Casanova.core.main.units
 {
