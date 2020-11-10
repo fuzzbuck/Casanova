@@ -1,4 +1,4 @@
-[gd_scene load_steps=37 format=2]
+[gd_scene load_steps=35 format=2]
 
 [ext_resource path="res://ui/fragments/CardsContainer.cs" type="Script" id=1]
 [ext_resource path="res://ui/fragments/MenuButtonsContainer.cs" type="Script" id=2]
@@ -11,68 +11,74 @@
 [sub_resource type="Shader" id=1]
 code = "shader_type canvas_item;
 
-uniform sampler2D perlin;
+const float PI = 3.14159265359;
+const float R = 2.09439510239;
 
-uniform int OCTAVES = 4;
+const float triangles = 10.0;
+const float speed = 0.25;
+const float chance = 0.05;
+const float saturation = 1.5;
+const float thickness = 0.02;
 
-float rand(vec2 coord){
-	return fract(sin(dot(coord, vec2(56, 78)) * 1000.0) * 1000.0);
+
+float hash31(vec3 p) {
+	float rnd = fract(sin(dot(p,vec3(647., 853., 953.))) * 6425.);
+    if (rnd < 1.0 - chance) {
+    	return 0.0;
+    } else {
+    	return 1.0;
+    }
 }
 
-float noise(vec2 coord){
-	vec2 i = floor(coord);
-	vec2 f = fract(coord);
+float triangle(vec2 uv, float w) {
 
-	// 4 corners of a rectangle surrounding our point
-	float a = rand(i);
-	float b = rand(i + vec2(1.0, 0.0));
-	float c = rand(i + vec2(0.0, 1.0));
-	float d = rand(i + vec2(1.0, 1.0));
+	float d;
 
-	vec2 cubic = f * f * (3.0 - 2.0 * f);
+	float a = atan(uv.x,uv.y)+PI;
 
-	return mix(a, b, cubic.x) + (c - a) * cubic.y * (1.0 - cubic.x) + (d - b) * cubic.x * cubic.y;
-}
-
-float fbm(vec2 coord){
-	float value = 0.5;
-	float scale = 0.5;
-
-	for(int i = 0; i < OCTAVES; i++){
-		value += noise(coord) * scale;
-		coord *= 2.0;
-		scale *= 0.5;
-	}
-	return value;
+	d = cos(floor(.5+a/R)*R-a)*length(uv);
+	float c = mix(1.0 - smoothstep(0.00, thickness, abs(d - 0.4)), 1.0 - smoothstep(0.4, 0.4 + thickness, d), clamp(w, 0.0, 1.0));
+	c += (clamp(abs(d - 0.4) - 1.0, -1.0, -0.8) + 0.9) * 0.8;
+    return c;
 }
 
 
-void fragment(){
-    vec3 color1 = vec3((1.0+sin(TIME/6.0))/7f, (1.0+sin(TIME/6.0+45.0))/9f, (1.0+sin(TIME/6.0+90.0))/6f);
-    vec3 color2 = vec3(0.047, 0.129, 0.180);
-    vec3 color = mix(color1, color2, (UV.x + UV.y)/2.0);
+void fragment()
+{
+    float time = TIME * speed;
+	vec2 resolution = 1.0 / SCREEN_PIXEL_SIZE;
 	
-	float final = texture(perlin, UV + TIME / -40.0).r / 45.0;
+    vec3 color = vec3(0.071, 0.063, 0.149);
 	
-	// vec2 motion = vec2( fbm((UV * 20.0) + TIME) );
-	// float final = fbm((UV * 20.0) + motion) / 100.0;
-	
-    COLOR = vec4(color.r + final, color.g + final, color.b + final, 1);
+	vec2 st = (triangles * FRAGCOORD.xy/resolution);
+    st.x *= resolution.x/resolution.y;
+    
+    vec2 uv = FRAGCOORD.xy/resolution.xy;
+    uv.x *= resolution.x/resolution.y;
+
+    vec2 id1 = floor(uv * triangles);
+    vec2 id2 = floor(-uv * triangles + vec2(0.5, 0.39));
+    
+    color += (clamp(1.0 - distance(uv, vec2(0.1, 0.6)), 0.4, 1.0) - 0.4) * vec3(0.3, 0.1, 0.1);
+    color += (clamp(1.0 - distance(uv, vec2(1.5, 0.9)), 0.4, 1.0) - 0.4) * vec3(0.3, 0.1, 0.1);
+    
+    vec2 st2 = fract(-st + vec2(0.5, 0.39)) * 2.0 - 1.0;
+    vec2 st1 = fract(st) * 2.0 - 1.0;
+    
+    float c1 = mix(hash31(vec3(id1, floor(time))), hash31(vec3(id1, floor(time) + 1.0)), fract(time));
+    float c2 = mix(hash31(vec3(id2, floor(time + 0.5))), hash31(vec3(id2, floor(time + 0.5) + 1.0)), fract(time + 0.5));
+    
+    color += vec3(triangle(st1, c1) + triangle(st2, c2)) * vec3(0.1, 0.1, 0.2);
+
+    COLOR = vec4(pow(color * saturation, vec3(saturation)),1.0);
 }"
 
-[sub_resource type="OpenSimplexNoise" id=2]
-period = 54.0
-persistence = 0.8
-lacunarity = 1.2
-
-[sub_resource type="NoiseTexture" id=3]
-seamless = true
-noise = SubResource( 2 )
-
-[sub_resource type="ShaderMaterial" id=4]
+[sub_resource type="ShaderMaterial" id=2]
 shader = SubResource( 1 )
-shader_param/OCTAVES = 4
-shader_param/perlin = SubResource( 3 )
+
+[sub_resource type="StyleBoxEmpty" id=3]
+
+[sub_resource type="StyleBoxEmpty" id=4]
 
 [sub_resource type="StyleBoxEmpty" id=5]
 
@@ -80,33 +86,29 @@ shader_param/perlin = SubResource( 3 )
 
 [sub_resource type="StyleBoxEmpty" id=7]
 
-[sub_resource type="StyleBoxEmpty" id=8]
-
-[sub_resource type="StyleBoxEmpty" id=9]
-
-[sub_resource type="DynamicFontData" id=10]
+[sub_resource type="DynamicFontData" id=8]
 font_path = "res://assets/fonts/Bathrind.otf"
 
-[sub_resource type="DynamicFont" id=11]
+[sub_resource type="DynamicFont" id=9]
 size = 100
-font_data = SubResource( 10 )
+font_data = SubResource( 8 )
 
-[sub_resource type="DynamicFont" id=12]
+[sub_resource type="DynamicFont" id=10]
 size = 64
-font_data = SubResource( 10 )
+font_data = SubResource( 8 )
 
-[sub_resource type="StreamTexture" id=13]
+[sub_resource type="StreamTexture" id=11]
 flags = 4
 load_path = "res://.import/logo.png-63be3467a3db720a8e6f4c8e2d3c8259.stex"
 
-[sub_resource type="DynamicFontData" id=14]
+[sub_resource type="DynamicFontData" id=12]
 font_path = "res://assets/fonts/JosefinSans-LightItalic.ttf"
 
-[sub_resource type="DynamicFont" id=15]
+[sub_resource type="DynamicFont" id=13]
 size = 26
-font_data = SubResource( 14 )
+font_data = SubResource( 12 )
 
-[sub_resource type="StyleBoxFlat" id=16]
+[sub_resource type="StyleBoxFlat" id=14]
 bg_color = Color( 0.6, 0.6, 0.6, 0 )
 border_width_left = 6
 border_width_top = 6
@@ -114,25 +116,25 @@ border_width_right = 6
 border_width_bottom = 6
 border_color = Color( 0.972549, 0.87451, 0.494118, 1 )
 
-[sub_resource type="StreamTexture" id=17]
+[sub_resource type="StreamTexture" id=15]
 flags = 4
 load_path = "res://.import/fireplace.png-94ed3f234bd31702fb7e48a7c0b30bf6.stex"
 
-[sub_resource type="StyleBoxFlat" id=18]
+[sub_resource type="StyleBoxFlat" id=16]
 bg_color = Color( 1, 1, 1, 1 )
 
-[sub_resource type="DynamicFontData" id=19]
+[sub_resource type="DynamicFontData" id=17]
 font_path = "res://assets/fonts/Bathrind.otf"
 
-[sub_resource type="DynamicFont" id=20]
+[sub_resource type="DynamicFont" id=18]
 size = 48
-font_data = SubResource( 19 )
+font_data = SubResource( 17 )
 
-[sub_resource type="DynamicFont" id=21]
+[sub_resource type="DynamicFont" id=19]
 size = 22
-font_data = SubResource( 19 )
+font_data = SubResource( 17 )
 
-[sub_resource type="Animation" id=22]
+[sub_resource type="Animation" id=20]
 length = 0.25
 tracks/0/type = "value"
 tracks/0/path = NodePath(".:modulate")
@@ -157,90 +159,90 @@ tracks/1/keys = {
 "transitions": PoolRealArray( 0.450625, 0.482968 ),
 "update": 0,
 "values": [ -160.0, 0.0 ]
+}
+
+[sub_resource type="Animation" id=21]
+length = 0.25
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.2 ),
+"transitions": PoolRealArray( 0.108819, 0.933033 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 0 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath(".:rect_rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.2 ),
+"transitions": PoolRealArray( 0.31864, 0.34151 ),
+"update": 0,
+"values": [ 0.0, 30.0 ]
+}
+
+[sub_resource type="Animation" id=22]
+length = 0.5
+tracks/0/type = "value"
+tracks/0/path = NodePath("Icon:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.5 ),
+"transitions": PoolRealArray( 0.378929, 0.25 ),
+"update": 0,
+"values": [ Color( 0.972549, 0.87451, 0.494118, 1 ), Color( 1, 1, 1, 1 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Info:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.5 ),
+"transitions": PoolRealArray( 0.5, 0.406126 ),
+"update": 0,
+"values": [ Color( 0.972549, 0.87451, 0.494118, 1 ), Color( 1, 1, 1, 1 ) ]
 }
 
 [sub_resource type="Animation" id=23]
-length = 0.25
+length = 0.5
 tracks/0/type = "value"
-tracks/0/path = NodePath(".:modulate")
+tracks/0/path = NodePath("Icon:modulate")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0, 0.2 ),
-"transitions": PoolRealArray( 0.108819, 0.933033 ),
+"times": PoolRealArray( 0, 0.5 ),
+"transitions": PoolRealArray( 1, 1 ),
 "update": 0,
-"values": [ Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 0 ) ]
+"values": [ Color( 1, 1, 1, 1 ), Color( 0.972549, 0.87451, 0.494118, 1 ) ]
 }
 tracks/1/type = "value"
-tracks/1/path = NodePath(".:rect_rotation")
+tracks/1/path = NodePath("Info:modulate")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/imported = false
 tracks/1/enabled = true
 tracks/1/keys = {
-"times": PoolRealArray( 0, 0.2 ),
-"transitions": PoolRealArray( 0.31864, 0.34151 ),
+"times": PoolRealArray( 0, 0.5 ),
+"transitions": PoolRealArray( 1, 1 ),
 "update": 0,
-"values": [ 0.0, 30.0 ]
+"values": [ Color( 1, 1, 1, 1 ), Color( 0.972549, 0.87451, 0.494118, 1 ) ]
 }
 
 [sub_resource type="Animation" id=24]
-length = 0.5
-tracks/0/type = "value"
-tracks/0/path = NodePath("Icon:modulate")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/keys = {
-"times": PoolRealArray( 0, 0.5 ),
-"transitions": PoolRealArray( 0.378929, 0.25 ),
-"update": 0,
-"values": [ Color( 0.972549, 0.87451, 0.494118, 1 ), Color( 1, 1, 1, 1 ) ]
-}
-tracks/1/type = "value"
-tracks/1/path = NodePath("Info:modulate")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/keys = {
-"times": PoolRealArray( 0, 0.5 ),
-"transitions": PoolRealArray( 0.5, 0.406126 ),
-"update": 0,
-"values": [ Color( 0.972549, 0.87451, 0.494118, 1 ), Color( 1, 1, 1, 1 ) ]
-}
-
-[sub_resource type="Animation" id=25]
-length = 0.5
-tracks/0/type = "value"
-tracks/0/path = NodePath("Icon:modulate")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/keys = {
-"times": PoolRealArray( 0, 0.5 ),
-"transitions": PoolRealArray( 1, 1 ),
-"update": 0,
-"values": [ Color( 1, 1, 1, 1 ), Color( 0.972549, 0.87451, 0.494118, 1 ) ]
-}
-tracks/1/type = "value"
-tracks/1/path = NodePath("Info:modulate")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/keys = {
-"times": PoolRealArray( 0, 0.5 ),
-"transitions": PoolRealArray( 1, 1 ),
-"update": 0,
-"values": [ Color( 1, 1, 1, 1 ), Color( 0.972549, 0.87451, 0.494118, 1 ) ]
-}
-
-[sub_resource type="Animation" id=26]
 length = 0.25
 tracks/0/type = "value"
 tracks/0/path = NodePath(".:modulate")
@@ -267,7 +269,7 @@ tracks/1/keys = {
 "values": [ -160.0, 0.0 ]
 }
 
-[sub_resource type="Animation" id=27]
+[sub_resource type="Animation" id=25]
 length = 0.25
 tracks/0/type = "value"
 tracks/0/path = NodePath(".:modulate")
@@ -294,7 +296,7 @@ tracks/1/keys = {
 "values": [ 0.0, 30.0 ]
 }
 
-[sub_resource type="Animation" id=28]
+[sub_resource type="Animation" id=26]
 length = 0.5
 tracks/0/type = "value"
 tracks/0/path = NodePath("Icon:modulate")
@@ -321,7 +323,7 @@ tracks/1/keys = {
 "values": [ Color( 0.972549, 0.87451, 0.494118, 1 ), Color( 1, 1, 1, 1 ) ]
 }
 
-[sub_resource type="Animation" id=29]
+[sub_resource type="Animation" id=27]
 length = 0.5
 tracks/0/type = "value"
 tracks/0/path = NodePath("Icon:modulate")
@@ -359,7 +361,7 @@ __meta__ = {
 environment = ExtResource( 7 )
 
 [node name="Gradient" type="ColorRect" parent="."]
-material = SubResource( 4 )
+material = SubResource( 2 )
 anchor_right = 1.0
 anchor_bottom = 1.0
 color = Color( 0, 0, 0, 1 )
@@ -409,12 +411,12 @@ margin_bottom = 177.0
 [node name="Play" type="Button" parent="Menu/Buttons/Container/MenuButtonsContainer/TopButtons"]
 margin_right = 234.0
 margin_bottom = 105.0
-custom_styles/hover = SubResource( 5 )
-custom_styles/pressed = SubResource( 6 )
-custom_styles/focus = SubResource( 7 )
-custom_styles/disabled = SubResource( 8 )
-custom_styles/normal = SubResource( 9 )
-custom_fonts/font = SubResource( 11 )
+custom_styles/hover = SubResource( 3 )
+custom_styles/pressed = SubResource( 4 )
+custom_styles/focus = SubResource( 5 )
+custom_styles/disabled = SubResource( 6 )
+custom_styles/normal = SubResource( 7 )
+custom_fonts/font = SubResource( 9 )
 custom_colors/font_color = Color( 0.972549, 0.87451, 0.494118, 1 )
 text = "Play"
 align = 0
@@ -423,12 +425,12 @@ align = 0
 margin_top = 109.0
 margin_right = 234.0
 margin_bottom = 177.0
-custom_styles/hover = SubResource( 5 )
-custom_styles/pressed = SubResource( 6 )
-custom_styles/focus = SubResource( 7 )
-custom_styles/disabled = SubResource( 8 )
-custom_styles/normal = SubResource( 9 )
-custom_fonts/font = SubResource( 12 )
+custom_styles/hover = SubResource( 3 )
+custom_styles/pressed = SubResource( 4 )
+custom_styles/focus = SubResource( 5 )
+custom_styles/disabled = SubResource( 6 )
+custom_styles/normal = SubResource( 7 )
+custom_fonts/font = SubResource( 10 )
 custom_colors/font_color = Color( 0.972549, 0.870588, 0.494118, 1 )
 disabled = true
 text = "Settings"
@@ -443,12 +445,12 @@ alignment = 2
 [node name="About" type="Button" parent="Menu/Buttons/Container/MenuButtonsContainer/BottomButtons"]
 margin_right = 234.0
 margin_bottom = 68.0
-custom_styles/hover = SubResource( 5 )
-custom_styles/pressed = SubResource( 6 )
-custom_styles/focus = SubResource( 7 )
-custom_styles/disabled = SubResource( 8 )
-custom_styles/normal = SubResource( 9 )
-custom_fonts/font = SubResource( 12 )
+custom_styles/hover = SubResource( 3 )
+custom_styles/pressed = SubResource( 4 )
+custom_styles/focus = SubResource( 5 )
+custom_styles/disabled = SubResource( 6 )
+custom_styles/normal = SubResource( 7 )
+custom_fonts/font = SubResource( 10 )
 custom_colors/font_color = Color( 0.972549, 0.870588, 0.494118, 1 )
 disabled = true
 text = "About"
@@ -458,12 +460,12 @@ align = 0
 margin_top = 72.0
 margin_right = 234.0
 margin_bottom = 140.0
-custom_styles/hover = SubResource( 5 )
-custom_styles/pressed = SubResource( 6 )
-custom_styles/focus = SubResource( 7 )
-custom_styles/disabled = SubResource( 8 )
-custom_styles/normal = SubResource( 9 )
-custom_fonts/font = SubResource( 12 )
+custom_styles/hover = SubResource( 3 )
+custom_styles/pressed = SubResource( 4 )
+custom_styles/focus = SubResource( 5 )
+custom_styles/disabled = SubResource( 6 )
+custom_styles/normal = SubResource( 7 )
+custom_fonts/font = SubResource( 10 )
 custom_colors/font_color = Color( 0.972549, 0.870588, 0.494118, 1 )
 text = "Exit"
 align = 0
@@ -493,13 +495,13 @@ __meta__ = {
 [node name="Logo" type="TextureRect" parent="TopCenter/LogoContainer"]
 margin_right = 560.0
 margin_bottom = 140.0
-texture = SubResource( 13 )
+texture = SubResource( 11 )
 
 [node name="Label" type="Label" parent="TopCenter"]
 margin_top = 144.0
 margin_right = 560.0
 margin_bottom = 171.0
-custom_fonts/font = SubResource( 15 )
+custom_fonts/font = SubResource( 13 )
 text = "build {0} v{1} indev"
 align = 1
 valign = 1
@@ -533,7 +535,7 @@ margin_left = 210.0
 margin_right = 510.0
 margin_bottom = 415.0
 rect_min_size = Vector2( 300, 415 )
-custom_styles/panel = SubResource( 16 )
+custom_styles/panel = SubResource( 14 )
 __meta__ = {
 "_edit_ik_": true
 }
@@ -545,7 +547,7 @@ margin_left = 6.0
 margin_top = 6.0
 margin_right = -6.0
 margin_bottom = 205.0
-texture = SubResource( 17 )
+texture = SubResource( 15 )
 expand = true
 stretch_mode = 6
 __meta__ = {
@@ -561,7 +563,7 @@ margin_left = 6.0
 margin_top = -210.0
 margin_right = -6.0
 margin_bottom = -6.0
-custom_styles/panel = SubResource( 18 )
+custom_styles/panel = SubResource( 16 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -579,7 +581,7 @@ __meta__ = {
 [node name="TestTitle" type="Label" parent="Cards/Container/Test/Info/VBoxContainer"]
 margin_right = 288.0
 margin_bottom = 51.0
-custom_fonts/font = SubResource( 20 )
+custom_fonts/font = SubResource( 18 )
 custom_colors/font_color = Color( 0.129412, 0.156863, 0.227451, 1 )
 text = "Test"
 align = 1
@@ -589,7 +591,7 @@ valign = 1
 margin_top = 76.0
 margin_right = 288.0
 margin_bottom = 127.0
-custom_fonts/font = SubResource( 21 )
+custom_fonts/font = SubResource( 19 )
 custom_colors/font_color = Color( 0.113725, 0.152941, 0.243137, 1 )
 text = "Testing grounds to help
 debug & development"
@@ -601,10 +603,10 @@ __meta__ = {
 }
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="Cards/Container/Test"]
-anims/enter = SubResource( 22 )
-anims/exit = SubResource( 23 )
-anims/hover = SubResource( 24 )
-anims/unhover = SubResource( 25 )
+anims/enter = SubResource( 20 )
+anims/exit = SubResource( 21 )
+anims/hover = SubResource( 22 )
+anims/unhover = SubResource( 23 )
 
 [node name="Detector" type="Panel" parent="Cards/Container/Test"]
 modulate = Color( 1, 1, 1, 0 )
@@ -621,7 +623,7 @@ margin_left = 390.0
 margin_right = 690.0
 margin_bottom = 415.0
 rect_min_size = Vector2( 300, 415 )
-custom_styles/panel = SubResource( 16 )
+custom_styles/panel = SubResource( 14 )
 __meta__ = {
 "_edit_ik_": true
 }
@@ -649,7 +651,7 @@ margin_left = 6.0
 margin_top = -210.0
 margin_right = -6.0
 margin_bottom = -6.0
-custom_styles/panel = SubResource( 18 )
+custom_styles/panel = SubResource( 16 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -667,7 +669,7 @@ __meta__ = {
 [node name="ServerTitle" type="Label" parent="Cards/Container/ServerJoin/Info/VBoxContainer"]
 margin_right = 288.0
 margin_bottom = 51.0
-custom_fonts/font = SubResource( 20 )
+custom_fonts/font = SubResource( 18 )
 custom_colors/font_color = Color( 0.129412, 0.156863, 0.227451, 1 )
 text = "Join Server"
 align = 1
@@ -677,7 +679,7 @@ valign = 1
 margin_top = 76.0
 margin_right = 288.0
 margin_bottom = 127.0
-custom_fonts/font = SubResource( 21 )
+custom_fonts/font = SubResource( 19 )
 custom_colors/font_color = Color( 0.113725, 0.152941, 0.243137, 1 )
 text = "Join a server by the
 provided ip"
@@ -689,10 +691,10 @@ __meta__ = {
 }
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="Cards/Container/ServerJoin"]
-anims/enter = SubResource( 26 )
-anims/exit = SubResource( 27 )
-anims/hover = SubResource( 28 )
-anims/unhover = SubResource( 29 )
+anims/enter = SubResource( 24 )
+anims/exit = SubResource( 25 )
+anims/hover = SubResource( 26 )
+anims/unhover = SubResource( 27 )
 
 [node name="Detector" type="Panel" parent="Cards/Container/ServerJoin"]
 modulate = Color( 1, 1, 1, 0 )
