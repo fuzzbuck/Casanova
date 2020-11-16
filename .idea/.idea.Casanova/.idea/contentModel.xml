@@ -72,6 +72,7 @@
         <e p="elements" t="Include">
           <e p="Button.cs" t="Include" />
           <e p="FillingButton.cs" t="Include" />
+          <e p="FlatButton.cs" t="Include" />
           <e p="InformalMessage.cs" t="Include" />
           <e p="LineEdit.cs" t="Include" />
         </e>

@@ -1,4 +1,4 @@
-[gd_scene load_steps=35 format=2]
+[gd_scene load_steps=29 format=2]
 
 [ext_resource path="res://ui/fragments/CardsContainer.cs" type="Script" id=1]
 [ext_resource path="res://ui/fragments/MenuButtonsContainer.cs" type="Script" id=2]
@@ -7,6 +7,9 @@
 [ext_resource path="res://ui/fragments/VersionLabel.cs" type="Script" id=5]
 [ext_resource path="res://assets/sprites/interface/server.png" type="Texture" id=6]
 [ext_resource path="res://environment.tres" type="Environment" id=7]
+[ext_resource path="res://assets/sprites/interface/header.png" type="Texture" id=8]
+[ext_resource path="res://assets/sprites/interface/icon.png" type="Texture" id=9]
+[ext_resource path="res://ui/elements/FlatButton.tscn" type="PackedScene" id=10]
 
 [sub_resource type="Shader" id=1]
 code = "shader_type canvas_item;
@@ -14,11 +17,11 @@ code = "shader_type canvas_item;
 const float PI = 3.14159265359;
 const float R = 2.09439510239;
 
-const float triangles = 10.0;
+const float triangles = 8.0;
 const float speed = 0.25;
-const float chance = 0.05;
-const float saturation = 1.5;
-const float thickness = 0.02;
+const float chance = 0.03;
+const float saturation = 1.2;
+const float thickness = 0.03;
 
 
 float hash31(vec3 p) {
@@ -48,7 +51,7 @@ void fragment()
     float time = TIME * speed;
 	vec2 resolution = 1.0 / SCREEN_PIXEL_SIZE;
 	
-    vec3 color = vec3(0.071, 0.063, 0.149);
+    vec3 color = vec3(0.071, 0.07, 0.149);
 	
 	vec2 st = (triangles * FRAGCOORD.xy/resolution);
     st.x *= resolution.x/resolution.y;
@@ -59,8 +62,8 @@ void fragment()
     vec2 id1 = floor(uv * triangles);
     vec2 id2 = floor(-uv * triangles + vec2(0.5, 0.39));
     
-    color += (clamp(1.0 - distance(uv, vec2(0.1, 0.6)), 0.4, 1.0) - 0.4) * vec3(0.3, 0.1, 0.1);
-    color += (clamp(1.0 - distance(uv, vec2(1.5, 0.9)), 0.4, 1.0) - 0.4) * vec3(0.3, 0.1, 0.1);
+    color += (clamp(1.0 - distance(uv, vec2(0.1, 0.6)), 0.4, 1.0) - 0.4) * vec3(0.4, 0.26, 0.1);
+    color += (clamp(1.0 - distance(uv, vec2(1.5, 0.9)), 0.4, 1.0) - 0.4) * vec3(0.4, 0.26, 0.1);
     
     vec2 st2 = fract(-st + vec2(0.5, 0.39)) * 2.0 - 1.0;
     vec2 st1 = fract(st) * 2.0 - 1.0;
@@ -70,45 +73,21 @@ void fragment()
     
     color += vec3(triangle(st1, c1) + triangle(st2, c2)) * vec3(0.1, 0.1, 0.2);
 
-    COLOR = vec4(pow(color * saturation, vec3(saturation)),1.0);
+    COLOR = vec4(pow(color * saturation, vec3(saturation)), 1.0);
 }"
 
 [sub_resource type="ShaderMaterial" id=2]
 shader = SubResource( 1 )
 
-[sub_resource type="StyleBoxEmpty" id=3]
-
-[sub_resource type="StyleBoxEmpty" id=4]
-
-[sub_resource type="StyleBoxEmpty" id=5]
-
-[sub_resource type="StyleBoxEmpty" id=6]
-
-[sub_resource type="StyleBoxEmpty" id=7]
-
-[sub_resource type="DynamicFontData" id=8]
+[sub_resource type="DynamicFontData" id=3]
 font_path = "res://assets/fonts/Bathrind.otf"
 
-[sub_resource type="DynamicFont" id=9]
-size = 100
-font_data = SubResource( 8 )
+[sub_resource type="DynamicFont" id=4]
+extra_spacing_char = 9
+extra_spacing_space = 15
+font_data = SubResource( 3 )
 
-[sub_resource type="DynamicFont" id=10]
-size = 64
-font_data = SubResource( 8 )
-
-[sub_resource type="StreamTexture" id=11]
-flags = 4
-load_path = "res://.import/logo.png-63be3467a3db720a8e6f4c8e2d3c8259.stex"
-
-[sub_resource type="DynamicFontData" id=12]
-font_path = "res://assets/fonts/JosefinSans-LightItalic.ttf"
-
-[sub_resource type="DynamicFont" id=13]
-size = 26
-font_data = SubResource( 12 )
-
-[sub_resource type="StyleBoxFlat" id=14]
+[sub_resource type="StyleBoxFlat" id=5]
 bg_color = Color( 0.6, 0.6, 0.6, 0 )
 border_width_left = 6
 border_width_top = 6
@@ -116,25 +95,25 @@ border_width_right = 6
 border_width_bottom = 6
 border_color = Color( 0.972549, 0.87451, 0.494118, 1 )
 
-[sub_resource type="StreamTexture" id=15]
+[sub_resource type="StreamTexture" id=6]
 flags = 4
 load_path = "res://.import/fireplace.png-94ed3f234bd31702fb7e48a7c0b30bf6.stex"
 
-[sub_resource type="StyleBoxFlat" id=16]
+[sub_resource type="StyleBoxFlat" id=7]
 bg_color = Color( 1, 1, 1, 1 )
 
-[sub_resource type="DynamicFontData" id=17]
+[sub_resource type="DynamicFontData" id=8]
 font_path = "res://assets/fonts/Bathrind.otf"
 
-[sub_resource type="DynamicFont" id=18]
+[sub_resource type="DynamicFont" id=9]
 size = 48
-font_data = SubResource( 17 )
+font_data = SubResource( 8 )
 
-[sub_resource type="DynamicFont" id=19]
+[sub_resource type="DynamicFont" id=10]
 size = 22
-font_data = SubResource( 17 )
+font_data = SubResource( 8 )
 
-[sub_resource type="Animation" id=20]
+[sub_resource type="Animation" id=11]
 length = 0.25
 tracks/0/type = "value"
 tracks/0/path = NodePath(".:modulate")
@@ -161,7 +140,7 @@ tracks/1/keys = {
 "values": [ -160.0, 0.0 ]
 }
 
-[sub_resource type="Animation" id=21]
+[sub_resource type="Animation" id=12]
 length = 0.25
 tracks/0/type = "value"
 tracks/0/path = NodePath(".:modulate")
@@ -188,7 +167,7 @@ tracks/1/keys = {
 "values": [ 0.0, 30.0 ]
 }
 
-[sub_resource type="Animation" id=22]
+[sub_resource type="Animation" id=13]
 length = 0.5
 tracks/0/type = "value"
 tracks/0/path = NodePath("Icon:modulate")
@@ -215,7 +194,7 @@ tracks/1/keys = {
 "values": [ Color( 0.972549, 0.87451, 0.494118, 1 ), Color( 1, 1, 1, 1 ) ]
 }
 
-[sub_resource type="Animation" id=23]
+[sub_resource type="Animation" id=14]
 length = 0.5
 tracks/0/type = "value"
 tracks/0/path = NodePath("Icon:modulate")
@@ -242,7 +221,7 @@ tracks/1/keys = {
 "values": [ Color( 1, 1, 1, 1 ), Color( 0.972549, 0.87451, 0.494118, 1 ) ]
 }
 
-[sub_resource type="Animation" id=24]
+[sub_resource type="Animation" id=15]
 length = 0.25
 tracks/0/type = "value"
 tracks/0/path = NodePath(".:modulate")
@@ -269,7 +248,7 @@ tracks/1/keys = {
 "values": [ -160.0, 0.0 ]
 }
 
-[sub_resource type="Animation" id=25]
+[sub_resource type="Animation" id=16]
 length = 0.25
 tracks/0/type = "value"
 tracks/0/path = NodePath(".:modulate")
@@ -296,7 +275,7 @@ tracks/1/keys = {
 "values": [ 0.0, 30.0 ]
 }
 
-[sub_resource type="Animation" id=26]
+[sub_resource type="Animation" id=17]
 length = 0.5
 tracks/0/type = "value"
 tracks/0/path = NodePath("Icon:modulate")
@@ -323,7 +302,7 @@ tracks/1/keys = {
 "values": [ Color( 0.972549, 0.87451, 0.494118, 1 ), Color( 1, 1, 1, 1 ) ]
 }
 
-[sub_resource type="Animation" id=27]
+[sub_resource type="Animation" id=18]
 length = 0.5
 tracks/0/type = "value"
 tracks/0/path = NodePath("Icon:modulate")
@@ -364,6 +343,8 @@ environment = ExtResource( 7 )
 material = SubResource( 2 )
 anchor_right = 1.0
 anchor_bottom = 1.0
+margin_left = 2.0
+margin_right = 2.0
 color = Color( 0, 0, 0, 1 )
 __meta__ = {
 "_edit_use_anchors_": false
@@ -381,109 +362,27 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Buttons" type="MarginContainer" parent="Menu"]
-margin_right = 334.0
-margin_bottom = 337.0
-custom_constants/margin_right = 36
-custom_constants/margin_top = 0
-custom_constants/margin_left = 64
-custom_constants/margin_bottom = 16
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="Container" type="HBoxContainer" parent="Menu/Buttons"]
-margin_left = 64.0
-margin_right = 298.0
-margin_bottom = 321.0
-custom_constants/separation = 0
-
-[node name="MenuButtonsContainer" type="VBoxContainer" parent="Menu/Buttons/Container"]
-margin_right = 234.0
-margin_bottom = 321.0
-alignment = 1
-script = ExtResource( 2 )
-
-[node name="TopButtons" type="VBoxContainer" parent="Menu/Buttons/Container/MenuButtonsContainer"]
-margin_right = 234.0
-margin_bottom = 177.0
-
-[node name="Play" type="Button" parent="Menu/Buttons/Container/MenuButtonsContainer/TopButtons"]
-margin_right = 234.0
-margin_bottom = 105.0
-custom_styles/hover = SubResource( 3 )
-custom_styles/pressed = SubResource( 4 )
-custom_styles/focus = SubResource( 5 )
-custom_styles/disabled = SubResource( 6 )
-custom_styles/normal = SubResource( 7 )
-custom_fonts/font = SubResource( 9 )
-custom_colors/font_color = Color( 0.972549, 0.87451, 0.494118, 1 )
-text = "Play"
-align = 0
-
-[node name="Settings" type="Button" parent="Menu/Buttons/Container/MenuButtonsContainer/TopButtons"]
-margin_top = 109.0
-margin_right = 234.0
-margin_bottom = 177.0
-custom_styles/hover = SubResource( 3 )
-custom_styles/pressed = SubResource( 4 )
-custom_styles/focus = SubResource( 5 )
-custom_styles/disabled = SubResource( 6 )
-custom_styles/normal = SubResource( 7 )
-custom_fonts/font = SubResource( 10 )
-custom_colors/font_color = Color( 0.972549, 0.870588, 0.494118, 1 )
-disabled = true
-text = "Settings"
-align = 0
-
-[node name="BottomButtons" type="VBoxContainer" parent="Menu/Buttons/Container/MenuButtonsContainer"]
-margin_top = 181.0
-margin_right = 234.0
-margin_bottom = 321.0
-alignment = 2
-
-[node name="About" type="Button" parent="Menu/Buttons/Container/MenuButtonsContainer/BottomButtons"]
-margin_right = 234.0
-margin_bottom = 68.0
-custom_styles/hover = SubResource( 3 )
-custom_styles/pressed = SubResource( 4 )
-custom_styles/focus = SubResource( 5 )
-custom_styles/disabled = SubResource( 6 )
-custom_styles/normal = SubResource( 7 )
-custom_fonts/font = SubResource( 10 )
-custom_colors/font_color = Color( 0.972549, 0.870588, 0.494118, 1 )
-disabled = true
-text = "About"
-align = 0
-
-[node name="Exit" type="Button" parent="Menu/Buttons/Container/MenuButtonsContainer/BottomButtons"]
-margin_top = 72.0
-margin_right = 234.0
-margin_bottom = 140.0
-custom_styles/hover = SubResource( 3 )
-custom_styles/pressed = SubResource( 4 )
-custom_styles/focus = SubResource( 5 )
-custom_styles/disabled = SubResource( 6 )
-custom_styles/normal = SubResource( 7 )
-custom_fonts/font = SubResource( 10 )
-custom_colors/font_color = Color( 0.972549, 0.870588, 0.494118, 1 )
-text = "Exit"
-align = 0
-
 [node name="TopCenter" type="VBoxContainer" parent="."]
 anchor_left = 0.5
 anchor_right = 0.5
-margin_left = -280.0
-margin_top = 38.0
-margin_right = 280.0
-margin_bottom = 140.0
+margin_left = -357.0
+margin_top = 114.491
+margin_right = 357.0
+margin_bottom = 492.491
+custom_constants/separation = 182
 __meta__ = {
+"_edit_group_": true,
 "_edit_use_anchors_": false
 }
 
-[node name="LogoContainer" type="CenterContainer" parent="TopCenter"]
-margin_right = 560.0
-margin_bottom = 140.0
+[node name="HeaderContainer" type="VBoxContainer" parent="TopCenter"]
+margin_right = 714.0
+margin_bottom = 395.0
+custom_constants/separation = 23
+
+[node name="LogoContainer" type="CenterContainer" parent="TopCenter/HeaderContainer"]
+margin_right = 714.0
+margin_bottom = 266.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
@@ -492,20 +391,70 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Logo" type="TextureRect" parent="TopCenter/LogoContainer"]
-margin_right = 560.0
-margin_bottom = 140.0
-texture = SubResource( 11 )
+[node name="Icon" type="TextureRect" parent="TopCenter/HeaderContainer/LogoContainer"]
+margin_left = 213.0
+margin_right = 501.0
+margin_bottom = 266.0
+texture = ExtResource( 9 )
 
-[node name="Label" type="Label" parent="TopCenter"]
-margin_top = 144.0
-margin_right = 560.0
-margin_bottom = 171.0
-custom_fonts/font = SubResource( 13 )
-text = "build {0} v{1} indev"
+[node name="HeaderContainer" type="CenterContainer" parent="TopCenter/HeaderContainer"]
+margin_top = 289.0
+margin_right = 714.0
+margin_bottom = 395.0
+
+[node name="VBox" type="VBoxContainer" parent="TopCenter/HeaderContainer/HeaderContainer"]
+margin_right = 714.0
+margin_bottom = 106.0
+custom_constants/separation = -60
+
+[node name="Header" type="TextureRect" parent="TopCenter/HeaderContainer/HeaderContainer/VBox"]
+margin_right = 714.0
+margin_bottom = 148.0
+texture = ExtResource( 8 )
+
+[node name="Label" type="Label" parent="TopCenter/HeaderContainer/HeaderContainer/VBox"]
+modulate = Color( 0.454902, 0.454902, 0.454902, 0.552941 )
+margin_top = 88.0
+margin_right = 714.0
+margin_bottom = 106.0
+custom_fonts/font = SubResource( 4 )
+text = "BUILD {0} VER. INDEV"
 align = 1
 valign = 1
 script = ExtResource( 5 )
+
+[node name="Buttons" type="VBoxContainer" parent="TopCenter"]
+margin_top = 577.0
+margin_right = 714.0
+margin_bottom = 812.0
+custom_constants/separation = 25
+alignment = 1
+script = ExtResource( 2 )
+
+[node name="Play" parent="TopCenter/Buttons" instance=ExtResource( 10 )]
+margin_left = 309.0
+margin_right = 405.0
+margin_bottom = 40.0
+
+[node name="Settings" parent="TopCenter/Buttons" instance=ExtResource( 10 )]
+margin_left = 263.0
+margin_top = 65.0
+margin_right = 450.0
+text = "SETTINGS"
+
+[node name="About" parent="TopCenter/Buttons" instance=ExtResource( 10 )]
+margin_left = 294.0
+margin_top = 130.0
+margin_right = 420.0
+margin_bottom = 170.0
+text = "ABOUT"
+
+[node name="Exit" parent="TopCenter/Buttons" instance=ExtResource( 10 )]
+margin_left = 316.0
+margin_top = 195.0
+margin_right = 397.0
+margin_bottom = 235.0
+text = "EXIT"
 
 [node name="Cards" type="MarginContainer" parent="."]
 anchor_left = 0.5
@@ -529,13 +478,12 @@ custom_constants/separation = 60
 alignment = 1
 
 [node name="Test" type="Panel" parent="Cards/Container"]
-visible = false
 modulate = Color( 1, 1, 1, 0 )
 margin_left = 210.0
 margin_right = 510.0
 margin_bottom = 415.0
 rect_min_size = Vector2( 300, 415 )
-custom_styles/panel = SubResource( 14 )
+custom_styles/panel = SubResource( 5 )
 __meta__ = {
 "_edit_ik_": true
 }
@@ -547,7 +495,7 @@ margin_left = 6.0
 margin_top = 6.0
 margin_right = -6.0
 margin_bottom = 205.0
-texture = SubResource( 15 )
+texture = SubResource( 6 )
 expand = true
 stretch_mode = 6
 __meta__ = {
@@ -563,7 +511,7 @@ margin_left = 6.0
 margin_top = -210.0
 margin_right = -6.0
 margin_bottom = -6.0
-custom_styles/panel = SubResource( 16 )
+custom_styles/panel = SubResource( 7 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -581,7 +529,7 @@ __meta__ = {
 [node name="TestTitle" type="Label" parent="Cards/Container/Test/Info/VBoxContainer"]
 margin_right = 288.0
 margin_bottom = 51.0
-custom_fonts/font = SubResource( 18 )
+custom_fonts/font = SubResource( 9 )
 custom_colors/font_color = Color( 0.129412, 0.156863, 0.227451, 1 )
 text = "Test"
 align = 1
@@ -591,7 +539,7 @@ valign = 1
 margin_top = 76.0
 margin_right = 288.0
 margin_bottom = 127.0
-custom_fonts/font = SubResource( 19 )
+custom_fonts/font = SubResource( 10 )
 custom_colors/font_color = Color( 0.113725, 0.152941, 0.243137, 1 )
 text = "Testing grounds to help
 debug & development"
@@ -603,10 +551,10 @@ __meta__ = {
 }
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="Cards/Container/Test"]
-anims/enter = SubResource( 20 )
-anims/exit = SubResource( 21 )
-anims/hover = SubResource( 22 )
-anims/unhover = SubResource( 23 )
+anims/enter = SubResource( 11 )
+anims/exit = SubResource( 12 )
+anims/hover = SubResource( 13 )
+anims/unhover = SubResource( 14 )
 
 [node name="Detector" type="Panel" parent="Cards/Container/Test"]
 modulate = Color( 1, 1, 1, 0 )
@@ -617,13 +565,12 @@ __meta__ = {
 }
 
 [node name="ServerJoin" type="Panel" parent="Cards/Container"]
-visible = false
 modulate = Color( 1, 1, 1, 0 )
-margin_left = 390.0
-margin_right = 690.0
+margin_left = 570.0
+margin_right = 870.0
 margin_bottom = 415.0
 rect_min_size = Vector2( 300, 415 )
-custom_styles/panel = SubResource( 14 )
+custom_styles/panel = SubResource( 5 )
 __meta__ = {
 "_edit_ik_": true
 }
@@ -651,7 +598,7 @@ margin_left = 6.0
 margin_top = -210.0
 margin_right = -6.0
 margin_bottom = -6.0
-custom_styles/panel = SubResource( 16 )
+custom_styles/panel = SubResource( 7 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -669,7 +616,7 @@ __meta__ = {
 [node name="ServerTitle" type="Label" parent="Cards/Container/ServerJoin/Info/VBoxContainer"]
 margin_right = 288.0
 margin_bottom = 51.0
-custom_fonts/font = SubResource( 18 )
+custom_fonts/font = SubResource( 9 )
 custom_colors/font_color = Color( 0.129412, 0.156863, 0.227451, 1 )
 text = "Join Server"
 align = 1
@@ -679,7 +626,7 @@ valign = 1
 margin_top = 76.0
 margin_right = 288.0
 margin_bottom = 127.0
-custom_fonts/font = SubResource( 19 )
+custom_fonts/font = SubResource( 10 )
 custom_colors/font_color = Color( 0.113725, 0.152941, 0.243137, 1 )
 text = "Join a server by the
 provided ip"
@@ -691,10 +638,10 @@ __meta__ = {
 }
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="Cards/Container/ServerJoin"]
-anims/enter = SubResource( 24 )
-anims/exit = SubResource( 25 )
-anims/hover = SubResource( 26 )
-anims/unhover = SubResource( 27 )
+anims/enter = SubResource( 15 )
+anims/exit = SubResource( 16 )
+anims/hover = SubResource( 17 )
+anims/unhover = SubResource( 18 )
 
 [node name="Detector" type="Panel" parent="Cards/Container/ServerJoin"]
 modulate = Color( 1, 1, 1, 0 )

@@ -47,6 +47,7 @@
     <Compile Include="core\Vars.cs" />
     <Compile Include="ui\elements\Button.cs" />
     <Compile Include="ui\elements\FillingButton.cs" />
+    <Compile Include="ui\elements\FlatButton.cs" />
     <Compile Include="ui\elements\InformalMessage.cs" />
     <Compile Include="ui\elements\LineEdit.cs" />
     <Compile Include="ui\fragments\CardsContainer.cs" />
