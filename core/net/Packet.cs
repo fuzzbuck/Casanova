@@ -8,25 +8,6 @@ using static Casanova.core.Vars.Enums;
 
 namespace Casanova.core.net
 {
-    /// <summary>Sent from server to client.</summary>
-    public enum ServerPackets
-    {
-        welcome = 1,
-        spawnPlayer,
-        playerMovement,
-        disconnectPlayer,
-        chatMessage
-    }
-
-    /// <summary>Sent from client to server.</summary>
-    public enum ClientPackets
-    {
-        welcomeReceived = 1,
-        playerMovement,
-        chatMessage
-    }
-
-
     public class Packet : IDisposable
     {
         private List<byte> buffer;

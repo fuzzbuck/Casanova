@@ -33,7 +33,6 @@
     <Compile Include="core\net\headless_server\ServerLauncher.cs" />
     <Compile Include="core\net\Packet.cs" />
     <Compile Include="core\net\Packets.cs" />
-    <Compile Include="core\net\ServerSend.cs" />
     <Compile Include="core\net\server\Client.cs" />
     <Compile Include="core\net\server\Server.cs" />
     <Compile Include="core\net\ThreadManager.cs" />

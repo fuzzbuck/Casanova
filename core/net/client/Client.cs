@@ -65,11 +65,11 @@ namespace Casanova.core.net.client
         {
             packetHandlers = new Dictionary<int, PacketHandler>
             {
-                {(int) ServerPackets.welcome, Packets.ClientHandle.Receive.Welcome},
-                {(int) ServerPackets.spawnPlayer, Packets.ClientHandle.Receive.SpawnPlayer},
-                {(int) ServerPackets.playerMovement, Packets.ClientHandle.Receive.PlayerMovement},
-                {(int) ServerPackets.disconnectPlayer, Packets.ClientHandle.Receive.PlayerDisconnect},
-                {(int) ServerPackets.chatMessage, Packets.ClientHandle.Receive.ChatMessage}
+                {(int) Packets.ServerPackets.Welcome, Packets.ClientHandle.Receive.Welcome},
+                {(int) Packets.ServerPackets.PlayerJoin, Packets.ClientHandle.Receive.PlayerJoin},
+                {(int) Packets.ServerPackets.PlayerDisconnect, Packets.ClientHandle.Receive.PlayerDisconnect},
+                {(int) Packets.ServerPackets.PlayerMovement, Packets.ClientHandle.Receive.PlayerMovement},
+                {(int) Packets.ServerPackets.ChatMessage, Packets.ClientHandle.Receive.ChatMessage}
             };
         }
 

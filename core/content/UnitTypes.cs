@@ -74,7 +74,7 @@ namespace Casanova.core.content
                 },
                 ShadowBlur = 4,
                 ShadowOffset = new Vector2(0, 0.2f),
-                MovementType = MovementType.Ground,
+                Body = "Body",
 
                 SkidMarks = new System.Collections.Generic.Dictionary<Vector2, Skid>
                 {
@@ -107,7 +107,7 @@ namespace Casanova.core.content
                     new Vector2(0, 12)
                 },
                 ShadowOffset = new Vector2(-15, 20),
-                MovementType = MovementType.Air,
+                Body = "Air",
 
                 SkidMarks = new System.Collections.Generic.Dictionary<Vector2, Skid>
                 {

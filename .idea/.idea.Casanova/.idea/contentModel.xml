@@ -42,7 +42,6 @@
             <e p="Client.cs" t="Include" />
             <e p="Server.cs" t="Include" />
           </e>
-          <e p="ServerSend.cs" t="Include" />
           <e p="ThreadManager.cs" t="Include" />
           <e p="types" t="Include">
             <e p="Player.cs" t="Include" />

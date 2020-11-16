@@ -16,13 +16,12 @@ namespace Casanova.core.types
         public float Acceleration;
         public float Deceleration;
         public string Description = "Attacks.";
+        public string Body = "Body";
 
         public float Health = 100f;
         public float Height;
 
         public float MaxSpeed;
-
-        public MovementType MovementType = MovementType.Ground;
 
         public string Name = "Attacker";
         public System.Collections.Generic.Dictionary<Vector2, ParticleInfo> ParticleEffects;

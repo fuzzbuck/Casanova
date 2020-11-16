@@ -26,18 +26,18 @@ namespace Casanova.core.net.server
 
         public void SendIntoGame(string _username, UnitType type)
         {
-            player = NetworkManager.CreatePlayer(NetworkManager.loc.SERVER, id, _username, type);
+            player = NetworkManager.CreatePlayer(NetworkManager.loc.SERVER, id, _username);
 
             // send info to all clients except ours that we spawned
             foreach (var _client in Server.Clients.Values)
                 if (_client.player != null)
                     if (_client.id != id)
-                        Packets.ServerHandle.Send.SpawnPlayer(id, _client.player);
+                        Packets.ServerHandle.Send.PlayerJoin(id, _client.player);
 
             // send info from all clients except ours about others existance
             foreach (var _client in Server.Clients.Values)
                 if (_client.player != null && !_client.player.IsLocal)
-                    Packets.ServerHandle.Send.SpawnPlayer(_client.id, player);
+                    Packets.ServerHandle.Send.PlayerJoin(_client.id, player);
         }
 
         private void Disconnect()

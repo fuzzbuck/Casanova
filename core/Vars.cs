@@ -91,7 +91,7 @@ namespace Casanova.core
             Interface.ButtonGroup.Clear();
 
             PlayerController.LocalPlayer = null;
-            PlayerController.LocalPlayerUnit = null;
+            PlayerController.LocalUnit = null;
 
             NetworkManager.HostPlayer = null;
             NetworkManager.PlayersGroup.Clear();

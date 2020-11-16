@@ -121,6 +121,47 @@ namespace Casanova.core.net.server
                 Console.WriteLine($"Error sending data to {_clientEndPoint} via UDP: {_ex}");
             }
         }
+        
+        public static void SendTCPData(int _toClient, Packet _packet)
+        {
+            _packet.WriteLength();
+            Clients[_toClient].tcp.SendData(_packet);
+        }
+
+        public static void SendTCPDataToAll(Packet _packet)
+        {
+            _packet.WriteLength();
+            for (var i = 1; i <= MaxClients; i++) Clients[i].tcp.SendData(_packet);
+        }
+
+        public static void SendTCPDataToAll(int _exceptClient, Packet _packet)
+        {
+            _packet.WriteLength();
+            for (var i = 1; i <= MaxClients; i++)
+                if (i != _exceptClient)
+                    Clients[i].tcp.SendData(_packet);
+        }
+
+
+        public static void SendUDPData(int _toClient, Packet _packet)
+        {
+            _packet.WriteLength();
+            Clients[_toClient].udp.SendData(_packet);
+        }
+
+        public static void SendUDPDataToAll(Packet _packet)
+        {
+            _packet.WriteLength();
+            for (var i = 1; i <= MaxClients; i++) Clients[i].udp.SendData(_packet);
+        }
+
+        public static void SendUDPDataToAll(int _exceptClient, Packet _packet)
+        {
+            _packet.WriteLength();
+            for (var i = 1; i <= MaxClients; i++)
+                if (i != _exceptClient)
+                    Clients[i].udp.SendData(_packet);
+        }
 
         private static void InitializeServerData()
         {
@@ -128,9 +169,9 @@ namespace Casanova.core.net.server
 
             packetHandlers = new Dictionary<int, PacketHandler>
             {
-                {(int) ClientPackets.welcomeReceived, Packets.ServerHandle.Receive.WelcomeConfirmation},
-                {(int) ClientPackets.playerMovement, Packets.ServerHandle.Receive.PlayerMovement},
-                {(int) ClientPackets.chatMessage, Packets.ServerHandle.Receive.ChatMessage}
+                {(int) Packets.ClientPackets.WelcomeReceived, Packets.ServerHandle.Receive.WelcomeConfirmation},
+                {(int) Packets.ClientPackets.PlayerMovement, Packets.ServerHandle.Receive.PlayerMovement},
+                {(int) Packets.ClientPackets.ChatMessage, Packets.ServerHandle.Receive.ChatMessage}
             };
         }
     }

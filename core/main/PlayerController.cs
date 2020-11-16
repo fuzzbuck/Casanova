@@ -11,7 +11,7 @@ namespace Casanova.core.main
 {
     public class PlayerController : Node
     {
-        public static PlayerUnit LocalPlayerUnit;
+        public static Unit LocalUnit;
         public static Player LocalPlayer;
 
         public static Node Focus;
@@ -19,7 +19,7 @@ namespace Casanova.core.main
 
         public override void _Process(float delta)
         {
-            if (LocalPlayerUnit?.Body != null)
+            if (LocalUnit?.Body != null)
             {
                 if (!Vars.PersistentData.isMobile)
                     ProcessMovement();
@@ -30,14 +30,14 @@ namespace Casanova.core.main
 
         public override void _PhysicsProcess(float delta)
         {
-            if (LocalPlayerUnit != null && !Server.IsHosting && Client.isConnected)
-                Packets.ClientHandle.Send.PlayerMovement(LocalPlayerUnit.Body.InWorldPosition,
-                    LocalPlayerUnit.Body.Axis, LocalPlayerUnit.Body.Speed, LocalPlayerUnit.Rotation);
+            if (LocalUnit != null && !Server.IsHosting && Client.isConnected)
+                Packets.ClientHandle.Send.PlayerMovement(LocalUnit.Body.InWorldPosition,
+                    LocalUnit.Body.Axis, LocalUnit.Body.Speed, LocalUnit.Rotation);
         }
 
         public void ProcessMovement()
         {
-            if (Focus == null) LocalPlayerUnit.Body.Axis = Axis;
+            if (Focus == null) LocalUnit.Body.Axis = Axis;
         }
 
         public void ProcessMobileMovement()
@@ -46,13 +46,13 @@ namespace Casanova.core.main
             {
                 // todo: check if player flew too far away and move the camera there
 
-                var p1 = LocalPlayerUnit.Body.InWorldPosition;
+                var p1 = LocalUnit.Body.InWorldPosition;
                 var p2 = Camera.instance.GlobalPosition;
 
                 if (p1.DistanceTo(p2) > Vars.PlayerCamera.mobile_cam_distance_treshold)
-                    LocalPlayerUnit.Body.Axis = p1.DirectionTo(p2);
+                    LocalUnit.Body.Axis = p1.DirectionTo(p2);
                 else
-                    LocalPlayerUnit.Body.Axis = Vector2.Zero;
+                    LocalUnit.Body.Axis = Vector2.Zero;
             }
         }
 

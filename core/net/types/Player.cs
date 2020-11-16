@@ -7,13 +7,13 @@ namespace Casanova.core.net.types
         public readonly int Id;
         public readonly bool IsLocal;
         public readonly string Username;
-        public PlayerUnit PlayerUnit;
+        public Unit Unit;
 
-        public Player(int id, string username, PlayerUnit playerUnit, bool isLocal = false)
+        public Player(int id, string username, Unit _unit, bool isLocal = false)
         {
             Id = id;
             Username = username;
-            PlayerUnit = playerUnit;
+            Unit = _unit;
             IsLocal = isLocal;
         }
     }

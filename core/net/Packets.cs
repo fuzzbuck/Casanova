@@ -12,6 +12,23 @@ namespace Casanova.core.net
 {
     public class Packets
     {
+        /// <summary>Sent from server to client.</summary>
+        public enum ServerPackets
+        {
+            Welcome = 1,
+            PlayerJoin,
+            PlayerDisconnect,
+            PlayerMovement,
+            ChatMessage
+        }
+
+        /// <summary>Sent from client to server.</summary>
+        public enum ClientPackets
+        {
+            WelcomeReceived = 1,
+            PlayerMovement,
+            ChatMessage
+        }
         public class ClientHandle
         {
             public class Receive
@@ -34,16 +51,15 @@ namespace Casanova.core.net
                     });
                 }
 
-                public static void SpawnPlayer(Packet _packet)
+                public static void PlayerJoin(Packet _packet)
                 {
                     var _id = _packet.ReadInt();
                     var _username = _packet.ReadString();
-                    var _type = _packet.ReadUnitType();
 
                     if (Server.IsHosting)
                         return;
 
-                    NetworkManager.CreatePlayer(NetworkManager.loc.CLIENT, _id, _username, _type);
+                    NetworkManager.CreatePlayer(NetworkManager.loc.CLIENT, _id, _username);
                 }
 
                 public static void PlayerMovement(Packet _packet)
@@ -59,7 +75,7 @@ namespace Casanova.core.net
                     var rotation = _packet.ReadFloat();
 
                     var player = NetworkManager.PlayersGroup[id];
-                    var unitBody = player?.PlayerUnit.Body;
+                    var unitBody = player?.Unit.Body;
                     if (unitBody != null && !player.IsLocal)
                     {
                         unitBody.Axis = axis;
@@ -82,8 +98,8 @@ namespace Casanova.core.net
 
                     if (!NetworkManager.PlayersGroup.ContainsKey(_id))
                         return;
-
-                    NetworkManager.DestroyPlayer(_id);
+                    
+                    // todo: handle player disconnect
                 }
 
                 public static void ChatMessage(Packet _packet)
@@ -104,7 +120,7 @@ namespace Casanova.core.net
             {
                 public static void WelcomeConfirmation(string _username, UnitType _type)
                 {
-                    using (var _packet = new Packet((int) ClientPackets.welcomeReceived))
+                    using (var _packet = new Packet((int) ClientPackets.WelcomeReceived))
                     {
                         _packet.Write(Client.myId);
                         _packet.Write(_username);
@@ -116,7 +132,7 @@ namespace Casanova.core.net
 
                 public static void PlayerMovement(Vector2 _position, Vector2 _axis, float _speed, float _rotation)
                 {
-                    using (var _packet = new Packet((int) ClientPackets.playerMovement))
+                    using (var _packet = new Packet((int) ClientPackets.PlayerMovement))
                     {
                         _packet.Write(_position);
                         _packet.Write(_axis);
@@ -129,7 +145,7 @@ namespace Casanova.core.net
 
                 public static void ChatMessage(string _message)
                 {
-                    using (var _packet = new Packet((int) ClientPackets.chatMessage))
+                    using (var _packet = new Packet((int) ClientPackets.ChatMessage))
                     {
                         _packet.Write(_message);
 
@@ -170,7 +186,7 @@ namespace Casanova.core.net
                     // todo: use UnitType for rotation speed, prediction & etc..
 
                     var _plr = Server.Clients[_fromClient].player;
-                    var unitBody = _plr.PlayerUnit.Body;
+                    var unitBody = _plr.Unit.Body;
                     if (!_plr.IsLocal && unitBody != null)
                     {
                         unitBody.Axis = axis;
@@ -195,33 +211,32 @@ namespace Casanova.core.net
             {
                 public static void Welcome(int _toClient, string _msg)
                 {
-                    using (var _packet = new Packet((int) ServerPackets.welcome))
+                    using (var _packet = new Packet((int) ServerPackets.Welcome))
                     {
                         _packet.Write(_msg);
                         _packet.Write(_toClient);
 
-                        ServerSend.SendTCPData(_toClient, _packet);
+                        Server.SendTCPData(_toClient, _packet);
                     }
                 }
 
-                public static void SpawnPlayer(int _toClient, Player _player)
+                public static void PlayerJoin(int _toClient, Player _player)
                 {
-                    using (var _packet = new Packet((int) ServerPackets.spawnPlayer))
+                    using (var _packet = new Packet((int) ServerPackets.PlayerJoin))
                     {
                         _packet.Write(_player.Id);
                         _packet.Write(_player.Username);
-                        _packet.Write(_player.PlayerUnit.Type);
                         _packet.Write(_toClient);
 
-                        ServerSend.SendTCPData(_toClient, _packet);
+                        Server.SendTCPData(_toClient, _packet);
                     }
                 }
 
                 public static void PlayerMovement(Player _player)
                 {
-                    using (var _packet = new Packet((int) ServerPackets.playerMovement))
+                    using (var _packet = new Packet((int) ServerPackets.PlayerMovement))
                     {
-                        var unitBody = _player.PlayerUnit.Body;
+                        var unitBody = _player.Unit.Body;
 
                         _packet.Write(_player.Id);
                         _packet.Write(unitBody.Position);
@@ -229,32 +244,29 @@ namespace Casanova.core.net
                         _packet.Write(unitBody.Speed);
                         _packet.Write(unitBody.Rotation);
 
-                        ServerSend.SendUDPDataToAll(_player.Id, _packet);
+                        Server.SendUDPDataToAll(_player.Id, _packet);
                     }
                 }
 
                 public static void PlayerDisconnect(int _id)
                 {
-                    using (var _packet = new Packet((int) ServerPackets.disconnectPlayer))
+                    using (var _packet = new Packet((int) ServerPackets.PlayerDisconnect))
                     {
                         _packet.Write(_id);
 
                         // replicate to all clients
-                        ServerSend.SendTCPDataToAll(_packet);
+                        Server.SendTCPDataToAll(_packet);
                     }
-
-                    // destroy player server-side
-                    NetworkManager.DestroyPlayer(_id);
                 }
 
                 public static void ChatMessage(int _id, string message)
                 {
-                    using (var _packet = new Packet((int) ServerPackets.chatMessage))
+                    using (var _packet = new Packet((int) ServerPackets.ChatMessage))
                     {
                         _packet.Write(_id);
                         _packet.Write(message);
 
-                        ServerSend.SendTCPDataToAll(_packet);
+                        Server.SendTCPDataToAll(_packet);
                     }
                 }
             }

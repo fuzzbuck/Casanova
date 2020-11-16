@@ -12,18 +12,7 @@ namespace Casanova.core.main.units
     {
         public static Body CreateBody(UnitType type)
         {
-            var bodyType = string.Empty;
-            switch (type.MovementType)
-            {
-                case MovementType.Air:
-                    bodyType = "Air";
-                    break;
-                case MovementType.Ground:
-                    bodyType = "Body";
-                    break;
-            }
-
-            var body = (Body) ResourceLoader.Load<PackedScene>(Vars.path_types + $"/bodies/{bodyType}.tscn").Instance();
+            var body = (Body) ResourceLoader.Load<PackedScene>(Vars.path_types + $"/bodies/{type.Body}.tscn").Instance();
             body.Init(type);
 
             return body;
