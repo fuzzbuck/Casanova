@@ -6,21 +6,15 @@ namespace Casanova.ui.fragments
 {
     public class MenuButtonsContainer : VBoxContainer
     {
-        private VBoxContainer _botButtons;
-        private VBoxContainer _topButtons;
-
         private readonly Array<Godot.Button> buttons = new Array<Godot.Button>();
 
         public override void _Ready()
         {
-            _topButtons = GetNode<VBoxContainer>("TopButtons");
-            _botButtons = GetNode<VBoxContainer>("BottomButtons");
+            buttons.Add(GetNode("Play") as Godot.Button);
+            buttons.Add(GetNode("Settings") as Godot.Button);
 
-            buttons.Add(_topButtons.GetNode("Play") as Godot.Button);
-            buttons.Add(_topButtons.GetNode("Settings") as Godot.Button);
-
-            buttons.Add(_botButtons.GetNode("About") as Godot.Button);
-            buttons.Add(_botButtons.GetNode("Exit") as Godot.Button);
+            buttons.Add(GetNode("About") as Godot.Button);
+            buttons.Add(GetNode("Exit") as Godot.Button);
 
             for (var i = 0; i < buttons.Count; i++)
             {

@@ -145,7 +145,7 @@ namespace Casanova.core
 
         public class Pals
         {
-            public static Color accent = new Color(248, 248, 126);
+            public static Color accent = new Color(255, 223, 131);
             public static Color highlight = new Color(255, 255, 255);
         }
     }

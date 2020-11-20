@@ -45,7 +45,7 @@ namespace Casanova.core.types.bodies
             Sprite.Texture = type.SpriteTexture;
             
             Shadow.Texture = type.ShadowTexture;
-            Shadow.Offset = type.ShadowOffset;
+            Shadow.ShadowOffset = type.ShadowOffset;
         }
 
         private void ApplyFriction(float amt)

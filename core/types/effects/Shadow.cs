@@ -4,7 +4,7 @@ namespace Casanova.core.types.effects
 {
     public class Shadow : Sprite
     {
-        public Vector2 Offset = Vector2.Zero;
+        public Vector2 ShadowOffset = Vector2.Zero;
         private Node2D Parent;
 
         public override void _Ready()
@@ -14,7 +14,7 @@ namespace Casanova.core.types.effects
 
         public override void _Process(float delta)
         {
-            GlobalPosition = Parent.GlobalPosition + Offset;
+            GlobalPosition = Parent.GlobalPosition + ShadowOffset;
         }
     }
 }
