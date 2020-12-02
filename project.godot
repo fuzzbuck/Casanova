@@ -8,11 +8,6 @@
 
 config_version=4
 
-_global_script_classes=[  ]
-_global_script_class_icons={
-
-}
-
 [application]
 
 config/name="Casanova"
@@ -100,7 +95,6 @@ locale_filter=[ 0, [  ] ]
 
 [rendering]
 
-quality/driver/driver_name="GLES2"
 quality/2d/use_pixel_snap=true
 threads/thread_model=2
 vram_compression/import_etc=true

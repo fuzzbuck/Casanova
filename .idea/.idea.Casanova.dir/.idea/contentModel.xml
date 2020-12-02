@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ContentModelStore">
+    <e p="C:\Users\aspherix\AppData\Local\JetBrains\Rider2020.1\extResources" t="IncludeRecursive" />
+    <e p="C:\Users\aspherix\AppData\Local\JetBrains\Rider2020.1\resharper-host\Local\Transient\ReSharperHost\v201\SolutionCaches\_.19.00" t="ExcludeRecursive" />
+    <e p="C:\Users\aspherix\Documents\GodotProjects\Casanova" t="IncludeRecursive">
+      <e p=".mono\temp\bin" t="ExcludeRecursive" />
+      <e p=".mono\temp\obj" t="ExcludeRecursive" />
+      <e p="Casanova.csproj" t="IncludeRecursive" />
+      <e p="core" t="Include">
+        <e p="BundleHandler.cs" t="Include" />
+        <e p="content" t="Include">
+          <e p="UnitTypes.cs" t="Include" />
+        </e>
+        <e p="main" t="Include">
+          <e p="PlayerController.cs" t="Include" />
+          <e p="units" t="Include">
+            <e p="Camera.cs" t="Include" />
+            <e p="PlayerUnit.cs" t="Include" />
+            <e p="Tag.cs" t="Include" />
+            <e p="Unit.cs" t="Include" />
+          </e>
+          <e p="world" t="Include">
+            <e p="blocks" t="Include">
+              <e p="Block.cs" t="Include" />
+            </e>
+            <e p="NetworkManager.cs" t="Include" />
+            <e p="World.cs" t="Include" />
+          </e>
+        </e>
+        <e p="net" t="Include">
+          <e p="client" t="Include">
+            <e p="Client.cs" t="Include" />
+          </e>
+          <e p="headless_server" t="Include">
+            <e p="ServerLauncher.cs" t="Include" />
+          </e>
+          <e p="Packet.cs" t="Include" />
+          <e p="Packets.cs" t="Include" />
+          <e p="server" t="Include">
+            <e p="Client.cs" t="Include" />
+            <e p="Server.cs" t="Include" />
+          </e>
+          <e p="ThreadManager.cs" t="Include" />
+          <e p="types" t="Include">
+            <e p="Player.cs" t="Include" />
+          </e>
+        </e>
+        <e p="types" t="Include">
+          <e p="bodies" t="Include">
+            <e p="Air.cs" t="Include" />
+            <e p="Body.cs" t="Include" />
+          </e>
+          <e p="effects" t="Include">
+            <e p="Particles.cs" t="Include" />
+            <e p="Shadow.cs" t="Include" />
+            <e p="SkidMark.cs" t="Include" />
+          </e>
+          <e p="UnitType.cs" t="Include" />
+        </e>
+        <e p="utils" t="Include">
+          <e p="Funcs.cs" t="Include" />
+        </e>
+        <e p="Vars.cs" t="Include" />
+      </e>
+      <e p="packages" t="ExcludeRecursive" />
+      <e p="Properties" t="Include">
+        <e p="AssemblyInfo.cs" t="Include" />
+      </e>
+      <e p="ui" t="Include">
+        <e p="elements" t="Include">
+          <e p="Button.cs" t="Include" />
+          <e p="FillingButton.cs" t="Include" />
+          <e p="FlatButton.cs" t="Include" />
+          <e p="InformalMessage.cs" t="Include" />
+          <e p="LineEdit.cs" t="Include" />
+        </e>
+        <e p="fragments" t="Include">
+          <e p="CardsContainer.cs" t="Include" />
+          <e p="Chat.cs" t="Include" />
+          <e p="DebugLabel.cs" t="Include" />
+          <e p="EscContent.cs" t="Include" />
+          <e p="LoadingOverlay.cs" t="Include" />
+          <e p="MenuButtonsContainer.cs" t="Include" />
+          <e p="MobileTextInput.cs" t="Include" />
+          <e p="MobileUnderhead.cs" t="Include" />
+          <e p="Overlay.cs" t="Include" />
+          <e p="ServerJoin.cs" t="Include" />
+          <e p="VersionLabel.cs" t="Include" />
+        </e>
+        <e p="Interface.cs" t="Include" />
+      </e>
+    </e>
+  </component>
+</project>

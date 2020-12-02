@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="43ac5ced-4aba-4ae8-909c-984848e012c0" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.Casanova/.idea/contentModel.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Casanova/.idea/contentModel.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Casanova.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Casanova.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/elements/FlatButton.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ui/elements/FlatButton.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/elements/FlatButton.tscn" beforeDir="false" afterPath="$PROJECT_DIR$/ui/elements/FlatButton.tscn" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ui/fragments/Menu.tscn" beforeDir="false" afterPath="$PROJECT_DIR$/ui/fragments/Menu.tscn" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/core/BundleHandler.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/core/utils/Funcs.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/ui/elements/FlatButton.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/ui/fragments/ParallaxBackground.cs" root0="FORCE_HIGHLIGHTING" />
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/core/utils/Funcs.cs" />
+        <option value="$PROJECT_DIR$/ui/elements/FlatButton.cs" />
+        <option value="$PROJECT_DIR$/ui/fragments/ParallaxBackground.cs" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectId" id="1kri6EYDCWqkdGgc0e0Vg5Q9Rn0" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="settings.editor.selected.configurable" value="SolutionBuilderGeneralOptionsPageId" />
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="43ac5ced-4aba-4ae8-909c-984848e012c0" name="Default Changelist" comment="" />
+      <created>1606464934804</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1606464934804</updated>
+      <workItem from="1606464945184" duration="48000" />
+      <workItem from="1606465022174" duration="115000" />
+      <workItem from="1606465831708" duration="112000" />
+      <workItem from="1606466446119" duration="54000" />
+      <workItem from="1606467490616" duration="1417000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="2" />
+  </component>
+  <component name="UnityProjectConfiguration" hasMinimizedUI="false" />
+  <component name="UnityUnitTestConfiguration" currentTestLauncher="NUnit" />
+  <component name="VcsManagerConfiguration">
+    <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="461" y="205" key="SettingsEditor" timestamp="1606466486577">
+      <screen x="0" y="40" width="1920" height="1040" />
+    </state>
+    <state x="461" y="205" key="SettingsEditor/0.40.1920.1040/1920.0.1920.1040@0.40.1920.1040" timestamp="1606466486577" />
+  </component>
+</project>
