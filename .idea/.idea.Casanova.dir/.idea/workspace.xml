@@ -2,8 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="43ac5ced-4aba-4ae8-909c-984848e012c0" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.Casanova/.idea/contentModel.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Casanova/.idea/contentModel.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Casanova.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Casanova.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.Casanova.dir/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Casanova.dir/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ui/elements/FlatButton.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ui/elements/FlatButton.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ui/elements/FlatButton.tscn" beforeDir="false" afterPath="$PROJECT_DIR$/ui/elements/FlatButton.tscn" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ui/fragments/Menu.tscn" beforeDir="false" afterPath="$PROJECT_DIR$/ui/fragments/Menu.tscn" afterDir="false" />
@@ -20,14 +19,13 @@
     <setting file="file://$PROJECT_DIR$/core/BundleHandler.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/core/utils/Funcs.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/ui/elements/FlatButton.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/ui/fragments/ParallaxBackground.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/core/utils/Funcs.cs" />
-        <option value="$PROJECT_DIR$/ui/elements/FlatButton.cs" />
         <option value="$PROJECT_DIR$/ui/fragments/ParallaxBackground.cs" />
+        <option value="$PROJECT_DIR$/ui/elements/FlatButton.cs" />
       </list>
     </option>
   </component>
@@ -58,6 +56,8 @@
       <workItem from="1606465831708" duration="112000" />
       <workItem from="1606466446119" duration="54000" />
       <workItem from="1606467490616" duration="1417000" />
+      <workItem from="1606902464632" duration="904000" />
+      <workItem from="1607462894870" duration="852000" />
     </task>
     <servers />
   </component>

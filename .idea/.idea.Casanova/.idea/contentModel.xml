@@ -74,6 +74,7 @@
           <e p="FillingButton.cs" t="Include" />
           <e p="FlatButton.cs" t="Include" />
           <e p="InformalMessage.cs" t="Include" />
+          <e p="Label.cs" t="Include" />
           <e p="LineEdit.cs" t="Include" />
         </e>
         <e p="fragments" t="Include">
