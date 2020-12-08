@@ -6,7 +6,7 @@
 font_path = "res://assets/fonts/Ubuntu-Regular.ttf"
 
 [sub_resource type="DynamicFont" id=2]
-size = 32
+size = 28
 use_mipmaps = true
 font_data = SubResource( 1 )
 
@@ -57,15 +57,13 @@ __meta__ = {
 
 [node name="Label" type="Label" parent="."]
 modulate = Color( 1, 1, 1, 0 )
-anchor_top = -0.0166667
-anchor_bottom = -0.0166667
-margin_left = 415.0
-margin_top = 11.0
-margin_right = 951.0
-margin_bottom = 48.0
+margin_left = 451.0
+margin_top = 13.0
+margin_right = 915.0
+margin_bottom = 46.0
 custom_fonts/font = SubResource( 2 )
 custom_colors/font_color = Color( 1, 1, 1, 1 )
-text = "Connection could not be established."
+text = "connection could not be established."
 valign = 1
 __meta__ = {
 "_edit_use_anchors_": false

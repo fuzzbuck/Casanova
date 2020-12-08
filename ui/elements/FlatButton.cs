@@ -9,7 +9,9 @@ namespace Casanova.ui.elements
         public string content;
         public override void _Ready()
         {
-            content = Text.ToLower().Capitalize(); // ok then
+            content = Text.ToLower(); // ok then
+            Text = content;
+            RectScale = new Vector2(1, 0.7f);
             Connect("mouse_entered", this, "_onMouseEnter");
             Connect("mouse_exited", this, "_onMouseExit");
         }

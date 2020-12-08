@@ -21,7 +21,7 @@ namespace Casanova.ui.elements
 
         public void SetMessage(string text)
         {
-            GetNode<Label>("Label").Text = text;
+            GetNode<Godot.Label>("Label").Text = text;
         }
 
         public void SetTime(float time)

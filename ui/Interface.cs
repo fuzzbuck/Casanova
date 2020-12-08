@@ -7,6 +7,7 @@ using Casanova.ui.fragments;
 using Godot;
 using Godot.Collections;
 using Client = Casanova.core.net.client.Client;
+using Label = Casanova.ui.elements.Label;
 
 namespace Casanova.ui
 {

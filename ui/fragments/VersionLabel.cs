@@ -1,5 +1,6 @@
 using Casanova.core;
 using Godot;
+using Label = Casanova.ui.elements.Label;
 
 namespace Casanova.ui.fragments
 {

@@ -1,4 +1,5 @@
 using Godot;
+using Label = Casanova.ui.elements.Label;
 
 namespace Casanova.core.main.units
 {

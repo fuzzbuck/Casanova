@@ -350,7 +350,12 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="DebugLabel" parent="." instance=ExtResource( 3 )]
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+layer = 100
+
+[node name="DebugLabel" parent="CanvasLayer" instance=ExtResource( 3 )]
+margin_right = 293.0
+margin_bottom = 118.0
 
 [node name="Menu" type="HBoxContainer" parent="."]
 anchor_top = 0.5

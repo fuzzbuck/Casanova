@@ -5,11 +5,15 @@ namespace Casanova.ui.fragments
     public class Overlay : Control
     {
         private AnimationPlayer anim;
-        public bool isLeaving;
 
         public override void _Ready()
         {
-            var bb = GetNode("Title").GetNode<Button>("BackButton");
+            var content = GetNode("MarginContainer").GetNode("MarginContainer").GetNode("VBox");
+
+            var top = content.GetNode("Top");
+            var header = top.GetNode("Header");
+            
+            var bb = header.GetNode<Godot.Button>("Back");
             anim = GetNode<AnimationPlayer>("Animation");
             bb.Connect("pressed", this, "_onButtonPress");
 
