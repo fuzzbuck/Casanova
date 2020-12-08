@@ -168,7 +168,7 @@ namespace Casanova.core.net.client
 
                 if (receivedData.UnreadLength() >= 4)
                 {
-                    _packetLength = receivedData.ReadInt();
+                    _packetLength = receivedData.ReadShort();
                     if (_packetLength <= 0) return true;
                 }
 
@@ -182,7 +182,7 @@ namespace Casanova.core.net.client
                     {
                         using (var _packet = new Packet(_packetBytes))
                         {
-                            var _packetId = _packet.ReadInt();
+                            var _packetId = _packet.ReadByte();
                             packetHandlers[_packetId](_packet); // Call appropriate method to handle the packet
                         }
 
@@ -192,7 +192,7 @@ namespace Casanova.core.net.client
                     _packetLength = 0;
                     if (receivedData.UnreadLength() >= 4)
                     {
-                        _packetLength = receivedData.ReadInt();
+                        _packetLength = receivedData.ReadShort();
                         if (_packetLength <= 0) return true;
                     }
                 }
@@ -273,7 +273,7 @@ namespace Casanova.core.net.client
             {
                 using (var _packet = new Packet(_data))
                 {
-                    var _packetLength = _packet.ReadInt();
+                    var _packetLength = _packet.ReadShort();
                     _data = _packet.ReadBytes(_packetLength);
                 }
 
@@ -284,7 +284,7 @@ namespace Casanova.core.net.client
 
                     using (var _packet = new Packet(_data))
                     {
-                        var _packetId = _packet.ReadInt();
+                        var _packetId = _packet.ReadByte();
                         packetHandlers[_packetId](_packet);
                     }
                 });

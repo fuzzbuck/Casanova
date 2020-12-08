@@ -80,7 +80,7 @@ namespace Casanova.core.net.server
 
                 stream.BeginRead(receiveBuffer, 0, dataBufferSize, ReceiveCallback, null);
 
-                Packets.ServerHandle.Send.Welcome(id, "Welcome to the testing branch.");
+                Packets.ServerHandle.Send.Welcome(id, "welcome to the testing branch !");
             }
 
             public void SendData(Packet _packet)
@@ -129,7 +129,7 @@ namespace Casanova.core.net.server
 
                 if (receivedData.UnreadLength() >= 4)
                 {
-                    _packetLength = receivedData.ReadInt();
+                    _packetLength = receivedData.ReadShort();
                     if (_packetLength <= 0) return true;
                 }
 
@@ -140,7 +140,7 @@ namespace Casanova.core.net.server
                     {
                         using (var _packet = new Packet(_packetBytes))
                         {
-                            var _packetId = _packet.ReadInt();
+                            var _packetId = _packet.ReadByte();
                             Server.packetHandlers[_packetId](id, _packet);
                         }
                     });
@@ -148,7 +148,7 @@ namespace Casanova.core.net.server
                     _packetLength = 0;
                     if (receivedData.UnreadLength() >= 4)
                     {
-                        _packetLength = receivedData.ReadInt();
+                        _packetLength = receivedData.ReadShort();
                         if (_packetLength <= 0) return true;
                     }
                 }
@@ -194,14 +194,14 @@ namespace Casanova.core.net.server
                 if (!Server.IsHosting)
                     return;
 
-                var _packetLength = _packetData.ReadInt();
+                var _packetLength = _packetData.ReadShort();
                 var _packetBytes = _packetData.ReadBytes(_packetLength);
 
                 ThreadManager.ExecuteOnMainThread(() =>
                 {
                     using (var _packet = new Packet(_packetBytes))
                     {
-                        var _packetId = _packet.ReadInt();
+                        var _packetId = _packet.ReadByte();
                         Server.packetHandlers[_packetId](id, _packet);
                     }
                 });

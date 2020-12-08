@@ -30,7 +30,7 @@ namespace Casanova.core.net
             buffer = new List<byte>(); // Initialize buffer
             readPos = 0; // Set readPos to 0
 
-            Write(_id); // Write packet id to the buffer
+            Write((byte) _id); // Write packet id to the buffer
         }
 
         /// <summary>Creates a packet from which data can be read. Used for receiving.</summary>
@@ -78,7 +78,7 @@ namespace Casanova.core.net
         public void WriteLength()
         {
             buffer.InsertRange(0,
-                BitConverter.GetBytes(buffer.Count)); // Insert the byte length of the packet at the very beginning
+                BitConverter.GetBytes((short) buffer.Count)); // Insert the byte length of the packet at the very beginning
         }
 
         /// <summary>Inserts the given int at the start of the buffer.</summary>
