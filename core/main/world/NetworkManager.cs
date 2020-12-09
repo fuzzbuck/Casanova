@@ -25,12 +25,12 @@ namespace Casanova.core.main.world
 
         public static Player HostPlayer;
 
-        public static Unit CreateUnitInstance(UnitType Type)
+        public static Unit CreateUnitInstance(short netId)
         {
             var scene = (PackedScene) ResourceLoader.Load(Vars.path_main + $"/units/Unit.tscn");
             var instance = (Unit) scene.Instance();
 
-            instance.Type = Type;
+            instance.netId = netId;
             return instance;
         }
 
@@ -63,12 +63,12 @@ namespace Casanova.core.main.world
             }
         }
 
-        public static Unit CreateUnit(int _id, UnitType type, Vector2 position = new Vector2())
+        public static Unit CreateUnit(short _id, UnitType type, Vector2 position = new Vector2())
         {
             if (UnitsGroup.ContainsKey(_id))
                 DestroyUnit(_id);
 
-            var instance = CreateUnitInstance(type);
+            var instance = CreateUnitInstance(_id);
             instance.Type = type;
             instance.GlobalPosition = position;
 
@@ -78,11 +78,9 @@ namespace Casanova.core.main.world
             return instance;
         }
         
-        public static Player CreatePlayer(loc loc, int _id, string _username,
-            Vector2 position = new Vector2())
+        public static Player CreatePlayer(loc loc, int _id, string _username)
         {
             GD.Print($"Creating player with username: {_username}");
-            
 
             var willBeLocal = false;
             if (loc == loc.CLIENT && Server.IsHosting)
@@ -103,7 +101,6 @@ namespace Casanova.core.main.world
             if (HostPlayer == null && loc == loc.SERVER)
                 HostPlayer = player;
             
-
             /*
             ThreadManager.ExecuteOnMainThread(() =>
             {

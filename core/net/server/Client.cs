@@ -24,8 +24,10 @@ namespace Casanova.core.net.server
             udp = new UDP(id);
         }
 
-        public void SendIntoGame(string _username, UnitType type)
+        
+        public void SendIntoGame(string _username)
         {
+            /*
             player = NetworkManager.CreatePlayer(NetworkManager.loc.SERVER, id, _username);
 
             // send info to all clients except ours that we spawned
@@ -38,6 +40,8 @@ namespace Casanova.core.net.server
             foreach (var _client in Server.Clients.Values)
                 if (_client.player != null && !_client.player.IsLocal)
                     Packets.ServerHandle.Send.PlayerJoin(_client.id, player);
+                    
+            */
         }
 
         private void Disconnect()

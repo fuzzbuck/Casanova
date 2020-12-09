@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using Casanova.ui;
@@ -13,12 +12,11 @@ namespace Casanova.core.net.client
 
         public static string ip = "127.0.0.1";
         public static int port = 6969;
-        public static int myId = 0;
+        public static short myId = 0;
         public static TCP tcp;
         public static UDP udp;
 
         public static bool isConnected;
-        private static Dictionary<int, PacketHandler> packetHandlers;
 
         public static void ConnectToServer(string _ip, int _port)
         {
@@ -30,10 +28,7 @@ namespace Casanova.core.net.client
 
                 tcp = new TCP();
                 udp = new UDP();
-
-                InitializeClientData();
-
-                isConnected = true;
+                
                 tcp.Connect();
             }
             catch (Exception e)
@@ -61,18 +56,6 @@ namespace Casanova.core.net.client
             udp.SendData(_packet);
         }
 
-        private static void InitializeClientData()
-        {
-            packetHandlers = new Dictionary<int, PacketHandler>
-            {
-                {(int) Packets.ServerPackets.Welcome, Packets.ClientHandle.Receive.Welcome},
-                {(int) Packets.ServerPackets.PlayerJoin, Packets.ClientHandle.Receive.PlayerJoin},
-                {(int) Packets.ServerPackets.PlayerDisconnect, Packets.ClientHandle.Receive.PlayerDisconnect},
-                {(int) Packets.ServerPackets.PlayerMovement, Packets.ClientHandle.Receive.PlayerMovement},
-                {(int) Packets.ServerPackets.ChatMessage, Packets.ClientHandle.Receive.ChatMessage}
-            };
-        }
-
         public static void Disconnect()
         {
             if (isConnected)
@@ -82,8 +65,6 @@ namespace Casanova.core.net.client
                 udp.socket.Close();
             }
         }
-
-        private delegate void PacketHandler(Packet _packet);
 
         public class TCP
         {
@@ -111,6 +92,7 @@ namespace Casanova.core.net.client
                 {
                     socket.EndConnect(_result);
                     if (!socket.Connected) return;
+                    isConnected = true;
 
                     receivedData = new Packet();
 
@@ -183,7 +165,7 @@ namespace Casanova.core.net.client
                         using (var _packet = new Packet(_packetBytes))
                         {
                             var _packetId = _packet.ReadByte();
-                            packetHandlers[_packetId](_packet); // Call appropriate method to handle the packet
+                            Packets.handlers[_packetId](_packet); // Call appropriate method to handle the packet
                         }
 
                         // TODO: end of thread manager
@@ -285,7 +267,7 @@ namespace Casanova.core.net.client
                     using (var _packet = new Packet(_data))
                     {
                         var _packetId = _packet.ReadByte();
-                        packetHandlers[_packetId](_packet);
+                        Packets.handlers[_packetId](_packet);
                     }
                 });
             }

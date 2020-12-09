@@ -31,7 +31,7 @@ namespace Casanova.core.main
         public override void _PhysicsProcess(float delta)
         {
             if (LocalUnit != null && !Server.IsHosting && Client.isConnected)
-                Packets.ClientHandle.Send.PlayerMovement(LocalUnit.Body.InWorldPosition,
+                Packets.ClientHandle.Send.UnitMovement(LocalUnit.netId, LocalUnit.Body.InWorldPosition,
                     LocalUnit.Body.Axis, LocalUnit.Body.Speed, LocalUnit.Rotation);
         }
 
