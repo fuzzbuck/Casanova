@@ -18,32 +18,32 @@ void fragment()
 shader = SubResource( 1 )
 shader_param/blur_amount = 2.0
 
-[sub_resource type="DynamicFontData" id=5]
+[sub_resource type="DynamicFontData" id=3]
 font_path = "res://assets/fonts/RussoOne-Regular.ttf"
 
-[sub_resource type="DynamicFont" id=6]
+[sub_resource type="DynamicFont" id=4]
 size = 30
 use_mipmaps = true
 extra_spacing_char = 5
-font_data = SubResource( 5 )
+font_data = SubResource( 3 )
+
+[sub_resource type="StyleBoxEmpty" id=5]
+
+[sub_resource type="StyleBoxEmpty" id=6]
+
+[sub_resource type="StyleBoxEmpty" id=7]
 
 [sub_resource type="StyleBoxEmpty" id=8]
 
 [sub_resource type="StyleBoxEmpty" id=9]
 
-[sub_resource type="StyleBoxEmpty" id=3]
-
-[sub_resource type="StyleBoxEmpty" id=4]
-
-[sub_resource type="StyleBoxEmpty" id=10]
-
-[sub_resource type="DynamicFontData" id=11]
+[sub_resource type="DynamicFontData" id=10]
 font_path = "res://assets/fonts/Bathrind.otf"
 
-[sub_resource type="DynamicFont" id=7]
+[sub_resource type="DynamicFont" id=11]
 size = 38
 extra_spacing_char = 4
-font_data = SubResource( 11 )
+font_data = SubResource( 10 )
 
 [sub_resource type="Animation" id=12]
 resource_name = "Enter"
@@ -120,7 +120,7 @@ __meta__ = {
 [node name="Overlay" type="ColorRect" parent="."]
 anchor_right = 1.0
 anchor_bottom = 1.0
-color = Color( 0.00392157, 0.0235294, 0.0509804, 0.784314 )
+color = Color( 0.00392157, 0.0235294, 0.0509804, 0.588235 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -140,18 +140,21 @@ __meta__ = {
 margin_left = 400.0
 margin_top = 110.0
 margin_right = 1520.0
-margin_bottom = 960.0
+margin_bottom = 970.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-color = Color( 0.0156863, 0.0117647, 0.0392157, 0.784314 )
+color = Color( 0.0156863, 0.0117647, 0.0392157, 0.588235 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer"]
 margin_left = 400.0
 margin_top = 110.0
 margin_right = 1520.0
-margin_bottom = 5739.0
+margin_bottom = 970.0
 custom_constants/margin_right = 75
 custom_constants/margin_top = 65
 custom_constants/margin_left = 75
@@ -161,9 +164,10 @@ custom_constants/margin_bottom = 65
 margin_left = 75.0
 margin_top = 65.0
 margin_right = 1045.0
-margin_bottom = 5564.0
+margin_bottom = 795.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
+custom_constants/separation = 45
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -207,7 +211,7 @@ margin_left = 861.0
 margin_top = 1.0
 margin_right = 876.0
 margin_bottom = 38.0
-custom_fonts/font = SubResource( 6 )
+custom_fonts/font = SubResource( 4 )
 custom_colors/font_color = Color( 0.407843, 0.960784, 1, 1 )
 text = "<"
 align = 2
@@ -224,12 +228,12 @@ margin_bottom = 40.0
 size_flags_horizontal = 4
 size_flags_vertical = 4
 size_flags_stretch_ratio = 2.1
-custom_styles/hover = SubResource( 8 )
-custom_styles/pressed = SubResource( 9 )
-custom_styles/focus = SubResource( 3 )
-custom_styles/disabled = SubResource( 4 )
-custom_styles/normal = SubResource( 10 )
-custom_fonts/font = SubResource( 7 )
+custom_styles/hover = SubResource( 5 )
+custom_styles/pressed = SubResource( 6 )
+custom_styles/focus = SubResource( 7 )
+custom_styles/disabled = SubResource( 8 )
+custom_styles/normal = SubResource( 9 )
+custom_fonts/font = SubResource( 11 )
 custom_colors/font_color = Color( 0.407843, 0.960784, 1, 1 )
 text = "back"
 __meta__ = {
@@ -246,6 +250,15 @@ color = Color( 0.407843, 0.960784, 1, 1 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="Scroller" type="ScrollContainer" parent="MarginContainer/MarginContainer/VBox"]
+margin_top = 168.0
+margin_right = 970.0
+margin_bottom = 730.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Content" type="VBoxContainer" parent="MarginContainer/MarginContainer/VBox/Scroller"]
 
 [node name="Animation" type="AnimationPlayer" parent="."]
 anims/Enter = SubResource( 12 )
