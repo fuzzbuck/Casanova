@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Casanova.core.content;
@@ -73,7 +74,7 @@ namespace Casanova.core.main.world
         {
             // no available unit id, do not create
             if (availUnitIds.Count == 0)
-                return null;
+                throw new Exception($"No ID to assign to unit type {type.Name}");
             
             int id = availUnitIds.First();
             availUnitIds.Remove(id);
