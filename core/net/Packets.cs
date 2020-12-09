@@ -1,5 +1,9 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
+using Casanova.core.main;
+using Casanova.core.main.units;
 using Casanova.core.main.world;
 using Casanova.core.net.server;
 using Casanova.core.net.types;
@@ -7,8 +11,8 @@ using Casanova.core.types;
 using Casanova.ui;
 using Casanova.ui.fragments;
 using Godot;
-using Godot.Collections;
 using Client = Casanova.core.net.client.Client;
+using Thread = System.Threading.Thread;
 
 namespace Casanova.core.net
 {
@@ -18,9 +22,9 @@ namespace Casanova.core.net
         public enum ServerPackets
         {
             Welcome = 1,
-            PlayerJoin,
             PlayerDisconnect,
-            PlayerMovement,
+            UnitCreate,
+            UnitMovement,
             ChatMessage,
             InformalMessage
         }
@@ -29,7 +33,8 @@ namespace Casanova.core.net
         public enum ClientPackets
         {
             WelcomeReceived = 1,
-            PlayerMovement,
+            UnitMovement,
+            UnitCreate,
             ChatMessage
         }
 
@@ -37,9 +42,9 @@ namespace Casanova.core.net
         public static Dictionary<int, PacketHandler> handlers = new Dictionary<int, PacketHandler>
         {
             {(int) ServerPackets.Welcome, ClientHandle.Receive.Welcome},
-            {(int) ServerPackets.PlayerJoin, ClientHandle.Receive.PlayerJoin},
             {(int) ServerPackets.PlayerDisconnect, ClientHandle.Receive.PlayerDisconnect},
-            {(int) ServerPackets.PlayerMovement, ClientHandle.Receive.UnitMovement},
+            {(int) ServerPackets.UnitCreate, ClientHandle.Receive.UnitCreate},
+            {(int) ServerPackets.UnitMovement, ClientHandle.Receive.UnitMovement},
             {(int) ServerPackets.ChatMessage, ClientHandle.Receive.ChatMessage},
             {(int) ServerPackets.InformalMessage, ClientHandle.Receive.InformalMessage}
         };
@@ -49,16 +54,14 @@ namespace Casanova.core.net
             {
                 public static void Welcome(Packet _packet)
                 {
-                    var _msg = _packet.ReadString();
                     var _myId = _packet.ReadShort();
 
                     Client.myId = _myId;
-                    
                     Client.udp.Connect(((IPEndPoint) Client.tcp.socket.Client.LocalEndPoint).Port);
-                    
-                    Send.WelcomeConfirmation(Vars.PersistentData.username);
+
                     // create world, etc.
                     NetworkManager.ConfirmConnect();
+                    Send.WelcomeConfirmation(Vars.PersistentData.username);
                 }
 
                 public static void InformalMessage(Packet _packet)
@@ -68,20 +71,22 @@ namespace Casanova.core.net
                         Interface.Utils.CreateInformalMessage($"{_msg}", 10);
                 }
 
-                public static void PlayerJoin(Packet _packet)
+                public static void UnitCreate(Packet _packet)
                 {
-                    var _id = _packet.ReadShort();
-                    var _username = _packet.ReadString();
+                    var id = _packet.ReadInt();
+                    if (NetworkManager.UnitsGroup.ContainsKey(id))
+                        NetworkManager.RemoveUnit(id);
+                    
+                    var type = _packet.ReadUnitType();
+                    var pos = _packet.ReadVector2();
+                    var rotation = _packet.ReadFloat();
 
-                    if (Server.IsHosting)
-                        return;
-
-                    NetworkManager.CreatePlayer(NetworkManager.loc.CLIENT, _id, _username);
+                    NetworkManager.CreateUnit(NetworkManager.loc.CLIENT, type, pos, rotation);
                 }
 
                 public static void UnitMovement(Packet _packet)
                 {
-                    var id = _packet.ReadShort();
+                    var id = _packet.ReadInt();
 
                     if (!NetworkManager.UnitsGroup.ContainsKey(id))
                         return;
@@ -92,6 +97,7 @@ namespace Casanova.core.net
                     var rotation = _packet.ReadFloat();
 
                     var unit = NetworkManager.UnitsGroup[id];
+
                     var unitBody = unit.Body;
                     
                     if (unitBody != null)
@@ -123,14 +129,12 @@ namespace Casanova.core.net
                 public static void ChatMessage(Packet _packet)
                 {
                     var _id = _packet.ReadShort();
-
-                    if (_id != 0 && !NetworkManager.PlayersGroup.ContainsKey(_id))
-                        return;
-
                     var message = _packet.ReadString();
+                    
+                    GD.Print("chat id: " + _id);
 
                     Chat.instance?.SendMessage(message,
-                        _id == 0 ? new Player(0, "server", null) : NetworkManager.PlayersGroup[_id]);
+                        _id == 0 ? null : NetworkManager.PlayersGroup[_id]);
                 }
             }
 
@@ -149,9 +153,9 @@ namespace Casanova.core.net
                 
                 
                 /// <param name="_id">The id of the unit.</param>
-                public static void UnitMovement(short _id, Vector2 _position, Vector2 _axis, float _speed, float _rotation)
+                public static void UnitMovement(int _id, Vector2 _position, Vector2 _axis, float _speed, float _rotation)
                 {
-                    using (var _packet = new Packet((int) ClientPackets.PlayerMovement))
+                    using (var _packet = new Packet((int) ClientPackets.UnitMovement))
                     {
                         _packet.Write(_id);
                         _packet.Write(_position);
@@ -162,14 +166,13 @@ namespace Casanova.core.net
                         Client.SendUDPData(_packet);
                     }
                 }
-
                 public static void ChatMessage(string _message)
                 {
                     using (var _packet = new Packet((int) ClientPackets.ChatMessage))
                     {
                         _packet.Write(_message);
 
-                        Client.SendTCPData(_packet);
+                        Client.SendUDPData(_packet);
                     }
                 }
             }
@@ -179,7 +182,7 @@ namespace Casanova.core.net
         {
             public class Receive
             {
-                public static void WelcomeConfirmation(int _fromClient, Packet _packet)
+                public static void WelcomeConfirmation(short _fromClient, Packet _packet)
                 {
                     var _clientIdCheck = _packet.ReadShort();
                     var _username = _packet.ReadString();
@@ -190,23 +193,30 @@ namespace Casanova.core.net
                         GD.Print(
                             $"Player \"{_username}\" (ID: {_fromClient}) has assumed the wrong client ID ({_clientIdCheck})!");
 
-                    Server.Clients[_fromClient].SendIntoGame(_username);
+                    NetworkManager.CreatePlayer(NetworkManager.loc.SERVER, _clientIdCheck, _username);
+                    Send.ChatMessage(0, $"[color=#edc774]{_username} has connected.[/color]");
                 }
 
-                public static void PlayerMovement(int _fromClient, Packet _packet)
+                public static void UnitMovement(short _fromClient, Packet _packet)
                 {
-                    if (!Server.Clients.ContainsKey(_fromClient))
+                    var unitNetId = _packet.ReadInt();
+                    
+                    // check if player can control this unit
+                    if (!(NetworkManager.UnitsGroup.ContainsKey(unitNetId) &&
+                          NetworkManager.PlayersGroup[_fromClient].Unit != null &&
+                          NetworkManager.PlayersGroup[_fromClient].Unit.netId == unitNetId))
                         return;
+
 
                     var pos = _packet.ReadVector2();
                     var axis = _packet.ReadVector2();
                     var speed = _packet.ReadFloat();
                     var rotation = _packet.ReadFloat();
-                    // todo: use UnitType for rotation speed, prediction & etc..
-
-                    var _plr = Server.Clients[_fromClient].player;
+                    
+                    // todo: more smooth client side prediction
+                    var _plr = NetworkManager.PlayersGroup[_fromClient];
                     var unitBody = _plr.Unit.Body;
-                    if (!_plr.IsLocal && unitBody != null)
+                    if (!_plr.isLocal && unitBody != null)
                     {
                         unitBody.Axis = axis;
                         unitBody.Speed = speed;
@@ -215,10 +225,10 @@ namespace Casanova.core.net
                     }
 
                     if (unitBody != null)
-                        Send.PlayerMovement(_plr);
+                        Send.UnitMovement(_plr.Unit, _plr);
                 }
 
-                public static void ChatMessage(int _fromClient, Packet _packet)
+                public static void ChatMessage(short _fromClient, Packet _packet)
                 {
                     var message = _packet.ReadString();
 
@@ -228,42 +238,47 @@ namespace Casanova.core.net
 
             public class Send
             {
-                public static void Welcome(int _toClient, string _msg)
+                public static void Welcome(short _toClient)
                 {
                     using (var _packet = new Packet((int) ServerPackets.Welcome))
                     {
-                        _packet.Write(_msg);
                         _packet.Write(_toClient);
 
                         Server.SendTCPData(_toClient, _packet);
                     }
                 }
 
-                public static void PlayerJoin(int _toClient, Player _player)
+                public static void UnitCreate(int netId, UnitType type, Vector2 position, float rotation)
                 {
-                    using (var _packet = new Packet((int) ServerPackets.PlayerJoin))
+                    using (var _packet = new Packet((int) ClientPackets.UnitCreate))
                     {
-                        _packet.Write(_player.Id);
-                        _packet.Write(_player.Username);
-                        _packet.Write(_toClient);
-
-                        Server.SendTCPData(_toClient, _packet);
+                        _packet.Write(netId);
+                        _packet.Write(type);
+                        _packet.Write(position);
+                        _packet.Write(rotation);
+                        
+                        Server.SendTCPDataToAll(_packet);
                     }
                 }
 
-                public static void PlayerMovement(Player _player)
+                public static void UnitMovement(Unit unit, Player controller=null)
                 {
-                    using (var _packet = new Packet((int) ServerPackets.PlayerMovement))
+                    using (var _packet = new Packet((int) ServerPackets.UnitMovement))
                     {
-                        var unitBody = _player.Unit.Body;
+                        var unitBody = unit.Body;
 
-                        _packet.Write(_player.Id);
+                        _packet.Write(unit.netId);
                         _packet.Write(unitBody.Position);
                         _packet.Write(unitBody.Axis);
                         _packet.Write(unitBody.Speed);
                         _packet.Write(unitBody.Rotation);
 
-                        Server.SendUDPDataToAll(_player.Id, _packet);
+                        if (controller != null)
+                            Server.SendUDPDataToAll(controller.netId, _packet);
+                        else
+                        {
+                            Server.SendUDPDataToAll(_packet);
+                        }
                     }
                 }
 
@@ -278,7 +293,7 @@ namespace Casanova.core.net
                     }
                 }
 
-                public static void ChatMessage(int _id, string message)
+                public static void ChatMessage(short _id, string message)
                 {
                     using (var _packet = new Packet((int) ServerPackets.ChatMessage))
                     {

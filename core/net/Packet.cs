@@ -25,12 +25,12 @@ namespace Casanova.core.net
 
         /// <summary>Creates a new packet with a given ID. Used for sending.</summary>
         /// <param name="_id">The packet ID.</param>
-        public Packet(int _id)
+        public Packet(byte _id)
         {
             buffer = new List<byte>(); // Initialize buffer
             readPos = 0; // Set readPos to 0
 
-            Write((byte) _id); // Write packet id to the buffer
+            Write(_id); // Write packet id to the buffer
         }
 
         /// <summary>Creates a packet from which data can be read. Used for receiving.</summary>
@@ -81,9 +81,9 @@ namespace Casanova.core.net
                 BitConverter.GetBytes((short) buffer.Count)); // Insert the byte length of the packet at the very beginning
         }
 
-        /// <summary>Inserts the given int at the start of the buffer.</summary>
+        /// <summary>Inserts the given short at the start of the buffer.</summary>
         /// <param name="_value">The int to insert.</param>
-        public void InsertInt(int _value)
+        public void InsertShort(short _value)
         {
             buffer.InsertRange(0, BitConverter.GetBytes(_value)); // Insert the int at the start of the buffer
         }

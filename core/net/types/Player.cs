@@ -4,17 +4,17 @@ namespace Casanova.core.net.types
 {
     public class Player
     {
-        public readonly int Id;
-        public readonly bool IsLocal;
+        public readonly short netId;
+        public readonly bool isLocal;
         public readonly string Username;
         public Unit Unit;
 
-        public Player(int id, string username, Unit _unit, bool isLocal = false)
+        public Player(short _netId, string username, Unit _unit, bool isLocal = false)
         {
-            Id = id;
+            netId = _netId;
             Username = username;
             Unit = _unit;
-            IsLocal = isLocal;
+            this.isLocal = isLocal;
         }
     }
 }

@@ -71,8 +71,7 @@ namespace Casanova.ui.fragments
         // called from anywhere, sends a message & activates chat if necessary
         public void SendMessage(string text, Player sender = null)
         {
-            var sendername = sender == null ? "Server" : sender.Username;
-            var message = $"[color=#fa9e48]<[/color]{sendername}[color=#fa9e48]>[/color]: {text}";
+            var message = sender != null ? $"[color=#fa9e48]<[/color]{sender.Username}[color=#fa9e48]>[/color]: {text}" : text;
             AddMessage(message);
             lastMessage = text;
 

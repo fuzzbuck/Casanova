@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Casanova.core.content;
 using Casanova.core.main.units;
 using Casanova.core.net;
@@ -20,17 +21,18 @@ namespace Casanova.core.main.world
             CLIENT
         }
 
-        public static Dictionary<int, Player> PlayersGroup = new Dictionary<int, Player>();
+        public static Dictionary<short, Player> PlayersGroup = new Dictionary<short, Player>();
         public static Dictionary<int, Unit> UnitsGroup = new Dictionary<int, Unit>();
+        
+        public static List<int> availUnitIds = Enumerable.Range(1, 50000).ToList();
 
         public static Player HostPlayer;
 
-        public static Unit CreateUnitInstance(short netId)
+        public static Unit CreateUnitInstance()
         {
             var scene = (PackedScene) ResourceLoader.Load(Vars.path_main + $"/units/Unit.tscn");
             var instance = (Unit) scene.Instance();
-
-            instance.netId = netId;
+            
             return instance;
         }
 
@@ -54,33 +56,57 @@ namespace Casanova.core.main.world
             Vars.Reload();
         }
 
-        public static void DestroyUnit(int _id)
+        public static void RemoveUnit(int _id)
         {
             if (UnitsGroup.ContainsKey(_id))
             {
                 UnitsGroup[_id].QueueFree();
                 UnitsGroup.Remove(_id);
+
+                availUnitIds.Add(_id);
             }
         }
 
-        public static Unit CreateUnit(short _id, UnitType type, Vector2 position = new Vector2())
+        
+        // called from server or client
+        public static Unit CreateUnit(loc loc, UnitType type, Vector2 position = new Vector2(), float rotation=0)
         {
-            if (UnitsGroup.ContainsKey(_id))
-                DestroyUnit(_id);
-
-            var instance = CreateUnitInstance(_id);
+            // no available unit id, do not create
+            if (availUnitIds.Count == 0)
+                return null;
+            
+            int id = availUnitIds.First();
+            availUnitIds.Remove(id);
+            
+            var instance = CreateUnitInstance();
+            
+            instance.netId = id;
             instance.Type = type;
             instance.GlobalPosition = position;
-
-            UnitsGroup[_id] = instance;
+            instance.Body.RotationDegrees = rotation;
+            
+            UnitsGroup[id] = instance;
 
             World.instance.SpawnUnit(instance);
+            if(loc == loc.SERVER)
+                Packets.ServerHandle.Send.UnitCreate(id, type, position, rotation);
+            
             return instance;
         }
+
+        public static void RemovePlayer(short _id)
+        {
+            if (PlayersGroup.ContainsKey(_id))
+            {
+                PlayersGroup.Remove(_id);
+            }
+        }
         
-        public static Player CreatePlayer(loc loc, int _id, string _username)
+        public static Player CreatePlayer(loc loc, short _id, string _username)
         {
             GD.Print($"Creating player with username: {_username}");
+            if(PlayersGroup.ContainsKey(_id))
+                RemovePlayer(_id);
 
             var willBeLocal = false;
             if (loc == loc.CLIENT && Server.IsHosting)
@@ -100,7 +126,7 @@ namespace Casanova.core.main.world
 
             if (HostPlayer == null && loc == loc.SERVER)
                 HostPlayer = player;
-            
+
             /*
             ThreadManager.ExecuteOnMainThread(() =>
             {

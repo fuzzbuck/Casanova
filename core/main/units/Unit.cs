@@ -26,7 +26,7 @@ namespace Casanova.core.main.units
 
     public class Unit : Node2D
     {
-        public short netId;
+        public int netId;
         public Body Body;
         public Node2D Content;
         private readonly Array<Particles> Particles = new Array<Particles>();

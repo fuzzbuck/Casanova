@@ -8,10 +8,10 @@ namespace Casanova.core.net.server
 {
     internal class Server
     {
-        public delegate void PacketHandler(int _fromClient, Packet _packet);
+        public delegate void PacketHandler(short _fromClient, Packet _packet);
 
-        public static Dictionary<int, Client> Clients = new Dictionary<int, Client>();
-        public static Dictionary<int, PacketHandler> packetHandlers;
+        public static Dictionary<short, Client> Clients = new Dictionary<short, Client>();
+        public static Dictionary<int, PacketHandler> handlers;
 
         private static TcpListener tcpListener;
         private static UdpClient udpListener;
@@ -60,7 +60,7 @@ namespace Casanova.core.net.server
 
                 GD.Print($"{_client.Client.RemoteEndPoint} is attempting to connect.");
 
-                for (var i = 1; i < MaxClients; i++)
+                for (short i = 1; i < MaxClients; i++)
                     if (Clients[i].tcp.socket == null) // no client is assigned to this id
                     {
                         Clients[i].tcp.Connect(_client);
@@ -89,7 +89,7 @@ namespace Casanova.core.net.server
 
                 using (var _packet = new Packet(_data))
                 {
-                    var _clientId = _packet.ReadInt();
+                    var _clientId = _packet.ReadShort();
 
                     if (_clientId == 0) return;
 
@@ -122,7 +122,7 @@ namespace Casanova.core.net.server
             }
         }
         
-        public static void SendTCPData(int _toClient, Packet _packet)
+        public static void SendTCPData(short _toClient, Packet _packet)
         {
             _packet.WriteLength();
             Clients[_toClient].tcp.SendData(_packet);
@@ -131,19 +131,19 @@ namespace Casanova.core.net.server
         public static void SendTCPDataToAll(Packet _packet)
         {
             _packet.WriteLength();
-            for (var i = 1; i <= MaxClients; i++) Clients[i].tcp.SendData(_packet);
+            for (short i = 1; i <= MaxClients; i++) Clients[i].tcp.SendData(_packet);
         }
 
-        public static void SendTCPDataToAll(int _exceptClient, Packet _packet)
+        public static void SendTCPDataToAll(short _exceptClient, Packet _packet)
         {
             _packet.WriteLength();
-            for (var i = 1; i <= MaxClients; i++)
+            for (short i = 1; i <= MaxClients; i++)
                 if (i != _exceptClient)
                     Clients[i].tcp.SendData(_packet);
         }
 
 
-        public static void SendUDPData(int _toClient, Packet _packet)
+        public static void SendUDPData(short _toClient, Packet _packet)
         {
             _packet.WriteLength();
             Clients[_toClient].udp.SendData(_packet);
@@ -152,25 +152,25 @@ namespace Casanova.core.net.server
         public static void SendUDPDataToAll(Packet _packet)
         {
             _packet.WriteLength();
-            for (var i = 1; i <= MaxClients; i++) Clients[i].udp.SendData(_packet);
+            for (short i = 1; i <= MaxClients; i++) Clients[i].udp.SendData(_packet);
         }
 
-        public static void SendUDPDataToAll(int _exceptClient, Packet _packet)
+        public static void SendUDPDataToAll(short _exceptClient, Packet _packet)
         {
             _packet.WriteLength();
-            for (var i = 1; i <= MaxClients; i++)
+            for (short i = 1; i <= MaxClients; i++)
                 if (i != _exceptClient)
                     Clients[i].udp.SendData(_packet);
         }
 
         private static void InitializeServerData()
         {
-            for (var i = 1; i < MaxClients + 1; i++) Clients.Add(i, new Client(i));
+            for (short i = 1; i < MaxClients + 1; i++) Clients.Add(i, new Client(i));
 
-            packetHandlers = new Dictionary<int, PacketHandler>
+            handlers = new Dictionary<int, PacketHandler>
             {
                 {(int) Packets.ClientPackets.WelcomeReceived, Packets.ServerHandle.Receive.WelcomeConfirmation},
-                {(int) Packets.ClientPackets.PlayerMovement, Packets.ServerHandle.Receive.PlayerMovement},
+                {(int) Packets.ClientPackets.UnitMovement, Packets.ServerHandle.Receive.UnitMovement},
                 {(int) Packets.ClientPackets.ChatMessage, Packets.ServerHandle.Receive.ChatMessage}
             };
         }

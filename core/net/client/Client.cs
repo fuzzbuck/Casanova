@@ -165,6 +165,7 @@ namespace Casanova.core.net.client
                         using (var _packet = new Packet(_packetBytes))
                         {
                             var _packetId = _packet.ReadByte();
+                            GD.Print("CLIENT received packet id: " + _packetId);
                             Packets.handlers[_packetId](_packet); // Call appropriate method to handle the packet
                         }
 
@@ -210,9 +211,10 @@ namespace Casanova.core.net.client
 
                 socket.Connect(endPoint);
                 socket.BeginReceive(ReceiveCallback, null);
-
-                using (var _packet = new Packet())
+                
+                using (var _packet = new Packet((int) Packets.ServerPackets.ChatMessage))
                 {
+                    _packet.Write("RegisterUDP bootleg fix");
                     SendData(_packet);
                 }
             }
@@ -221,8 +223,8 @@ namespace Casanova.core.net.client
             {
                 try
                 {
-                    _packet.InsertInt(myId);
-                    if (socket != null) socket.BeginSend(_packet.ToArray(), _packet.Length(), null, null);
+                    _packet.InsertShort(myId);
+                    socket.BeginSend(_packet.ToArray(), _packet.Length(), null, null);
                 }
                 catch (Exception _ex)
                 {

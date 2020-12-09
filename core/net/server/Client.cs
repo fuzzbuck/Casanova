@@ -12,36 +12,15 @@ namespace Casanova.core.net.server
     {
         public static int dataBufferSize = 4096;
 
-        public int id;
-        public Player player;
+        public short id;
         public TCP tcp;
         public UDP udp;
 
-        public Client(int _clientId)
+        public Client(short _clientId)
         {
             id = _clientId;
             tcp = new TCP(id);
             udp = new UDP(id);
-        }
-
-        
-        public void SendIntoGame(string _username)
-        {
-            /*
-            player = NetworkManager.CreatePlayer(NetworkManager.loc.SERVER, id, _username);
-
-            // send info to all clients except ours that we spawned
-            foreach (var _client in Server.Clients.Values)
-                if (_client.player != null)
-                    if (_client.id != id)
-                        Packets.ServerHandle.Send.PlayerJoin(id, _client.player);
-
-            // send info from all clients except ours about others existance
-            foreach (var _client in Server.Clients.Values)
-                if (_client.player != null && !_client.player.IsLocal)
-                    Packets.ServerHandle.Send.PlayerJoin(_client.id, player);
-                    
-            */
         }
 
         private void Disconnect()
@@ -51,7 +30,6 @@ namespace Casanova.core.net.server
             if (Server.IsHosting)
             {
                 Packets.ServerHandle.Send.PlayerDisconnect(id);
-                player = null;
             }
 
             tcp.Disconnect();
@@ -60,13 +38,13 @@ namespace Casanova.core.net.server
 
         public class TCP
         {
-            private readonly int id;
+            private readonly short id;
             private byte[] receiveBuffer;
             private Packet receivedData;
             public TcpClient socket;
             private NetworkStream stream;
 
-            public TCP(int _id)
+            public TCP(short _id)
             {
                 id = _id;
             }
@@ -84,7 +62,7 @@ namespace Casanova.core.net.server
 
                 stream.BeginRead(receiveBuffer, 0, dataBufferSize, ReceiveCallback, null);
 
-                Packets.ServerHandle.Send.Welcome(id, "welcome to the testing branch !");
+                Packets.ServerHandle.Send.Welcome(id);
             }
 
             public void SendData(Packet _packet)
@@ -140,14 +118,12 @@ namespace Casanova.core.net.server
                 while (_packetLength > 0 && _packetLength <= receivedData.UnreadLength())
                 {
                     var _packetBytes = receivedData.ReadBytes(_packetLength);
-                    ThreadManager.ExecuteOnMainThread(() =>
+                    using (var _packet = new Packet(_packetBytes))
                     {
-                        using (var _packet = new Packet(_packetBytes))
-                        {
-                            var _packetId = _packet.ReadByte();
-                            Server.packetHandlers[_packetId](id, _packet);
-                        }
-                    });
+                        var _packetId = _packet.ReadByte();
+                        GD.Print("SERVER received packet id: " + _packetId);
+                        Server.handlers[_packetId](id, _packet);
+                    }
 
                     _packetLength = 0;
                     if (receivedData.UnreadLength() >= 4)
@@ -176,9 +152,9 @@ namespace Casanova.core.net.server
         {
             public IPEndPoint endPoint;
 
-            private readonly int id;
+            private readonly short id;
 
-            public UDP(int _id)
+            public UDP(short _id)
             {
                 id = _id;
             }
@@ -206,7 +182,7 @@ namespace Casanova.core.net.server
                     using (var _packet = new Packet(_packetBytes))
                     {
                         var _packetId = _packet.ReadByte();
-                        Server.packetHandlers[_packetId](id, _packet);
+                        Server.handlers[_packetId](id, _packet);
                     }
                 });
             }
