@@ -13,7 +13,6 @@ using Casanova.ui;
 using Casanova.ui.fragments;
 using Godot;
 using Client = Casanova.core.net.client.Client;
-using Thread = System.Threading.Thread;
 
 namespace Casanova.core.net
 {
@@ -27,6 +26,8 @@ namespace Casanova.core.net
             PlayerConnect,
             UnitCreate,
             UnitMovement,
+            UnitOwnership,
+            UnitRemove,
             ChatMessage,
             InformalMessage
         }
@@ -47,6 +48,8 @@ namespace Casanova.core.net
             {(int) ServerPackets.PlayerConnect, ClientHandle.Receive.PlayerConnect},
             {(int) ServerPackets.UnitCreate, ClientHandle.Receive.UnitCreate},
             {(int) ServerPackets.UnitMovement, ClientHandle.Receive.UnitMovement},
+            {(int) ServerPackets.UnitOwnership, ClientHandle.Receive.UnitOwnership},
+            {(int) ServerPackets.UnitRemove, ClientHandle.Receive.UnitRemove},
             {(int) ServerPackets.ChatMessage, ClientHandle.Receive.ChatMessage},
             {(int) ServerPackets.InformalMessage, ClientHandle.Receive.InformalMessage}
         };
@@ -76,18 +79,11 @@ namespace Casanova.core.net
                 public static void UnitCreate(Packet _packet)
                 {
                     var id = _packet.ReadInt();
-                    var ownerNetId = _packet.ReadShort();
-                    
-                    if (NetworkManager.UnitsGroup.ContainsKey(id))
-                        NetworkManager.RemoveUnit(id);
-
                     var type = _packet.ReadUnitType();
                     var pos = _packet.ReadVector2();
                     var rotation = _packet.ReadFloat();
 
-                    var unit = NetworkManager.CreateUnit(NetworkManager.loc.CLIENT, type, ownerNetId, pos, rotation);
-                    if (ownerNetId == Client.myId)
-                        PlayerController.TakeOwnership(unit);
+                    NetworkManager.CreateUnit(NetworkManager.loc.CLIENT, id, type, pos, rotation);
                 }
 
                 public static void UnitMovement(Packet _packet)
@@ -121,6 +117,27 @@ namespace Casanova.core.net
                         }
                     }
                 }
+                
+                public static void UnitOwnership(Packet _packet)
+                {
+                    var unit = _packet.ReadUnit();
+                    var ownerId = _packet.ReadShort();
+
+                    if (ownerId == Client.myId)
+                    {
+                        PlayerController.TakeOwnership(unit);
+                    }
+                    else
+                    {
+                        // todo: register ownership to another player
+                    }
+                }
+                
+                public static void UnitRemove(Packet _packet)
+                {
+                    var _id = _packet.ReadInt();
+                    NetworkManager.RemoveUnit(_id);
+                } 
 
                 public static void PlayerDisconnect(Packet _packet)
                 {
@@ -209,7 +226,8 @@ namespace Casanova.core.net
                     
                     Send.PlayerConnect(player);
                     Send.ChatMessage(0, $"[color=#edc774]{_username} has connected.[/color]");
-                    NetworkManager.CreateUnit(NetworkManager.loc.SERVER, UnitTypes.crimson, player.netId);
+                    var unit = NetworkManager.CreateUnit(NetworkManager.loc.SERVER, 0, UnitTypes.explorer);
+                    Send.UnitOwnership(unit, player);
                 }
 
                 public static void UnitMovement(short _fromClient, Packet _packet)
@@ -284,17 +302,16 @@ namespace Casanova.core.net
                     }
                 }
 
-                public static void UnitCreate(int netId, short ownerId, UnitType type, Vector2 position, float rotation)
+                public static void UnitCreate(int netId, UnitType type, Vector2 position, float rotation)
                 {
                     using (var _packet = new Packet((int) ServerPackets.UnitCreate))
                     {
                         _packet.Write(netId);
-                        _packet.Write(ownerId);
                         _packet.Write(type);
                         _packet.Write(position);
                         _packet.Write(rotation);
                         
-                        Server.SendTCPDataToAll(_packet);
+                        Server.SendTCPDataToAll(NetworkManager.HostPlayer.netId, _packet);
                     }
                 }
 
@@ -316,6 +333,27 @@ namespace Casanova.core.net
                         {
                             Server.SendUDPDataToAll(_packet);
                         }
+                    }
+                }
+                
+                public static void UnitOwnership(Unit unit, Player owner)
+                {
+                    using (var _packet = new Packet((int) ServerPackets.UnitOwnership))
+                    {
+                        _packet.Write(unit);
+                        _packet.Write(owner.netId);
+                        
+                        Server.SendTCPDataToAll(_packet);
+                    }
+                }
+                
+                public static void UnitRemove(int id)
+                {
+                    using (var _packet = new Packet((int) ServerPackets.UnitRemove))
+                    {
+                        _packet.Write(id);
+
+                        Server.SendTCPDataToAll(_packet);
                     }
                 }
 

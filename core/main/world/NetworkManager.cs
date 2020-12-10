@@ -28,7 +28,7 @@ namespace Casanova.core.main.world
         
         public static List<int> availUnitIds = Enumerable.Range(1, 50000).ToList();
 
-        public static Player HostPlayer;
+        public static Player HostPlayer = new Player(0, "server", true);
 
         public static Unit CreateUnitInstance()
         {
@@ -72,15 +72,18 @@ namespace Casanova.core.main.world
 
         
         // called from server or client
-        public static Unit CreateUnit(loc loc, UnitType type, short ownerNetId=0, Vector2 position = new Vector2(), float rotation=0)
+        public static Unit CreateUnit(loc loc, int id=0, UnitType type=null, Vector2 position = new Vector2(), float rotation=0)
         {
             // no available unit id, do not create
             if (availUnitIds.Count == 0)
                 throw new Exception($"No ID to assign to unit type {type.Name}");
-            
-            int id = availUnitIds.First();
-            availUnitIds.Remove(id);
-            
+
+            if (id == 0)
+            {
+                id = availUnitIds.First();
+                availUnitIds.Remove(id);
+            }
+
             var instance = CreateUnitInstance();
             instance.netId = id;
             instance.Type = type;
@@ -90,11 +93,8 @@ namespace Casanova.core.main.world
 
             World.instance.AddUnit(instance, rotation);
             if(loc == loc.SERVER)
-                Packets.ServerHandle.Send.UnitCreate(id, ownerNetId, type, position, rotation);
+                Packets.ServerHandle.Send.UnitCreate(id, type, position, rotation);
 
-            if (ownerNetId != 0)
-                PlayersGroup[ownerNetId].Unit = instance;
-            
             return instance;
         }
 
@@ -123,11 +123,14 @@ namespace Casanova.core.main.world
                 }
             }
 
-            var player = new Player(_id, _username, null, willBeLocal);
+            var player = new Player(_id, _username, willBeLocal);
             PlayersGroup[_id] = player;
 
-            if (HostPlayer == null && loc == loc.SERVER)
+            if (HostPlayer.netId == 0 && loc == loc.SERVER)
                 HostPlayer = player;
+            
+            GD.Print("id: " + _id);
+            GD.Print("HostPlayer:" + HostPlayer.netId);
 
             return player;
         }

@@ -9,12 +9,11 @@ namespace Casanova.core.net.types
         public readonly string Username;
         public Unit Unit;
 
-        public Player(short _netId, string username, Unit _unit, bool isLocal = false)
+        public Player(short _netId, string _username, bool _isLocal = false)
         {
             netId = _netId;
-            Username = username;
-            Unit = _unit;
-            this.isLocal = isLocal;
+            Username = _username;
+            isLocal = _isLocal;
         }
     }
 }

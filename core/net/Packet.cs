@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Casanova.core.main.units;
+using Casanova.core.main.world;
 using Casanova.core.types;
 using Godot;
 using static Casanova.core.Vars.Enums;
@@ -198,6 +200,13 @@ namespace Casanova.core.net
         {
             Write(UnitTypes.FirstOrDefault(x => x.Value == _value).Key);
         }
+        
+        /// <summary>Adds a Unit to the packet.</summary>
+        /// <param name="_value">The Unit to add.</param>
+        public void Write(Unit _value)
+        {
+            Write(_value.netId);
+        }
 
         #endregion
 
@@ -358,6 +367,13 @@ namespace Casanova.core.net
         {
             var id = ReadInt();
             return UnitTypes[id];
+        }
+        
+        /// <summary>Reads a Unit from the packet.</summary>
+        public Unit ReadUnit()
+        {
+            var id = ReadInt();
+            return NetworkManager.UnitsGroup[id];
         }
 
         #endregion
