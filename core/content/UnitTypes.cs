@@ -59,7 +59,7 @@ namespace Casanova.core.content
             explorer = new UnitType("explorer.png")
             {
                 Name = "Explorer",
-                Description = "Starting bot equipped with a low-power building Projector.",
+                Description = "Starting bot.",
                 MaxSpeed = 140f,
                 Acceleration = 600f,
                 Deceleration = 400f,
@@ -91,7 +91,7 @@ namespace Casanova.core.content
             crimson = new UnitType("crimson.png")
             {
                 Name = "Crimson",
-                Description = "A big drone equipped with a Mk1 Mining laser. Flies at high altitudes.",
+                Description = "A big cruiser drone. Flies at high altitudes.",
                 MaxSpeed = 90f,
                 Acceleration = 170f,
                 RotationSpeed = 3.5f,

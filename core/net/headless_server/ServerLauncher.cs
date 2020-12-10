@@ -20,13 +20,6 @@ namespace Casanova.core.net.headless_server
 
             var tree = GetTree();
             tree.ChangeSceneTo(ResourceLoader.Load<PackedScene>(Vars.path_world + "/World.tscn"));
-
-            /*
-            ThreadManager.ExecuteOnMainThread(() =>
-            {
-                World world = (World) tree.CurrentScene;
-            });
-            */
         }
     }
 }
