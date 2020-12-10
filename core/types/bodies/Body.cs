@@ -26,7 +26,7 @@ namespace Casanova.core.types.bodies
         public UnitType Type;
         public Sprite Sprite;
 
-        protected Vector2 Vel;
+        public Vector2 Vel;
 
         public void Init(UnitType type)
         {

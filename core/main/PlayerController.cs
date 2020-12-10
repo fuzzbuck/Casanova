@@ -33,7 +33,7 @@ namespace Casanova.core.main
         {
             if (LocalUnit != null && !Server.IsHosting && Client.isConnected)
                 Packets.ClientHandle.Send.UnitMovement(LocalUnit.netId, LocalUnit.Body.InWorldPosition,
-                    LocalUnit.Body.Axis, LocalUnit.Body.Speed, LocalUnit.Rotation);
+                    LocalUnit.Body.Axis, LocalUnit.Body.Vel, LocalUnit.Rotation);
         }
 
         public void ProcessMovement()

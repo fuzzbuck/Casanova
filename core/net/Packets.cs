@@ -181,14 +181,14 @@ namespace Casanova.core.net
                 
                 
                 /// <param name="_id">The id of the unit.</param>
-                public static void UnitMovement(int _id, Vector2 _position, Vector2 _axis, float _speed, float _rotation)
+                public static void UnitMovement(int _id, Vector2 _position, Vector2 _axis, Vector2 _velocity, float _rotation)
                 {
                     using (var _packet = new Packet((int) ClientPackets.UnitMovement))
                     {
                         _packet.Write(_id);
                         _packet.Write(_position);
                         _packet.Write(_axis);
-                        _packet.Write(_speed);
+                        _packet.Write(_velocity);
                         _packet.Write(_rotation);
 
                         Client.SendUDPData(_packet);
@@ -251,7 +251,7 @@ namespace Casanova.core.net
 
                     var pos = _packet.ReadVector2();
                     var axis = _packet.ReadVector2();
-                    var speed = _packet.ReadFloat();
+                    var velocity = _packet.ReadVector2();
                     var rotation = _packet.ReadFloat();
                     
                     // todo: more smooth client side prediction
@@ -260,7 +260,7 @@ namespace Casanova.core.net
                     if (!_plr.isLocal && unitBody != null)
                     {
                         unitBody.Axis = axis;
-                        unitBody.Speed = speed;
+                        unitBody.Vel = velocity;
                         unitBody.Rotation = rotation;
                         unitBody.Position = pos;
                     }
@@ -332,7 +332,7 @@ namespace Casanova.core.net
                         _packet.Write(unit.netId);
                         _packet.Write(unitBody.Position);
                         _packet.Write(unitBody.Axis);
-                        _packet.Write(unitBody.Speed);
+                        _packet.Write(unitBody.Vel);
                         _packet.Write(unitBody.Rotation);
 
                         if (controller != null)
