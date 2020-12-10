@@ -1,4 +1,5 @@
-﻿using Casanova.core.main.units;
+﻿using System.Security.Cryptography;
+using Casanova.core.main.units;
 using Casanova.core.net;
 using Casanova.core.net.server;
 using Casanova.core.net.types;
@@ -72,6 +73,26 @@ namespace Casanova.core.main
                             Interface.Utils.SpawnOverlayFragment("EscOverlay");
                 }
             }
+        }
+
+        public static void TakeOwnership(Unit unit)
+        {
+            ThreadManager.ExecuteOnMainThread(() =>
+            {
+                var cam = (Camera) ResourceLoader.Load<PackedScene>(Vars.path_main + "/units/Camera.tscn")
+                    .Instance();
+
+                cam.GlobalPosition = unit.GlobalPosition;
+                    
+                if(!Vars.PersistentData.isMobile)
+                    unit.Body.AddChild(cam);
+                else
+                {
+                    unit.AddChild(cam);
+                }
+                
+                LocalUnit = unit;
+            });
         }
     }
 }

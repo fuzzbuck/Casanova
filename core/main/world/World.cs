@@ -1,3 +1,4 @@
+using Casanova.core.content;
 using Casanova.core.main.units;
 using Godot;
 
@@ -12,24 +13,15 @@ namespace Casanova.core.main.world
         {
             instance = this;
             tree = GetTree();
+            // NetworkManager.CreateUnit(NetworkManager.loc.SERVER, UnitTypes.crimson, 0, new Vector2(0, 0), 35f);
         }
 
-        /*
-        public void StartServer()
-        {
-            GetNode<ServerHandler>("Server").Start();
-        }
-
-        public void StartClient()
-        {
-            GetNode<ClientHandler>("Client").ConnectToServer(Vars.PersistentData.ip);
-        }
-        
-        */
-
-        public Unit SpawnUnit(Unit unit)
+        // unit & body params which couldn't be included earlier
+        public Unit AddUnit(Unit unit, float rotation)
         {
             GetNode<Node2D>("Units").AddChild(unit);
+            unit.Body.GlobalRotationDegrees = rotation;
+            
             return unit;
         }
     }

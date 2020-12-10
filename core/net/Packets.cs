@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using Casanova.core.content;
 using Casanova.core.main;
 using Casanova.core.main.units;
 using Casanova.core.main.world;
@@ -23,6 +24,7 @@ namespace Casanova.core.net
         {
             Welcome = 1,
             PlayerDisconnect,
+            PlayerConnect,
             UnitCreate,
             UnitMovement,
             ChatMessage,
@@ -34,7 +36,6 @@ namespace Casanova.core.net
         {
             WelcomeReceived = 1,
             UnitMovement,
-            UnitCreate,
             ChatMessage
         }
 
@@ -43,6 +44,7 @@ namespace Casanova.core.net
         {
             {(int) ServerPackets.Welcome, ClientHandle.Receive.Welcome},
             {(int) ServerPackets.PlayerDisconnect, ClientHandle.Receive.PlayerDisconnect},
+            {(int) ServerPackets.PlayerConnect, ClientHandle.Receive.PlayerConnect},
             {(int) ServerPackets.UnitCreate, ClientHandle.Receive.UnitCreate},
             {(int) ServerPackets.UnitMovement, ClientHandle.Receive.UnitMovement},
             {(int) ServerPackets.ChatMessage, ClientHandle.Receive.ChatMessage},
@@ -74,14 +76,18 @@ namespace Casanova.core.net
                 public static void UnitCreate(Packet _packet)
                 {
                     var id = _packet.ReadInt();
+                    var ownerNetId = _packet.ReadShort();
+                    
                     if (NetworkManager.UnitsGroup.ContainsKey(id))
                         NetworkManager.RemoveUnit(id);
-                    
+
                     var type = _packet.ReadUnitType();
                     var pos = _packet.ReadVector2();
                     var rotation = _packet.ReadFloat();
 
-                    NetworkManager.CreateUnit(NetworkManager.loc.CLIENT, type, pos, rotation);
+                    var unit = NetworkManager.CreateUnit(NetworkManager.loc.CLIENT, type, ownerNetId, pos, rotation);
+                    if (ownerNetId == Client.myId)
+                        PlayerController.TakeOwnership(unit);
                 }
 
                 public static void UnitMovement(Packet _packet)
@@ -119,19 +125,24 @@ namespace Casanova.core.net
                 public static void PlayerDisconnect(Packet _packet)
                 {
                     var _id = _packet.ReadShort();
-
-                    if (!NetworkManager.PlayersGroup.ContainsKey(_id))
-                        return;
                     
-                    // todo: handle player disconnect
+                    NetworkManager.RemovePlayer(_id);
+                }
+                
+                public static void PlayerConnect(Packet _packet)
+                {
+                    var _id = _packet.ReadShort();
+                    var _name = _packet.ReadString();
+
+                    NetworkManager.CreatePlayer(NetworkManager.loc.CLIENT, _id, _name);
+                    if (_id == Client.myId)
+                        PlayerController.LocalPlayer = NetworkManager.PlayersGroup[_id];
                 }
 
                 public static void ChatMessage(Packet _packet)
                 {
                     var _id = _packet.ReadShort();
                     var message = _packet.ReadString();
-                    
-                    GD.Print("chat id: " + _id);
 
                     Chat.instance?.SendMessage(message,
                         _id == 0 ? null : NetworkManager.PlayersGroup[_id]);
@@ -192,9 +203,13 @@ namespace Casanova.core.net
                     if (_fromClient != _clientIdCheck)
                         GD.Print(
                             $"Player \"{_username}\" (ID: {_fromClient}) has assumed the wrong client ID ({_clientIdCheck})!");
-
-                    NetworkManager.CreatePlayer(NetworkManager.loc.SERVER, _clientIdCheck, _username);
+                    
+                    var player = NetworkManager.CreatePlayer(NetworkManager.loc.SERVER, _clientIdCheck, _username);
+                    
+                    
+                    Send.PlayerConnect(player);
                     Send.ChatMessage(0, $"[color=#edc774]{_username} has connected.[/color]");
+                    NetworkManager.CreateUnit(NetworkManager.loc.SERVER, UnitTypes.crimson, player.netId);
                 }
 
                 public static void UnitMovement(short _fromClient, Packet _packet)
@@ -247,12 +262,34 @@ namespace Casanova.core.net
                         Server.SendTCPData(_toClient, _packet);
                     }
                 }
-
-                public static void UnitCreate(int netId, UnitType type, Vector2 position, float rotation)
+                
+                public static void PlayerConnect(Player player)
                 {
-                    using (var _packet = new Packet((int) ClientPackets.UnitCreate))
+                    using (var _packet = new Packet((int) ServerPackets.PlayerConnect))
+                    {
+                        _packet.Write(player.netId);
+                        _packet.Write(player.Username);
+                        
+                        Server.SendTCPDataToAll(_packet);
+                    }
+                }
+                
+                public static void PlayerDisconnect(int _id)
+                {
+                    using (var _packet = new Packet((int) ServerPackets.PlayerDisconnect))
+                    {
+                        _packet.Write(_id);
+                        
+                        Server.SendTCPDataToAll(_packet);
+                    }
+                }
+
+                public static void UnitCreate(int netId, short ownerId, UnitType type, Vector2 position, float rotation)
+                {
+                    using (var _packet = new Packet((int) ServerPackets.UnitCreate))
                     {
                         _packet.Write(netId);
+                        _packet.Write(ownerId);
                         _packet.Write(type);
                         _packet.Write(position);
                         _packet.Write(rotation);
@@ -279,17 +316,6 @@ namespace Casanova.core.net
                         {
                             Server.SendUDPDataToAll(_packet);
                         }
-                    }
-                }
-
-                public static void PlayerDisconnect(int _id)
-                {
-                    using (var _packet = new Packet((int) ServerPackets.PlayerDisconnect))
-                    {
-                        _packet.Write(_id);
-
-                        // replicate to all clients
-                        Server.SendTCPDataToAll(_packet);
                     }
                 }
 

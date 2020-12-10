@@ -11,6 +11,7 @@ using Casanova.ui;
 using Godot;
 using Camera = Casanova.core.main.units.Camera;
 using Client = Casanova.core.net.client.Client;
+using Thread = System.Threading.Thread;
 
 namespace Casanova.core.main.world
 {
@@ -33,7 +34,8 @@ namespace Casanova.core.main.world
         {
             var scene = (PackedScene) ResourceLoader.Load(Vars.path_main + $"/units/Unit.tscn");
             var instance = (Unit) scene.Instance();
-            
+            instance.ToSignal(instance, "ready").GetResult();
+
             return instance;
         }
 
@@ -70,7 +72,7 @@ namespace Casanova.core.main.world
 
         
         // called from server or client
-        public static Unit CreateUnit(loc loc, UnitType type, Vector2 position = new Vector2(), float rotation=0)
+        public static Unit CreateUnit(loc loc, UnitType type, short ownerNetId=0, Vector2 position = new Vector2(), float rotation=0)
         {
             // no available unit id, do not create
             if (availUnitIds.Count == 0)
@@ -80,17 +82,18 @@ namespace Casanova.core.main.world
             availUnitIds.Remove(id);
             
             var instance = CreateUnitInstance();
-            
             instance.netId = id;
             instance.Type = type;
             instance.GlobalPosition = position;
-            instance.Body.RotationDegrees = rotation;
-            
+
             UnitsGroup[id] = instance;
 
-            World.instance.SpawnUnit(instance);
+            World.instance.AddUnit(instance, rotation);
             if(loc == loc.SERVER)
-                Packets.ServerHandle.Send.UnitCreate(id, type, position, rotation);
+                Packets.ServerHandle.Send.UnitCreate(id, ownerNetId, type, position, rotation);
+
+            if (ownerNetId != 0)
+                PlayersGroup[ownerNetId].Unit = instance;
             
             return instance;
         }
@@ -105,9 +108,7 @@ namespace Casanova.core.main.world
         
         public static Player CreatePlayer(loc loc, short _id, string _username)
         {
-            GD.Print($"Creating player with username: {_username}");
-            if(PlayersGroup.ContainsKey(_id))
-                RemovePlayer(_id);
+            GD.Print($"{loc.ToString()}: Creating player with username: {_username}");
 
             var willBeLocal = false;
             if (loc == loc.CLIENT && Server.IsHosting)
@@ -127,29 +128,6 @@ namespace Casanova.core.main.world
 
             if (HostPlayer == null && loc == loc.SERVER)
                 HostPlayer = player;
-
-            /*
-            ThreadManager.ExecuteOnMainThread(() =>
-            {
-                if (_id == Client.myId)
-                {
-                    var cam = (Camera) ResourceLoader.Load<PackedScene>(Vars.path_main + "/units/Camera.tscn")
-                        .Instance();
-
-                    cam.GlobalPosition = instance.GlobalPosition;
-                    
-                    if(!Vars.PersistentData.isMobile)
-                        instance.Body.AddChild(cam);
-                    else
-                    {
-                        instance.AddChild(cam);
-                    }
-
-                    PlayerController.LocalPlayer = player;
-                    PlayerController.LocalUnit = instance;
-                }
-            });
-            */
 
             return player;
         }

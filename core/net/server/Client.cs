@@ -1,9 +1,6 @@
 using System;
 using System.Net;
 using System.Net.Sockets;
-using Casanova.core.main.world;
-using Casanova.core.net.types;
-using Casanova.core.types;
 using Godot;
 
 namespace Casanova.core.net.server
@@ -121,7 +118,6 @@ namespace Casanova.core.net.server
                     using (var _packet = new Packet(_packetBytes))
                     {
                         var _packetId = _packet.ReadByte();
-                        GD.Print("SERVER received packet id: " + _packetId);
                         Server.handlers[_packetId](id, _packet);
                     }
 

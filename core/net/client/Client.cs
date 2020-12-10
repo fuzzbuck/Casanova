@@ -165,7 +165,6 @@ namespace Casanova.core.net.client
                         using (var _packet = new Packet(_packetBytes))
                         {
                             var _packetId = _packet.ReadByte();
-                            GD.Print("CLIENT received packet id: " + _packetId);
                             Packets.handlers[_packetId](_packet); // Call appropriate method to handle the packet
                         }
 
