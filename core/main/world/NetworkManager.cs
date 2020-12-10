@@ -128,9 +128,6 @@ namespace Casanova.core.main.world
 
             if (HostPlayer.netId == 0 && loc == loc.SERVER)
                 HostPlayer = player;
-            
-            GD.Print("id: " + _id);
-            GD.Print("HostPlayer:" + HostPlayer.netId);
 
             return player;
         }
