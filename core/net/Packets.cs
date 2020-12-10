@@ -224,9 +224,17 @@ namespace Casanova.core.net
                     var player = NetworkManager.CreatePlayer(NetworkManager.loc.SERVER, _clientIdCheck, _username);
                     
                     
+                    
+                    // notify other clients that this player has connected
                     Send.PlayerConnect(player);
+                    
+                    // send chat message
                     Send.ChatMessage(0, $"[color=#edc774]{_username} has connected.[/color]");
-                    var unit = NetworkManager.CreateUnit(NetworkManager.loc.SERVER, 0, UnitTypes.explorer);
+                    
+                    // create unit for this player
+                    var unit = NetworkManager.CreateUnit(NetworkManager.loc.SERVER, 0, UnitTypes.crimson);
+                    
+                    // notify clients that this player will take ownership of this unit
                     Send.UnitOwnership(unit, player);
                 }
 
