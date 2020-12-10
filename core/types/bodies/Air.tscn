@@ -1,29 +1,8 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://core/types/bodies/Air.cs" type="Script" id=1]
 [ext_resource path="res://core/types/bodies/Body.tscn" type="PackedScene" id=2]
 [ext_resource path="res://assets/sprites/units/crimson.png" type="Texture" id=3]
-
-[sub_resource type="Shader" id=1]
-code = "shader_type canvas_item;
-render_mode blend_mix;
-
-uniform vec2 offset = vec2(28.0, 28.0);
-uniform vec4 modulate : hint_color;
-
-void fragment() {
-	vec2 ps = TEXTURE_PIXEL_SIZE;
-
-	vec4 shadow = vec4(modulate.rgb, texture(TEXTURE, UV - offset * ps).a * modulate.a);
-	vec4 col = texture(TEXTURE, UV);
-
-	COLOR = mix(shadow, col, col.a);
-}"
-
-[sub_resource type="ShaderMaterial" id=2]
-shader = SubResource( 1 )
-shader_param/offset = Vector2( 28, 28 )
-shader_param/modulate = null
 
 [node name="Body" instance=ExtResource( 2 )]
 scale = Vector2( 1, 1 )
@@ -35,7 +14,6 @@ script = ExtResource( 1 )
 offset = Vector2( 0, 0 )
 
 [node name="Sprite" parent="." index="1"]
-material = SubResource( 2 )
 position = Vector2( 0, -1 )
 z_index = 4
 texture = ExtResource( 3 )
