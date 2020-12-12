@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using Casanova.core.content;
+using Casanova.core.main.world;
 using Casanova.core.types;
 using Casanova.core.utils;
 using Godot;
@@ -179,10 +180,38 @@ namespace Casanova.core.net.server
                 {(int) Packets.ClientPackets.ChatMessage, Packets.ServerHandle.Receive.ChatMessage}
             };
             
-            clientCommands.register(new Command("spawn", "[amount] [type]", "Spawns a specified amount of specified units at the origin player units position",
+            clientCommands.register(new Command("spawn", "[amount] [typeid]", "Spawns a specified amount of specified units at the origin player units position",
                 (player, args) =>
                 {
-                    
+                    int amt;
+                    UnitType type;
+
+                    try
+                    {
+                        amt = int.Parse((string) args[0]);
+                        type = Vars.Enums.UnitTypes[int.Parse((string) args[1])];
+                    }
+                    catch (Exception e)
+                    {
+                        Packets.ServerHandle.Send.ChatMessage(player.netId, 0, $"[color=#e64b40]Error parsing command arguments:[/color] {e.Message}");
+                        return;
+                    }
+
+                    if (player.Unit != null && player.Unit.Body != null)
+                    {
+                        var pos = player.Unit.Body.GlobalPosition;
+                        var rnd = new Random();
+                        pos.x += rnd.Next(-2000, 2000) / 300f;
+                        pos.y += rnd.Next(-2000, 2000) / 300f;
+                        
+                        for (int i = 0; i < amt; i++)
+                        {
+                            NetworkManager.CreateUnit(NetworkManager.loc.SERVER, 0, type, pos, 0);
+                        }
+                        Packets.ServerHandle.Send.ChatMessage(player.netId, 0, $"Spawned {amt} {type.Name}s");
+                        return;
+                    }
+                    Packets.ServerHandle.Send.ChatMessage(player.netId, 0, $"You need to be alive to use this command.");
                 }));
         }
     }

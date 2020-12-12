@@ -126,6 +126,7 @@ namespace Casanova.core.net
                     var unit = _packet.ReadUnit();
                     var ownerId = _packet.ReadShort();
 
+                    NetworkManager.PlayersGroup[ownerId].Unit = unit;
                     if (ownerId == Client.myId)
                     {
                         PlayerController.TakeOwnership(unit);
@@ -241,8 +242,8 @@ namespace Casanova.core.net
                     // create unit for this player with id of 0 (auto-assign new id)
                     var unit = NetworkManager.CreateUnit(NetworkManager.loc.SERVER, 0, UnitTypes.crimson);
                     
-                    // notify clients that this player will take ownership of this unit
-                    Send.UnitOwnership(unit, player);
+                    // this player will take ownership of this unit
+                    NetworkManager.UnitOwnership(NetworkManager.loc.SERVER, unit, player);
                 }
 
                 public static void UnitMovement(short _fromClient, Packet _packet)

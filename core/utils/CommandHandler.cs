@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Casanova.core.net.types;
+using Godot;
 
 namespace Casanova.core.utils
 {

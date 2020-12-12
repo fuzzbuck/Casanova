@@ -65,9 +65,6 @@ namespace Casanova.core
             }
 
             public static Dictionary<int, UnitType> UnitTypes = new Dictionary<int, UnitType>();
-            
-            public static Dictionary<int, Texture> UnitSprites = new Dictionary<int, Texture>();
-            public static Dictionary<int, Texture> UnitShadows = new Dictionary<int, Texture>();
         }
         public static void Load()
         {
