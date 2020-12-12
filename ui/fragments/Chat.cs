@@ -73,7 +73,9 @@ namespace Casanova.ui.fragments
         {
             var message = sender != null ? $"[color=#fa9e48]<[/color]{sender.Username}[color=#fa9e48]>[/color]: {text}" : text;
             AddMessage(message);
-            lastMessage = text;
+            
+            if(sender != null)
+                lastMessage = text;
 
             ThreadManager.ExecuteOnMainThread(() =>
             {
@@ -168,7 +170,7 @@ namespace Casanova.ui.fragments
                     if (PlayerController.Focus == _lineEdit)
                     {
                         _lineEdit.Text = lastMessage;
-                        _lineEdit.CaretPosition = lastMessage.Length;
+                        ThreadManager.ExecuteOnMainThread(() => {_lineEdit.CaretPosition = _lineEdit.Text.Length;});
                     }
             }
         }
