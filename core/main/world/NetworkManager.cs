@@ -94,8 +94,6 @@ namespace Casanova.core.main.world
             World.instance.AddUnit(instance, rotation);
             if(loc == loc.SERVER)
                 Packets.ServerHandle.Send.UnitCreate(id, type, position, rotation);
-            
-            GD.Print($"Total units: {UnitsGroup.Count}");
 
             return instance;
         }
@@ -106,9 +104,6 @@ namespace Casanova.core.main.world
             {
                 newOwner.Unit = unit;
                 Packets.ServerHandle.Send.UnitOwnership(unit, newOwner);
-                
-                GD.Print($"Unit id {unit.netId} now belongs to {newOwner.Username}");
-                GD.Print($"newOwner unit id: {newOwner.Unit.netId}");
             }
         }
 
