@@ -1,9 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Casanova.core.net.types;
 
 namespace Casanova.core.utils
 {
+    public enum HandleResponse
+    {
+        Executed, BadPrefix, BadArguments, NonExistent
+    }
     public class CommandHandler
     {
         public string prefix;
@@ -19,15 +24,15 @@ namespace Casanova.core.utils
             prefix = _prefix;
         }
 
-        public bool handle(Player caller, string msg)
+        public (HandleResponse, Command) handle(Player caller, string msg)
         {
             if (!msg.StartsWith(prefix))
-                return false;
+                return (HandleResponse.BadPrefix, null);
             
             Command command = null;
             foreach (var cmd in commands.Values)
             {
-                if (msg.IndexOf(cmd.name, StringComparison.CurrentCultureIgnoreCase) == 1 && msg.Length >= prefix.Length + cmd.name.Length + 1 && msg[prefix.Length + cmd.name.Length] == ' ')
+                if (msg.IndexOf(cmd.name, StringComparison.CurrentCultureIgnoreCase) == 1)
                 {
                     command = cmd;
                 }
@@ -35,11 +40,28 @@ namespace Casanova.core.utils
 
             if (command != null)
             {
-                command.action.Invoke(caller, msg.Substring(prefix.Length + command.name.Length + 1).Split(' '));
-                return true;
+                var textparams = new string[]{};
+
+                if (command.textparam.Length > 0)
+                {
+                    if (msg.Length > prefix.Length + command.name.Length + 1)
+                        textparams = msg.Substring(prefix.Length + command.name.Length + 1).Split(' ');
+                    else
+                        return (HandleResponse.BadArguments, command);
+                }
+
+                if (command.verifyParams(String.Join(" ", textparams)))
+                {
+                    command.action.Invoke(caller, textparams);
+                    return (HandleResponse.Executed, command);
+                }
+                else
+                {
+                    return (HandleResponse.BadArguments, command);
+                }
             }
 
-            return false;
+            return (HandleResponse.NonExistent, command);
         }
     }
 
@@ -47,15 +69,22 @@ namespace Casanova.core.utils
     {
         public string name;
         public string desc;
+        public string textparam;
 
         // action passed with array of parameters
         public Action<Player, object[]> action;
 
-        public Command(string _name, string _desc, Action<Player, object[]> _action)
+        public Command(string _name, string _textparam, string _desc, Action<Player, object[]> _action)
         {
             name = _name;
             desc = _desc;
+            textparam = _textparam;
             action = _action;
+        }
+
+        public bool verifyParams(string textparams)
+        {
+            return (textparams.Length == 0 || textparams.Trim().Count(i => i == ' ') == textparam.Trim().Count(i => i == ' '));
         }
     }
 }

@@ -9,6 +9,7 @@ using Casanova.core.main.world;
 using Casanova.core.net.server;
 using Casanova.core.net.types;
 using Casanova.core.types;
+using Casanova.core.utils;
 using Casanova.ui;
 using Casanova.ui.fragments;
 using Godot;
@@ -279,10 +280,11 @@ namespace Casanova.core.net
                 {
                     var message = _packet.ReadString();
 
-                    var isCommand = Server.clientCommands.handle(NetworkManager.PlayersGroup[_fromClient], message);
-                    
-                    if(!isCommand)
+                    var (cmdResp, cmd) = Server.clientCommands.handle(NetworkManager.PlayersGroup[_fromClient], message);
+                    if(cmdResp == HandleResponse.NonExistent || cmdResp == HandleResponse.BadPrefix)
                         Send.ChatMessage(_fromClient, message);
+                    else if(cmdResp == HandleResponse.BadArguments)
+                        Send.ChatMessage(_fromClient, 0, $"[color=#e64b40]Invalid arguments supplied. Required arguments:[/color] {cmd.textparam}");
                 }
             }
 

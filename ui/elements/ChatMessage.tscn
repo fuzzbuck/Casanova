@@ -11,7 +11,7 @@ draw_center = false
 font_path = "res://assets/fonts/dogicapixel.ttf"
 
 [sub_resource type="DynamicFont" id=3]
-size = 20
+size = 18
 use_mipmaps = true
 font_data = SubResource( 2 )
 
@@ -19,7 +19,7 @@ font_data = SubResource( 2 )
 font_path = "res://assets/fonts/RussoOne-Regular.ttf"
 
 [sub_resource type="DynamicFont" id=5]
-size = 20
+size = 18
 use_mipmaps = true
 font_data = SubResource( 4 )
 

@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
+using Casanova.core.content;
+using Casanova.core.types;
 using Casanova.core.utils;
 using Godot;
 
@@ -177,10 +179,10 @@ namespace Casanova.core.net.server
                 {(int) Packets.ClientPackets.ChatMessage, Packets.ServerHandle.Receive.ChatMessage}
             };
             
-            clientCommands.register(new Command("spawn", "Spawns a specified amount of specified units at the origin player units position",
+            clientCommands.register(new Command("spawn", "[amount] [type]", "Spawns a specified amount of specified units at the origin player units position",
                 (player, args) =>
                 {
-                    Packets.ServerHandle.Send.ChatMessage(player.netId, 0, "hi thank u for executing the spawn command :) unfortunately it doesnt work yet sorry");
+                    
                 }));
         }
     }
