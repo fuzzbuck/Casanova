@@ -53,8 +53,10 @@ namespace Casanova.core.net
             {(int) ServerPackets.ChatMessage, ClientHandle.Receive.ChatMessage},
             {(int) ServerPackets.InformalMessage, ClientHandle.Receive.InformalMessage}
         };
+        
         public class ClientHandle
         {
+            // handles packets sent from the server to the client
             public class Receive
             {
                 public static void Welcome(Packet _packet)
@@ -166,6 +168,8 @@ namespace Casanova.core.net
                 }
             }
 
+            
+            // sends packets from the client to the server
             public class Send
             {
                 public static void WelcomeConfirmation(string _username)
@@ -210,6 +214,8 @@ namespace Casanova.core.net
         {
             public class Receive
             {
+                
+                // handles packets sent to the server from the client/s
                 public static void WelcomeConfirmation(short _fromClient, Packet _packet)
                 {
                     var _clientIdCheck = _packet.ReadShort();
@@ -273,10 +279,15 @@ namespace Casanova.core.net
                 {
                     var message = _packet.ReadString();
 
-                    Send.ChatMessage(_fromClient, message);
+                    var isCommand = Server.clientCommands.handle(NetworkManager.PlayersGroup[_fromClient], message);
+                    
+                    if(!isCommand)
+                        Send.ChatMessage(_fromClient, message);
                 }
             }
 
+            
+            // sends packets from the server to the client/s
             public class Send
             {
                 public static void Welcome(short _toClient)
@@ -373,6 +384,17 @@ namespace Casanova.core.net
                         _packet.Write(message);
 
                         Server.SendTCPDataToAll(_packet);
+                    }
+                }
+                
+                public static void ChatMessage(short _to, short _id, string message)
+                {
+                    using (var _packet = new Packet((int) ServerPackets.ChatMessage))
+                    {
+                        _packet.Write(_id);
+                        _packet.Write(message);
+
+                        Server.SendTCPData(_to, _packet);
                     }
                 }
             }

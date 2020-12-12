@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
+using Casanova.core.utils;
 using Godot;
 
 namespace Casanova.core.net.server
@@ -12,6 +13,8 @@ namespace Casanova.core.net.server
 
         public static Dictionary<short, Client> Clients = new Dictionary<short, Client>();
         public static Dictionary<int, PacketHandler> handlers;
+        
+        public static CommandHandler clientCommands = new CommandHandler("/");
 
         private static TcpListener tcpListener;
         private static UdpClient udpListener;
@@ -173,6 +176,12 @@ namespace Casanova.core.net.server
                 {(int) Packets.ClientPackets.UnitMovement, Packets.ServerHandle.Receive.UnitMovement},
                 {(int) Packets.ClientPackets.ChatMessage, Packets.ServerHandle.Receive.ChatMessage}
             };
+            
+            clientCommands.register(new Command("spawn", "Spawns a specified amount of specified units at the origin player units position",
+                (player, args) =>
+                {
+                    Packets.ServerHandle.Send.ChatMessage(player.netId, 0, "hi thank u for executing the spawn command :) unfortunately it doesnt work yet sorry");
+                }));
         }
     }
 }

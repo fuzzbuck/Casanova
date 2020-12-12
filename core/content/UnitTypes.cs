@@ -1,5 +1,6 @@
 using Casanova.core.types;
 using Casanova.core.types.effects;
+using Casanova.core.utils;
 using Godot;
 using Godot.Collections;
 using static Casanova.core.Vars.Enums;
@@ -119,7 +120,7 @@ namespace Casanova.core.content
 
         public static void Load()
         {
-            // load shadows
+            // create shadows for units
             foreach (UnitType type in Vars.Enums.UnitTypes.Values)
             {
                 if (type.ShadowBlur > 0)

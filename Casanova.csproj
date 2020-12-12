@@ -43,6 +43,7 @@
     <Compile Include="core\types\effects\Shadow.cs" />
     <Compile Include="core\types\effects\SkidMark.cs" />
     <Compile Include="core\types\UnitType.cs" />
+    <Compile Include="core\utils\CommandHandler.cs" />
     <Compile Include="core\utils\Funcs.cs" />
     <Compile Include="core\Vars.cs" />
     <Compile Include="ui\elements\Button.cs" />

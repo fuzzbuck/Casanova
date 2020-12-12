@@ -1,15 +1,13 @@
 ﻿using System;
-using System.Drawing;
 using System.IO;
 using System.Net;
-using Casanova.core.main.world;
 using Godot;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 using Image = Godot.Image;
 
-namespace Casanova.core
+namespace Casanova.core.utils
 {
     public static class Funcs
     {
@@ -47,13 +45,13 @@ namespace Casanova.core
                 x.Resize(new ResizeOptions
                 {
                     Mode = ResizeMode.Pad,
-                    Size = new SixLabors.ImageSharp.Size(img.Width + radius*2, img.Height)
+                    Size = new Size(img.Width + radius*2, img.Height)
                 }).BackgroundColor(new Rgba32(255, 255, 255, 0));
                 
                 x.Resize(new ResizeOptions
                 {
                     Mode = ResizeMode.Pad,
-                    Size = new SixLabors.ImageSharp.Size(img.Width, img.Height + radius*2)
+                    Size = new Size(img.Width, img.Height + radius*2)
                 }).BackgroundColor(new Rgba32(255, 255, 255, 0));
                 
                 x.GaussianBlur(radius);

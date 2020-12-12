@@ -1,8 +1,10 @@
 using System;
 using System.Linq;
 using Casanova.core;
+using Casanova.core.content;
 using Casanova.core.net.client;
 using Casanova.core.types;
+using Casanova.core.utils;
 using Godot;
 using LineEdit = Casanova.ui.elements.LineEdit;
 
@@ -35,7 +37,7 @@ namespace Casanova.ui.fragments
 
             unit_field.AddItem("Explorer", 0);
             unit_field.AddItem("Crimson", 1);
-            unit_field.Select(Vars.Enums.UnitTypes.FirstOrDefault(x => x.Value == Vars.PersistentData.UnitType).Key);
+            unit_field.Select(Vars.Enums.UnitTypes.FirstOrDefault(x => x.Value == UnitTypes.explorer).Key);
 
             username_field.Connect("text_changed", this, "_onUsernameFieldTextChange");
             ip_field.Connect("text_changed", this, "_onIpFieldTextChange");
@@ -57,7 +59,7 @@ namespace Casanova.ui.fragments
 
         private void _onUnitOptionSelect(int id)
         {
-            Vars.PersistentData.UnitType = Vars.Enums.UnitTypes[id];
+            // Vars.PersistentData.UnitType = Vars.Enums.UnitTypes[id];
         }
 
         public bool AttemptConnection(string ip)

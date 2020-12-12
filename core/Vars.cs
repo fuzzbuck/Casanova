@@ -93,6 +93,7 @@ namespace Casanova.core
             PlayerController.LocalPlayer = null;
             PlayerController.LocalUnit = null;
 
+            Client.isConnected = false;
             NetworkManager.HostPlayer = null;
             NetworkManager.PlayersGroup.Clear();
             NetworkManager.UnitsGroup.Clear();
@@ -116,7 +117,6 @@ namespace Casanova.core
 
             public static string username = "unnamed";
             public static string ip = "fuzzbuck.dev:375";
-            public static UnitType UnitType = UnitTypes.explorer;
         }
 
         public class PlayerCamera
