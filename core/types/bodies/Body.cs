@@ -35,6 +35,7 @@ namespace Casanova.core.types.bodies
             RotationSpeed = type.RotationSpeed;
             Acceleration = type.Acceleration;
             Decelleration = type.Deceleration;
+            Mass = type.Mass;
 
             Sprite = GetNode<Sprite>("Sprite");
             Shadow = GetNode<Shadow>("Shadow");

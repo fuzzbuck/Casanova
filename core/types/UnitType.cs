@@ -15,6 +15,7 @@ namespace Casanova.core.types
 
         public float Acceleration;
         public float Deceleration;
+        public float Mass;
         public string Description = "Attacks.";
         public string Body = "Body";
 

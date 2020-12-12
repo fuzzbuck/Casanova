@@ -57,6 +57,7 @@ namespace Casanova.core.content
                 MaxSpeed = 140f,
                 Acceleration = 600f,
                 Deceleration = 400f,
+                Mass = 100f,
                 RotationSpeed = 8f,
                 Health = 100f,
                 CollisionShape = new []
@@ -84,6 +85,7 @@ namespace Casanova.core.content
                 MaxSpeed = 90f,
                 Acceleration = 170f,
                 RotationSpeed = 3.5f,
+                Mass = 1000f,
                 Deceleration = 50f,
                 Health = 500f,
                 CollisionShape = new []
