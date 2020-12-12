@@ -30,6 +30,8 @@ namespace Casanova.core.main
         {
             if (LocalUnit?.Body != null)
             {
+                LocalUnit.Body.Sleeping = false;
+                
                 if (!Vars.PersistentData.isMobile)
                     ProcessMovement();
                 else

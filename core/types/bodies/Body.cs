@@ -1,10 +1,11 @@
+using System.Runtime.InteropServices;
 using Casanova.core.types.effects;
 using Godot;
 using Godot.Collections;
 
 namespace Casanova.core.types.bodies
 {
-    public abstract class Body : KinematicBody2D
+    public abstract class Body : RigidBody2D
     {
         public float Acceleration;
         public Vector2 Axis;
@@ -79,20 +80,24 @@ namespace Casanova.core.types.bodies
                 ApplyMovement(Axis * delta * Acceleration);
             }
             
+            /*
             if(Vel.Length() > 0f)
                 ApplyRotation(delta);
-
-            var collision = MoveAndCollide(Vel * delta);
-            if (collision != null) Vel = Vel.Slide(collision.Normal) * Bounciness;
-
+            */
+            
 
             Speed = Vel.Length();
             InWorldPosition = Position;
         }
 
-        public override void _Process(float delta)
+        public override void _IntegrateForces(Physics2DDirectBodyState state)
         {
-            ProcessMovement(delta);
+            // state.ApplyCentralImpulse(Vel);
+            ProcessMovement(state.Step);
+            state.LinearVelocity = Vel;
+            state.AngularVelocity = 5f;
+            
+            base._IntegrateForces(state);
         }
     }
 }

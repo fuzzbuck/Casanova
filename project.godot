@@ -93,6 +93,10 @@ control={
 translations=PoolStringArray( "res://assets/translations/translation.en.translation", "res://assets/translations/translation.hr.translation", "res://assets/translations/translation.pl.translation", "res://assets/translations/translation.sr.translation", "res://assets/translations/translation.zh_TW.translation" )
 locale_filter=[ 0, [  ] ]
 
+[physics]
+
+common/physics_fps=144
+
 [rendering]
 
 quality/2d/use_pixel_snap=true

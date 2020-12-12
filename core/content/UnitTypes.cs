@@ -39,13 +39,6 @@ namespace Casanova.core.content
                 Color = new Color(0, 0, 0)
             };
 
-            var explorerSmoke = new ParticleInfo
-            {
-                Direction = new Vector2(0, 1),
-                Velocity = 50f,
-                Amount = 64
-            };
-            
             var crimsonSkid = new Skid
             {
                 Length = 15,
@@ -81,11 +74,6 @@ namespace Casanova.core.content
                 {
                     {new Vector2(-4, 4), explorerSkid},
                     {new Vector2(4, 4), explorerSkid}
-                },
-
-                ParticleEffects = new System.Collections.Generic.Dictionary<Vector2, ParticleInfo>
-                {
-                    {new Vector2(0, 4), explorerSmoke}
                 }
             };
 
@@ -100,20 +88,20 @@ namespace Casanova.core.content
                 Health = 500f,
                 CollisionShape = new []
                 {
-                    new Vector2(24, 32),
-                    new Vector2(24, -8),
-                    new Vector2(0, -32),
-                    new Vector2(-24, -8),
-                    new Vector2(-24, -32),
+                    new Vector2(16, 17),
+                    new Vector2(8, -7),
+                    new Vector2(0, -15),
+                    new Vector2(-8, -7),
+                    new Vector2(-16, 17),
                     new Vector2(0, 12)
                 },
-                ShadowOffset = new Vector2(-15, 20),
+                ShadowOffset = new Vector2(-12, 18),
                 Body = "Air",
 
                 SkidMarks = new System.Collections.Generic.Dictionary<Vector2, Skid>
                 {
-                    {new Vector2(6, 8.7f), crimsonSkid},
-                    {new Vector2(-6, 8.7f), crimsonSkid}
+                    {new Vector2(6, 7f), crimsonSkid},
+                    {new Vector2(-6, 7f), crimsonSkid}
                 }
             };
         }
