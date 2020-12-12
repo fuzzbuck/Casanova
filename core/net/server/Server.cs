@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using Casanova.core.content;
+using Casanova.core.main.units;
 using Casanova.core.main.world;
 using Casanova.core.types;
 using Casanova.core.utils;
@@ -201,8 +202,8 @@ namespace Casanova.core.net.server
                     {
                         var pos = player.Unit.Body.GlobalPosition;
                         var rnd = new Random();
-                        pos.x += rnd.Next(-2000, 2000) / 300f;
-                        pos.y += rnd.Next(-2000, 2000) / 300f;
+                        pos.x += rnd.Next(-20000, 20000) / 300f;
+                        pos.y += rnd.Next(-20000, 20000) / 300f;
                         
                         for (int i = 0; i < amt; i++)
                         {
@@ -212,6 +213,25 @@ namespace Casanova.core.net.server
                         return;
                     }
                     Packets.ServerHandle.Send.ChatMessage(player.netId, 0, $"You need to be alive to use this command.");
+                }));
+            
+            clientCommands.register(new Command("ownership", "[unitid]", "Take the ownership of the specified unit",
+                (player, args) =>
+                {
+                    Unit unit;
+
+                    try
+                    {
+                        unit = NetworkManager.UnitsGroup[int.Parse((string) args[0])];
+                    }
+                    catch (Exception e)
+                    {
+                        Packets.ServerHandle.Send.ChatMessage(player.netId, 0, $"[color=#e64b40]Error parsing command arguments:[/color] {e.Message}");
+                        return;
+                    }
+                    
+                    Packets.ServerHandle.Send.UnitOwnership(unit, player);
+                    Packets.ServerHandle.Send.ChatMessage(player.netId, 0, $"Taken ownership of unit id {unit.netId}");
                 }));
         }
     }

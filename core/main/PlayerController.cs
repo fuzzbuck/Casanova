@@ -15,9 +15,17 @@ namespace Casanova.core.main
         public static Unit LocalUnit;
         public static Player LocalPlayer;
 
+        public static Camera LocalCamera;
+
         public static Node Focus;
         public static Vector2 Axis;
-
+        
+        public override void _Ready()
+        {
+            LocalCamera = (Camera) ResourceLoader.Load<PackedScene>(Vars.path_main + "/units/Camera.tscn")
+                .Instance();
+        }
+        
         public override void _Process(float delta)
         {
             if (LocalUnit?.Body != null)
@@ -79,19 +87,24 @@ namespace Casanova.core.main
         {
             ThreadManager.ExecuteOnMainThread(() =>
             {
-                var cam = (Camera) ResourceLoader.Load<PackedScene>(Vars.path_main + "/units/Camera.tscn")
-                    .Instance();
+                if(LocalCamera.GetParent() != null)
+                    LocalCamera.GetParent().RemoveChild(LocalCamera);   // wow godot very nice
 
-                cam.GlobalPosition = unit.GlobalPosition;
-                    
                 if(!Vars.PersistentData.isMobile)
-                    unit.Body.AddChild(cam);
+                    unit.Body.AddChild(LocalCamera);
                 else
                 {
-                    unit.AddChild(cam);
+                    unit.AddChild(LocalCamera);
                 }
                 
                 LocalUnit = unit;
+                
+                ThreadManager.ExecuteOnMainThread(() =>
+                {
+                    LocalCamera.GlobalPosition = unit.GlobalPosition;
+                    LocalCamera.Offset = Vector2.Zero;
+                    LocalCamera.Position = Vector2.Zero;
+                });
             });
         }
     }
