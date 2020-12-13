@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Casanova.core.main.units;
 using Casanova.core.main.world;
+using Casanova.core.net.types;
 using Casanova.core.types;
 using Godot;
 using static Casanova.core.Vars.Enums;
@@ -207,6 +208,13 @@ namespace Casanova.core.net
         {
             Write(_value.netId);
         }
+        
+        /// <summary>Adds a Player to the packet.</summary>
+        /// <param name="_value">The Player to add.</param>
+        public void Write(Player _value)
+        {
+            Write(_value.netId);
+        }
 
         #endregion
 
@@ -374,6 +382,13 @@ namespace Casanova.core.net
         {
             var id = ReadInt();
             return NetworkManager.UnitsGroup[id];
+        }
+        
+        /// <summary>Reads a Player from the packet.</summary>
+        public Player ReadPlayer()
+        {
+            var id = ReadShort();
+            return NetworkManager.PlayersGroup[id];
         }
 
         #endregion

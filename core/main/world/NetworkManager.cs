@@ -98,12 +98,27 @@ namespace Casanova.core.main.world
             return instance;
         }
 
+        public static void DiminishUnitOwnership(Unit unit, Player owner)
+        {
+            unit.Controller = null;
+        }
+        
         public static void UnitOwnership(loc loc, Unit unit, Player newOwner)
         {
+            if(newOwner.Unit != null)
+                DiminishUnitOwnership(unit, newOwner);
+            
+            newOwner.Unit = unit;
+            newOwner.Unit.Controller = newOwner;
+
             if (loc == loc.SERVER)
             {
-                newOwner.Unit = unit;
                 Packets.ServerHandle.Send.UnitOwnership(unit, newOwner);
+            }
+            else
+            {
+                if (newOwner.netId == Client.myId)
+                    PlayerController.TakeOwnership(unit);
             }
         }
 

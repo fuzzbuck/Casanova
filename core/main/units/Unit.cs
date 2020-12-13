@@ -1,3 +1,4 @@
+using Casanova.core.net.types;
 using Casanova.core.types;
 using Casanova.core.types.bodies;
 using Casanova.core.types.effects;
@@ -27,6 +28,8 @@ namespace Casanova.core.main.units
     public class Unit : Node2D
     {
         public int netId;
+        public Player Controller;
+        
         public Body Body;
         public Node2D Content;
         private readonly Array<Particles> Particles = new Array<Particles>();
@@ -90,6 +93,10 @@ namespace Casanova.core.main.units
 
         public override void _PhysicsProcess(float delta)
         {
+            // optimization - don't draw skids for non-controlled units (todo: make it a toggleable setting)
+            if (Controller == null)
+                return;
+            
             if (SkidMarks != null)
                 foreach (var skid in SkidMarks)
                 {

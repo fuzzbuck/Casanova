@@ -124,17 +124,9 @@ namespace Casanova.core.net
                 public static void UnitOwnership(Packet _packet)
                 {
                     var unit = _packet.ReadUnit();
-                    var ownerId = _packet.ReadShort();
-
-                    NetworkManager.PlayersGroup[ownerId].Unit = unit;
-                    if (ownerId == Client.myId)
-                    {
-                        PlayerController.TakeOwnership(unit);
-                    }
-                    else
-                    {
-                        // todo: register ownership to another player
-                    }
+                    var owner = _packet.ReadPlayer();
+                    
+                    NetworkManager.UnitOwnership(NetworkManager.loc.CLIENT, unit, owner);
                 }
                 
                 public static void UnitRemove(Packet _packet)
@@ -363,7 +355,7 @@ namespace Casanova.core.net
                     using (var _packet = new Packet((int) ServerPackets.UnitOwnership))
                     {
                         _packet.Write(unit);
-                        _packet.Write(owner.netId);
+                        _packet.Write(owner);
                         
                         Server.SendTCPDataToAll(_packet);
                     }
