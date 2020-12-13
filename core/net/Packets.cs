@@ -98,11 +98,10 @@ namespace Casanova.core.net
 
                     var pos = _packet.ReadVector2();
                     var axis = _packet.ReadVector2();
-                    var speed = _packet.ReadFloat();
+                    var vel = _packet.ReadVector2();
                     var rotation = _packet.ReadFloat();
 
                     var unit = NetworkManager.UnitsGroup[id];
-
                     var unitBody = unit.Body;
                     
                     if (unitBody != null)
@@ -221,9 +220,17 @@ namespace Casanova.core.net
                         GD.Print(
                             $"Player \"{_username}\" (ID: {_fromClient}) has assumed the wrong client ID ({_clientIdCheck})!");
                     
+                    
                     var player = NetworkManager.CreatePlayer(NetworkManager.loc.SERVER, _clientIdCheck, _username);
                     
                     
+                    // LOAD WORLD DATA FOR NEW PLAYERS
+
+                    // notify this client of already existing units
+                    foreach (Unit u in NetworkManager.UnitsGroup.Values)
+                    {
+                        Send.UnitCreate(u.netId, u.Type, u.Body.GlobalPosition, u.Body.GlobalRotation);
+                    }
                     
                     // notify other clients that this player has connected & about connections of other players
                     foreach(Player p in NetworkManager.PlayersGroup.Values)
@@ -233,16 +240,14 @@ namespace Casanova.core.net
                         
                         // notify this client of other players that joined previously
                         Send.PlayerCreate(p, player.netId);
-                    }
-                    
-                    // notify this client of already existing units
-                    foreach (Unit u in NetworkManager.UnitsGroup.Values)
-                    {
-                        Send.UnitCreate(u.netId, u.Type, u.Body.GlobalPosition, u.Body.GlobalRotation);
+                        
+                        // notify this client of unit ownerships
+                        if(p.Unit != null)
+                            Send.UnitOwnership(p.Unit, p, player.netId);
                     }
 
                     // send chat message
-                    NetworkManager.SendMessage(NetworkManager.loc.SERVER, player,$"[color=#edc774]{_username} has connected.[/color]");
+                    NetworkManager.SendMessage(NetworkManager.loc.SERVER,$"[color=#edc774]{_username} has connected.[/color]");
                     
                     // create unit for this player with id of 0 (auto-assign new id)
                     var unit = NetworkManager.CreateUnit(NetworkManager.loc.SERVER, 0, UnitTypes.crimson);
@@ -256,10 +261,13 @@ namespace Casanova.core.net
                     var unitNetId = _packet.ReadInt();
                     
                     // check if player can control this unit
-                    if (!(NetworkManager.UnitsGroup.ContainsKey(unitNetId) &&
-                          NetworkManager.PlayersGroup[_fromClient].Unit != null &&
-                          NetworkManager.PlayersGroup[_fromClient].Unit.netId == unitNetId))
+                    if (!NetworkManager.UnitsGroup.ContainsKey(unitNetId) ||
+                        NetworkManager.PlayersGroup[_fromClient].Unit == null ||
+                        NetworkManager.PlayersGroup[_fromClient].Unit.netId != unitNetId)
+                    {
+                        GD.PrintErr("unit movement check failed");
                         return;
+                    }
 
 
                     var pos = _packet.ReadVector2();
@@ -270,16 +278,19 @@ namespace Casanova.core.net
                     // todo: more smooth client side prediction
                     var _plr = NetworkManager.PlayersGroup[_fromClient];
                     var unitBody = _plr.Unit.Body;
-                    if (!_plr.isLocal && unitBody != null)
+
+
+                    // do not update server-side if running a localserver (client = server shenanigans)
+                    if (!Client.isConnected || _plr.netId != Client.myId)
                     {
                         unitBody.Axis = axis;
                         unitBody.Vel = velocity;
-                        unitBody.Rotation = rotation;
+                        // unitBody.Rotation = rotation;
                         unitBody.Position = pos;
                     }
 
-                    if (unitBody != null)
-                        Send.UnitMovement(_plr.Unit, _plr);
+
+                    Send.UnitMovement(_plr.Unit, _plr);
                 }
 
                 public static void ChatMessage(short _fromClient, Packet _packet)
@@ -363,14 +374,17 @@ namespace Casanova.core.net
                     }
                 }
                 
-                public static void UnitOwnership(Unit unit, Player owner)
+                public static void UnitOwnership(Unit unit, Player owner, short to=0)
                 {
                     using (var _packet = new Packet((int) ServerPackets.UnitOwnership))
                     {
                         _packet.Write(unit);
                         _packet.Write(owner);
                         
-                        Server.SendTCPDataToAll(_packet);
+                        if(to == 0)
+                            Server.SendTCPDataToAll(_packet);
+                        else
+                            Server.SendTCPData(to, _packet);
                     }
                 }
                 
