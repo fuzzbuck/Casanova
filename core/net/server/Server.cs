@@ -194,7 +194,7 @@ namespace Casanova.core.net.server
                     }
                     catch (Exception e)
                     {
-                        Packets.ServerHandle.Send.ChatMessage(player.netId, 0, $"[color=#e64b40]Error parsing command arguments:[/color] {e.Message}");
+                        NetworkManager.SendMessage(NetworkManager.loc.SERVER, player, $"[color=#e64b40]Error parsing command arguments:[/color] {e.Message}");
                         return;
                     }
 
@@ -209,10 +209,10 @@ namespace Casanova.core.net.server
                         {
                             NetworkManager.CreateUnit(NetworkManager.loc.SERVER, 0, type, pos, 0);
                         }
-                        Packets.ServerHandle.Send.ChatMessage(player.netId, 0, $"Spawned {amt} {type.Name}s");
+                        NetworkManager.SendMessage(NetworkManager.loc.SERVER, player, $"Spawned {amt} {type.Name}s");
                         return;
                     }
-                    Packets.ServerHandle.Send.ChatMessage(player.netId, 0, $"You need to be alive to use this command.");
+                    NetworkManager.SendMessage(NetworkManager.loc.SERVER, player, $"You need to be alive to use this command.");
                 }));
             
             clientCommands.register(new Command("ownership", "[unitid]", "Take the ownership of the specified unit",
@@ -226,12 +226,23 @@ namespace Casanova.core.net.server
                     }
                     catch (Exception e)
                     {
-                        Packets.ServerHandle.Send.ChatMessage(player.netId, 0, $"[color=#e64b40]Error parsing command arguments:[/color] {e.Message}");
+                        NetworkManager.SendMessage(NetworkManager.loc.SERVER, player, $"[color=#e64b40]Error parsing command arguments:[/color] {e.Message}");
                         return;
                     }
                     
                     Packets.ServerHandle.Send.UnitOwnership(unit, player);
-                    Packets.ServerHandle.Send.ChatMessage(player.netId, 0, $"Taken ownership of unit id {unit.netId}");
+                    NetworkManager.SendMessage(NetworkManager.loc.SERVER, player, $"Taken ownership of unit id {unit.netId}");
+                }));
+            
+            clientCommands.register(new Command("sleep", "", "Sleep all units' collision systems (debug purpose)",
+                (player, args) =>
+                {
+                    foreach (Unit unit in NetworkManager.UnitsGroup.Values)
+                    {
+                        unit.Body.Sleeping = true;
+                    }
+                    
+                    NetworkManager.SendMessage(NetworkManager.loc.SERVER, player, $"Slept all units.");
                 }));
         }
     }

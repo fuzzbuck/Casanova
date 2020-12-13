@@ -102,8 +102,8 @@ namespace Casanova.core.content
 
                 SkidMarks = new System.Collections.Generic.Dictionary<Vector2, Skid>
                 {
-                    {new Vector2(4.5, 4.5f), crimsonSkid},
-                    {new Vector2(-4.5, 4.5f), crimsonSkid}
+                    {new Vector2(4.5f, 4.5f), crimsonSkid},
+                    {new Vector2(-4.5f, 4.5f), crimsonSkid}
                 }
             };
         }

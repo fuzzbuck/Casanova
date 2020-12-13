@@ -237,7 +237,7 @@ namespace Casanova.core.net
                     Send.PlayerConnect(player);
                     
                     // send chat message
-                    Send.ChatMessage(0, $"[color=#edc774]{_username} has connected.[/color]");
+                    NetworkManager.SendMessage(NetworkManager.loc.SERVER, player,$"[color=#edc774]{_username} has connected.[/color]");
                     
                     // create unit for this player with id of 0 (auto-assign new id)
                     var unit = NetworkManager.CreateUnit(NetworkManager.loc.SERVER, 0, UnitTypes.crimson);

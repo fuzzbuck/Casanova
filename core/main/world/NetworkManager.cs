@@ -140,5 +140,13 @@ namespace Casanova.core.main.world
 
             return player;
         }
+
+        public static void SendMessage(loc loc, Player player, String message)
+        {
+            if (loc == loc.SERVER)
+            {
+                Packets.ServerHandle.Send.ChatMessage(player.netId, 0, message);
+            }
+        }
     }
 }
