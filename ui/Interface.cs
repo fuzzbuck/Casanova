@@ -107,7 +107,17 @@ namespace Casanova.ui
                         0, () =>
                         {
                             Server.Start(8, Vars.Networking.defaultPort);
-                            Client.ConnectToServer("127.0.0.1", Vars.Networking.Port);
+                            Client.ConnectToServer("127.0.0.1", Vars.Networking.Port, success =>
+                            {
+                                if (success)
+                                {
+                                    GD.Print($"Connected to localserver.");
+                                }
+                                else
+                                {
+                                    GD.PrintErr("Can't connect to localserver!");
+                                }
+                            });
 
                             /*
                             ThreadManager.ExecuteOnMainThread(() =>

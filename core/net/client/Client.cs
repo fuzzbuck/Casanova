@@ -18,7 +18,9 @@ namespace Casanova.core.net.client
 
         public static bool isConnected;
 
-        public static void ConnectToServer(string _ip, int _port)
+        
+        // Connects to a server & runs the "post" Action with a bool representing whether the connection was successful
+        public static void ConnectToServer(string _ip, int _port, Action<bool> post)
         {
             GD.Print($"Attempting connection to {_ip}:{_port}");
             try
@@ -30,10 +32,12 @@ namespace Casanova.core.net.client
                 udp = new UDP();
                 
                 tcp.Connect();
+                post.Invoke(true);
             }
             catch (Exception e)
             {
                 Disconnect();
+                post.Invoke(false);
                 throw new Exception("An error occured while connecting to the server: " + e.Message);
             }
         }

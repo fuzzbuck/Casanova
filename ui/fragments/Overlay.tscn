@@ -167,7 +167,7 @@ margin_right = 1045.0
 margin_bottom = 795.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
-custom_constants/separation = 45
+custom_constants/separation = 65
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -252,13 +252,18 @@ __meta__ = {
 }
 
 [node name="Scroller" type="ScrollContainer" parent="MarginContainer/MarginContainer/VBox"]
-margin_top = 168.0
+margin_top = 188.0
 margin_right = 970.0
 margin_bottom = 730.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="Content" type="VBoxContainer" parent="MarginContainer/MarginContainer/VBox/Scroller"]
+margin_right = 970.0
+margin_bottom = 542.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_constants/separation = 15
 
 [node name="Animation" type="AnimationPlayer" parent="."]
 anims/Enter = SubResource( 12 )

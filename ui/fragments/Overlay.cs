@@ -5,12 +5,14 @@ namespace Casanova.ui.fragments
     public class Overlay : Control
     {
         private AnimationPlayer anim;
+        public VBoxContainer content;
 
         public override void _Ready()
         {
-            var content = GetNode("MarginContainer").GetNode("MarginContainer").GetNode("VBox");
+            var _content = (VBoxContainer) GetNode("MarginContainer").GetNode("MarginContainer").GetNode("VBox");
+            content = _content.GetNode("Scroller").GetNode<VBoxContainer>("Content");
 
-            var top = content.GetNode("Top");
+            var top = _content.GetNode("Top");
             var header = top.GetNode("Header");
             
             var bb = header.GetNode<Godot.Button>("Back");

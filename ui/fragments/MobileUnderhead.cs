@@ -1,5 +1,6 @@
 using Casanova.core;
 using Godot;
+using Button = Casanova.ui.elements.Button;
 
 namespace Casanova.ui.fragments
 {

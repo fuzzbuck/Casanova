@@ -4,6 +4,7 @@ using Casanova.core.net;
 using Casanova.core.net.types;
 using Godot;
 using Godot.Collections;
+using Button = Casanova.ui.elements.Button;
 using LineEdit = Casanova.ui.elements.LineEdit;
 
 namespace Casanova.ui.fragments

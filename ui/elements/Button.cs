@@ -1,6 +1,9 @@
-public class Button : Godot.Button
+namespace Casanova.ui.elements
 {
-    public override void _Ready()
+    public class Button : Godot.Button
     {
+        public override void _Ready()
+        {
+        }
     }
 }

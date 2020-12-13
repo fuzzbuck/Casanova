@@ -1,127 +1,67 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://ui/fragments/Overlay.tscn" type="PackedScene" id=1]
 [ext_resource path="res://ui/elements/Label.tscn" type="PackedScene" id=2]
 [ext_resource path="res://ui/elements/LineEdit.tscn" type="PackedScene" id=3]
-[ext_resource path="res://ui/elements/Button.tscn" type="PackedScene" id=4]
-[ext_resource path="res://ui/fragments/ServerJoin.cs" type="Script" id=5]
-[ext_resource path="res://ui/elements/OptionButton.tscn" type="PackedScene" id=6]
-
-[sub_resource type="StyleBoxFlat" id=1]
-bg_color = Color( 0.972549, 0.87451, 0.494118, 0 )
-border_width_left = 4
-border_width_top = 4
-border_width_right = 4
-border_width_bottom = 4
-border_color = Color( 1, 1, 1, 1 )
-border_blend = true
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
-expand_margin_left = 6.0
-expand_margin_right = 6.0
-expand_margin_top = 4.0
-expand_margin_bottom = 4.0
-shadow_color = Color( 0, 0, 0, 0.129412 )
-shadow_size = 4
-shadow_offset = Vector2( 0, 5 )
-
-[sub_resource type="StyleBoxFlat" id=2]
-bg_color = Color( 0, 0, 0, 0.231373 )
-border_width_left = 4
-border_width_top = 4
-border_width_right = 4
-border_width_bottom = 4
-border_color = Color( 1, 1, 1, 1 )
-border_blend = true
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
-expand_margin_left = 6.0
-expand_margin_right = 6.0
-expand_margin_top = 4.0
-expand_margin_bottom = 4.0
-shadow_color = Color( 0, 0, 0, 0.129412 )
-shadow_size = 4
-shadow_offset = Vector2( 0, 5 )
+[ext_resource path="res://ui/elements/BorderButton.tscn" type="PackedScene" id=4]
+[ext_resource path="res://ui/fragments/ServerJoin.cs" type="Script" id=6]
 
 [node name="ServerJoin" instance=ExtResource( 1 )]
+script = ExtResource( 6 )
 
-[node name="ServerJoin" type="VBoxContainer" parent="CenterContainer" index="0"]
-margin_left = 726.0
-margin_top = 423.0
-margin_right = 1194.0
-margin_bottom = 657.0
-custom_constants/separation = 32
-script = ExtResource( 5 )
+[node name="Label" parent="MarginContainer/MarginContainer/VBox/Top" index="0"]
+text = "server join"
 
-[node name="UnitSelector" type="HBoxContainer" parent="CenterContainer/ServerJoin" index="0"]
-margin_right = 468.0
-margin_bottom = 36.0
-custom_constants/separation = 32
+[node name="Desc" parent="MarginContainer/MarginContainer/VBox/Top/Header" index="0"]
+text = "join a custom server"
 
-[node name="Label" parent="CenterContainer/ServerJoin/UnitSelector" index="0" instance=ExtResource( 2 )]
-margin_top = 1.0
-margin_right = 147.0
-margin_bottom = 35.0
-text = "Unit:              "
+[node name="Content" parent="MarginContainer/MarginContainer/VBox/Scroller" index="0"]
+custom_constants/separation = 30
+alignment = 1
 
-[node name="OptionButton" parent="CenterContainer/ServerJoin/UnitSelector" index="1" instance=ExtResource( 6 )]
-margin_left = 179.0
-margin_right = 468.0
-margin_bottom = 36.0
-custom_styles/hover = SubResource( 1 )
-custom_styles/pressed = SubResource( 2 )
-text = ""
+[node name="UsernameBox" type="HBoxContainer" parent="MarginContainer/MarginContainer/VBox/Scroller/Content" index="0"]
+margin_top = 186.0
+margin_right = 970.0
+margin_bottom = 220.0
+size_flags_horizontal = 3
+custom_constants/separation = 71
 
-[node name="Username" type="HBoxContainer" parent="CenterContainer/ServerJoin" index="1"]
-margin_top = 68.0
-margin_right = 468.0
-margin_bottom = 102.0
-custom_constants/separation = 32
-
-[node name="Label" parent="CenterContainer/ServerJoin/Username" index="0" instance=ExtResource( 2 )]
-margin_right = 148.0
+[node name="Label" parent="MarginContainer/MarginContainer/VBox/Scroller/Content/UsernameBox" index="0" instance=ExtResource( 2 )]
+margin_right = 367.0
 margin_bottom = 34.0
-text = "Username:  "
+rect_scale = Vector2( 1, 1 )
+text = "enter your username"
 
-[node name="LineEdit" parent="CenterContainer/ServerJoin/Username" index="1" instance=ExtResource( 3 )]
-margin_left = 180.0
-margin_right = 468.0
+[node name="LineEdit" parent="MarginContainer/MarginContainer/VBox/Scroller/Content/UsernameBox" index="1" instance=ExtResource( 3 )]
+margin_left = 438.0
+margin_right = 970.0
 margin_bottom = 34.0
-rect_min_size = Vector2( 288, 24 )
-text = ""
-max_length = 64
-placeholder_alpha = 0.2
+size_flags_horizontal = 3
+text = "oh man"
 
-[node name="Ip" type="HBoxContainer" parent="CenterContainer/ServerJoin" index="2"]
-margin_top = 134.0
-margin_right = 468.0
-margin_bottom = 168.0
-custom_constants/separation = 32
+[node name="IpBox" type="HBoxContainer" parent="MarginContainer/MarginContainer/VBox/Scroller/Content" index="1"]
+margin_top = 250.0
+margin_right = 970.0
+margin_bottom = 284.0
+size_flags_horizontal = 3
+custom_constants/separation = 71
 
-[node name="Label" parent="CenterContainer/ServerJoin/Ip" index="0" instance=ExtResource( 2 )]
-margin_right = 148.0
+[node name="Label" parent="MarginContainer/MarginContainer/VBox/Scroller/Content/IpBox" index="0" instance=ExtResource( 2 )]
+margin_right = 369.0
 margin_bottom = 34.0
-text = "Ip:                    "
+rect_scale = Vector2( 1, 1 )
+text = "enter the ip & port  "
 
-[node name="LineEdit" parent="CenterContainer/ServerJoin/Ip" index="1" instance=ExtResource( 3 )]
-margin_left = 180.0
-margin_right = 468.0
+[node name="LineEdit" parent="MarginContainer/MarginContainer/VBox/Scroller/Content/IpBox" index="1" instance=ExtResource( 3 )]
+margin_left = 440.0
+margin_right = 970.0
 margin_bottom = 34.0
-rect_min_size = Vector2( 288, 24 )
-text = "fuzzbuck.dev:375"
-max_length = 64
-placeholder_text = "fuzzbuck.dev:375"
-placeholder_alpha = 0.2
+size_flags_horizontal = 3
+text = "localhost:375"
 
-[node name="Button" parent="CenterContainer/ServerJoin" index="3" instance=ExtResource( 4 )]
-margin_top = 200.0
-margin_right = 468.0
-margin_bottom = 234.0
-text = "Connect"
-
-[node name="Title" parent="." index="3"]
-text = "Join Server"
+[node name="ConnectButton" parent="MarginContainer/MarginContainer/VBox/Scroller/Content" index="2" instance=ExtResource( 4 )]
+margin_top = 314.0
+margin_right = 970.0
+margin_bottom = 356.0
+rect_scale = Vector2( 1, 1 )
+text = "begin data relay"

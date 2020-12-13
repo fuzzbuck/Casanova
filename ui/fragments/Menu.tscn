@@ -487,7 +487,6 @@ custom_constants/separation = 60
 alignment = 1
 
 [node name="Test" type="Panel" parent="Cards/Container"]
-modulate = Color( 1, 1, 1, 0 )
 margin_left = 210.0
 margin_right = 510.0
 margin_bottom = 415.0
@@ -574,7 +573,6 @@ __meta__ = {
 }
 
 [node name="ServerJoin" type="Panel" parent="Cards/Container"]
-modulate = Color( 1, 1, 1, 0 )
 margin_left = 570.0
 margin_right = 870.0
 margin_bottom = 415.0
