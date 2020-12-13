@@ -1,3 +1,4 @@
+using Casanova.core.utils;
 using Godot;
 
 namespace Casanova.core.types.bodies
@@ -6,7 +7,7 @@ namespace Casanova.core.types.bodies
     {
         protected override void ApplyRotation(float delta)
         {
-            Rotation = Mathf.LerpAngle(Rotation, Vel.Angle() + Mathf.Deg2Rad(90), RotationSpeed * delta);
+            AngularVelocity = MathU.DeltaAngle(RotationDegrees, Mathf.Rad2Deg(LinearVelocity.Angle()) + 270) * RotationSpeed * delta;
         }
     }
 }

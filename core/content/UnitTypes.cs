@@ -21,9 +21,9 @@ namespace Casanova.core.content
             #region effects
             
             var rocketEngineCurve = new Curve();
-            rocketEngineCurve.AddPoint(new Vector2(1, 1f));
-            rocketEngineCurve.AddPoint(new Vector2(0.5f, 1.5f));
-            rocketEngineCurve.AddPoint(new Vector2(0, 0.2f));
+            rocketEngineCurve.AddPoint(new Vector2(1, 0.5f));
+            rocketEngineCurve.AddPoint(new Vector2(0.5f, 0.75f));
+            rocketEngineCurve.AddPoint(new Vector2(0, 0.1f));
 
             var wheelSkidCurve = new Curve();
             var rng = new RandomNumberGenerator();
@@ -54,11 +54,11 @@ namespace Casanova.core.content
             {
                 Name = "Explorer",
                 Description = "Starting bot.",
-                MaxSpeed = 140f,
-                Acceleration = 600f,
-                Deceleration = 400f,
-                Mass = 100f,
-                RotationSpeed = 8f,
+                MaxSpeed = 60f,
+                Acceleration = 400f,
+                Deceleration = 200f,
+                Mass = 1500f,
+                RotationSpeed = 6f,
                 Health = 100f,
                 CollisionShape = new []
                 {
@@ -84,8 +84,8 @@ namespace Casanova.core.content
                 Description = "A big cruiser drone. Flies at high altitudes.",
                 MaxSpeed = 90f,
                 Acceleration = 170f,
-                RotationSpeed = 3.5f,
-                Mass = 1000f,
+                RotationSpeed = 5f,
+                Mass = 5000f,
                 Deceleration = 50f,
                 Health = 500f,
                 CollisionShape = new []
@@ -102,8 +102,8 @@ namespace Casanova.core.content
 
                 SkidMarks = new System.Collections.Generic.Dictionary<Vector2, Skid>
                 {
-                    {new Vector2(6, 7f), crimsonSkid},
-                    {new Vector2(-6, 7f), crimsonSkid}
+                    {new Vector2(4.5, 4.5f), crimsonSkid},
+                    {new Vector2(-4.5, 4.5f), crimsonSkid}
                 }
             };
         }

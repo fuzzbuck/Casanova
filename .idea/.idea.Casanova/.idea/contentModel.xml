@@ -62,6 +62,7 @@
         <e p="utils" t="Include">
           <e p="CommandHandler.cs" t="Include" />
           <e p="Funcs.cs" t="Include" />
+          <e p="MathU.cs" t="Include" />
         </e>
         <e p="Vars.cs" t="Include" />
       </e>

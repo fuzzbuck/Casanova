@@ -1,5 +1,7 @@
+using System;
 using System.Runtime.InteropServices;
 using Casanova.core.types.effects;
+using Casanova.core.utils;
 using Godot;
 using Godot.Collections;
 
@@ -66,8 +68,16 @@ namespace Casanova.core.types.bodies
 
         protected virtual void ApplyRotation(float delta)
         {
-            if(Axis != Vector2.Zero)
-                Rotation = Mathf.LerpAngle(Rotation, Axis.Angle() + Mathf.Deg2Rad(90), RotationSpeed * delta);
+            if (Axis.Length() > 0f)
+            {
+                float deltaAngle = MathU.DeltaAngle(RotationDegrees, Mathf.Rad2Deg(Axis.Angle()) + 270);
+                AngularVelocity = (deltaAngle > 0 ? Math.Max(deltaAngle, 10) : Math.Min(deltaAngle, -10)) * RotationSpeed * delta;
+            }
+        }
+
+        protected virtual void ApplyRotationFriction(float delta)
+        {
+            AngularVelocity = Mathf.Lerp(AngularVelocity, 0, (RotationSpeed) * delta);
         }
 
         protected virtual void ProcessMovement(float delta)
@@ -80,12 +90,7 @@ namespace Casanova.core.types.bodies
             {
                 ApplyMovement(Axis * delta * Acceleration);
             }
-            
-            /*
-            if(Vel.Length() > 0f)
-                ApplyRotation(delta);
-            */
-            
+
 
             Speed = Vel.Length();
             InWorldPosition = Position;
@@ -93,12 +98,13 @@ namespace Casanova.core.types.bodies
 
         public override void _IntegrateForces(Physics2DDirectBodyState state)
         {
-            // state.ApplyCentralImpulse(Vel);
             ProcessMovement(state.Step);
             state.LinearVelocity = Vel;
-            state.AngularVelocity = 5f;
             
-            base._IntegrateForces(state);
+            if(Vel.Length() > 0f)
+                ApplyRotation(state.Step);
+            else
+                ApplyRotationFriction(state.Step);
         }
     }
 }
