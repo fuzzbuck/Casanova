@@ -20,7 +20,7 @@ namespace Casanova.core.main.world
         public Unit AddUnit(Unit unit, float rotation)
         {
             GetNode<Node2D>("Units").AddChild(unit);
-            unit.Body.GlobalRotationDegrees = rotation;
+            unit.Body.GlobalRotation = rotation;
             
             return unit;
         }

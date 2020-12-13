@@ -24,7 +24,7 @@ namespace Casanova.core.net
         {
             Welcome = 1,
             PlayerDisconnect,
-            PlayerConnect,
+            PlayerCreate,
             UnitCreate,
             UnitMovement,
             UnitOwnership,
@@ -46,7 +46,7 @@ namespace Casanova.core.net
         {
             {(int) ServerPackets.Welcome, ClientHandle.Receive.Welcome},
             {(int) ServerPackets.PlayerDisconnect, ClientHandle.Receive.PlayerDisconnect},
-            {(int) ServerPackets.PlayerConnect, ClientHandle.Receive.PlayerConnect},
+            {(int) ServerPackets.PlayerCreate, ClientHandle.Receive.PlayerConnect},
             {(int) ServerPackets.UnitCreate, ClientHandle.Receive.UnitCreate},
             {(int) ServerPackets.UnitMovement, ClientHandle.Receive.UnitMovement},
             {(int) ServerPackets.UnitOwnership, ClientHandle.Receive.UnitOwnership},
@@ -225,9 +225,22 @@ namespace Casanova.core.net
                     
                     
                     
-                    // notify other clients that this player has connected
-                    Send.PlayerConnect(player);
+                    // notify other clients that this player has connected & about connections of other players
+                    foreach(Player p in NetworkManager.PlayersGroup.Values)
+                    {
+                        // notify other clients that this player joined
+                        Send.PlayerCreate(player, p.netId);
+                        
+                        // notify this client of other players that joined previously
+                        Send.PlayerCreate(p, player.netId);
+                    }
                     
+                    // notify this client of already existing units
+                    foreach (Unit u in NetworkManager.UnitsGroup.Values)
+                    {
+                        Send.UnitCreate(u.netId, u.Type, u.Body.GlobalPosition, u.Body.GlobalRotation);
+                    }
+
                     // send chat message
                     NetworkManager.SendMessage(NetworkManager.loc.SERVER, player,$"[color=#edc774]{_username} has connected.[/color]");
                     
@@ -295,14 +308,14 @@ namespace Casanova.core.net
                     }
                 }
                 
-                public static void PlayerConnect(Player player)
+                public static void PlayerCreate(Player player, short _toClient)
                 {
-                    using (var _packet = new Packet((int) ServerPackets.PlayerConnect))
+                    using (var _packet = new Packet((int) ServerPackets.PlayerCreate))
                     {
                         _packet.Write(player.netId);
                         _packet.Write(player.Username);
                         
-                        Server.SendTCPDataToAll(_packet);
+                        Server.SendTCPData(_toClient, _packet);
                     }
                 }
                 
