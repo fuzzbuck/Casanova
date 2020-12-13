@@ -1,8 +1,12 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://core/types/bodies/Body.cs" type="Script" id=1]
 [ext_resource path="res://assets/sprites/units/explorer.png" type="Texture" id=2]
 [ext_resource path="res://core/types/effects/Shadow.cs" type="Script" id=3]
+
+[sub_resource type="PhysicsMaterial" id=3]
+friction = 0.25
+bounce = 0.1
 
 [sub_resource type="Shader" id=1]
 code = "shader_type canvas_item;
@@ -22,6 +26,7 @@ shader_param/maxAlpha = 0.5
 
 [node name="Body" type="RigidBody2D"]
 mass = 587.93
+physics_material_override = SubResource( 3 )
 gravity_scale = 0.0
 custom_integrator = true
 linear_damp = 0.5

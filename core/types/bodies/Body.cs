@@ -77,7 +77,7 @@ namespace Casanova.core.types.bodies
 
         protected virtual void ApplyRotationFriction(float delta)
         {
-            AngularVelocity = Mathf.Lerp(AngularVelocity, 0, (RotationSpeed) * delta);
+            AngularVelocity = Mathf.Lerp(AngularVelocity, 0, RotationSpeed * delta);
         }
 
         protected virtual void ProcessMovement(float delta)
