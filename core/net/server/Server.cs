@@ -194,7 +194,7 @@ namespace Casanova.core.net.server
                     }
                     catch (Exception e)
                     {
-                        NetworkManager.SendMessage(NetworkManager.loc.SERVER, player, $"[color=#e64b40]Error parsing command arguments:[/color] {e.Message}");
+                        NetworkManager.SendMessage(NetworkManager.loc.SERVER, $"[color=#e64b40]Error parsing command arguments:[/color] {e.Message}", player);
                         return;
                     }
 
@@ -209,10 +209,10 @@ namespace Casanova.core.net.server
                         {
                             NetworkManager.CreateUnit(NetworkManager.loc.SERVER, 0, type, pos, 0);
                         }
-                        NetworkManager.SendMessage(NetworkManager.loc.SERVER, player, $"Spawned {amt} {type.Name}s");
+                        NetworkManager.SendMessage(NetworkManager.loc.SERVER, $"Spawned {amt} {type.Name}s", player);
                         return;
                     }
-                    NetworkManager.SendMessage(NetworkManager.loc.SERVER, player, $"You need to be alive to use this command.");
+                    NetworkManager.SendMessage(NetworkManager.loc.SERVER, $"You need to be alive to use this command.", player);
                 }));
             
             clientCommands.register(new Command("ownership", "[unitid]", "Take the ownership of the specified unit",
@@ -226,12 +226,12 @@ namespace Casanova.core.net.server
                     }
                     catch (Exception e)
                     {
-                        NetworkManager.SendMessage(NetworkManager.loc.SERVER, player, $"[color=#e64b40]Error parsing command arguments:[/color] {e.Message}");
+                        NetworkManager.SendMessage(NetworkManager.loc.SERVER, $"[color=#e64b40]Error parsing command arguments:[/color] {e.Message}", player);
                         return;
                     }
                     
                     Packets.ServerHandle.Send.UnitOwnership(unit, player);
-                    NetworkManager.SendMessage(NetworkManager.loc.SERVER, player, $"Taken ownership of unit id {unit.netId}");
+                    NetworkManager.SendMessage(NetworkManager.loc.SERVER, $"Taken ownership of unit id {unit.netId}", player);
                 }));
             
             clientCommands.register(new Command("sleep", "", "Sleep all units' collision systems (debug purpose)",
@@ -242,7 +242,7 @@ namespace Casanova.core.net.server
                         unit.Body.Sleeping = true;
                     }
                     
-                    NetworkManager.SendMessage(NetworkManager.loc.SERVER, player, $"Slept all units.");
+                    NetworkManager.SendMessage(NetworkManager.loc.SERVER, $"Slept all units.", player);
                 }));
         }
     }

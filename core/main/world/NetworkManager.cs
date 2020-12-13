@@ -141,7 +141,7 @@ namespace Casanova.core.main.world
             }
             else
             {
-                if (loc == loc.SERVER && !Server.IsDedicated && HostPlayer == null)
+                if (loc == loc.SERVER && !Server.IsDedicated && HostPlayer.netId == 0)
                 {
                     willBeLocal = true;
                 }
@@ -156,11 +156,14 @@ namespace Casanova.core.main.world
             return player;
         }
 
-        public static void SendMessage(loc loc, Player player, String message)
+        public static void SendMessage(loc loc, string message, Player player = null)
         {
             if (loc == loc.SERVER)
             {
-                Packets.ServerHandle.Send.ChatMessage(player.netId, 0, message);
+                if(player != null)
+                    Packets.ServerHandle.Send.ChatMessage(player.netId, 0, message);
+                else
+                    Packets.ServerHandle.Send.ChatMessage(0, message);
             }
         }
     }
