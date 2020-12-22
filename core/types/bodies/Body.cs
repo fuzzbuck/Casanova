@@ -68,11 +68,7 @@ namespace Casanova.core.types.bodies
 
         protected virtual void ApplyRotation(float delta)
         {
-            if (Axis.Length() > 0f)
-            {
-                float deltaAngle = MathU.DeltaAngle(RotationDegrees, Mathf.Rad2Deg(Axis.Angle()) + 270);
-                AngularVelocity = (deltaAngle > 0 ? Math.Max(deltaAngle, 10) : Math.Min(deltaAngle, -10)) * RotationSpeed * delta;
-            }
+            AngularVelocity = MathU.DeltaAngle(RotationDegrees, Mathf.Rad2Deg(LinearVelocity.Angle()) + 270) * RotationSpeed * delta;
         }
 
         protected virtual void ApplyRotationFriction(float delta)
