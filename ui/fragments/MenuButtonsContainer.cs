@@ -1,4 +1,5 @@
 using Casanova.core;
+using Casanova.core.utils;
 using Godot;
 using Godot.Collections;
 

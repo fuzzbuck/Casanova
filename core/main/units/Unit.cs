@@ -2,6 +2,7 @@ using Casanova.core.net.types;
 using Casanova.core.types;
 using Casanova.core.types.bodies;
 using Casanova.core.types.effects;
+using Casanova.core.utils;
 using Godot;
 using Godot.Collections;
 using static Casanova.core.Vars.Enums;
@@ -13,7 +14,7 @@ namespace Casanova.core.main.units
     {
         public static Body CreateBody(UnitType type)
         {
-            var body = (Body) ResourceLoader.Load<PackedScene>(Vars.path_types + $"/bodies/{type.Body}.tscn").Instance();
+            var body = (Body) References.bodies[type.Body].Instance();
             body.Init(type);
 
             return body;

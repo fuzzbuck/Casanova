@@ -7,6 +7,7 @@ using Casanova.core.main.world;
 using Casanova.core.net;
 using Casanova.core.net.server;
 using Casanova.core.types;
+using Casanova.core.utils;
 using Casanova.ui;
 using Godot;
 using Client = Casanova.core.net.client.Client;
@@ -30,6 +31,7 @@ namespace Casanova.core
         public static string path_world = path_main + "/world";
         public static string path_types = path_core + "/types";
         public static string path_type_effects = path_types + "/effects";
+        public static string path_type_bodies = path_types + "/bodies";
         public static string path_units = path_main + "/units";
 
         public static string path_ui = "res://ui";

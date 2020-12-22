@@ -7,6 +7,7 @@ using Casanova.core.net;
 using Casanova.core.net.server;
 using Casanova.core.net.types;
 using Casanova.core.types;
+using Casanova.core.utils;
 using Casanova.ui;
 using Godot;
 using Camera = Casanova.core.main.units.Camera;
@@ -32,8 +33,7 @@ namespace Casanova.core.main.world
 
         public static Unit CreateUnitInstance()
         {
-            var scene = (PackedScene) ResourceLoader.Load(Vars.path_main + $"/units/Unit.tscn");
-            var instance = (Unit) scene.Instance();
+            var instance = (Unit) References.base_unit.Instance();
             instance.ToSignal(instance, "ready").GetResult();
 
             return instance;
