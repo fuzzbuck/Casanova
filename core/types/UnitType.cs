@@ -37,6 +37,7 @@ namespace Casanova.core.types
 
         public UnitType(string spriteName)
         {
+            // this can stay here instead of References.cs since it is loaded on launch time
             SpriteTexture = ResourceLoader.Load<Texture>(Vars.path_sprites + $"/units/{spriteName}");
             Id = UnitTypes.Count;
 

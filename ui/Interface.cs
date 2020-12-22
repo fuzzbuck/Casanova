@@ -2,6 +2,7 @@ using System;
 using Casanova.core;
 using Casanova.core.net;
 using Casanova.core.net.server;
+using Casanova.core.utils;
 using Casanova.ui.elements;
 using Casanova.ui.fragments;
 using Godot;
@@ -34,7 +35,7 @@ namespace Casanova.ui
         {
             public static Node CreateFragment(string fragment)
             {
-                var frag = ResourceLoader.Load<PackedScene>(Vars.path_frags + $"/{fragment}.tscn").Instance();
+                var frag = References.fragments[fragment].Instance();
                 if (frag is LoadingOverlay lo)
                     CurrentLoading = lo;
 
@@ -43,7 +44,7 @@ namespace Casanova.ui
 
             public static Node CreateElement(string element)
             {
-                return ResourceLoader.Load<PackedScene>(Vars.path_elems + $"/{element}.tscn").Instance();
+                return References.elements[element].Instance();
             }
 
             public static MobileTextInput SpawnMte(string text)

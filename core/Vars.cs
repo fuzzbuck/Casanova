@@ -50,6 +50,7 @@ namespace Casanova.core
         public override void _Ready()
         {
             Load();
+            PlayerController.Init();
         }
 
         public override void _Process(float delta)
@@ -74,6 +75,7 @@ namespace Casanova.core
             
             // todo: display loading screen
             
+            References.Load();
             UnitTypes.Load();
 
             bundleHandler.updateBundle("en");

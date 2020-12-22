@@ -3,6 +3,7 @@ using Casanova.core.main.units;
 using Casanova.core.net;
 using Casanova.core.net.server;
 using Casanova.core.net.types;
+using Casanova.core.utils;
 using Casanova.ui;
 using Godot;
 using Camera = Casanova.core.main.units.Camera;
@@ -20,10 +21,9 @@ namespace Casanova.core.main
         public static Node Focus;
         public static Vector2 Axis;
         
-        public override void _Ready()
+        public static void Init()
         {
-            LocalCamera = (Camera) ResourceLoader.Load<PackedScene>(Vars.path_main + "/units/Camera.tscn")
-                .Instance();
+            LocalCamera = (Camera) References.main_camera.Instance();
         }
         
         public override void _Process(float delta)

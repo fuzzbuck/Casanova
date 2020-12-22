@@ -22,7 +22,7 @@ namespace Casanova.core.main.units
 
         public static Node CreateTypeEffect(string name)
         {
-            return ResourceLoader.Load<PackedScene>(Vars.path_types + $"/effects/{name}.tscn").Instance();
+            return References.effects[name].Instance();
         }
     }
 

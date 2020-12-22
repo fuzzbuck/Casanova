@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Management.Instrumentation;
 using Godot;
+using Path = System.IO.Path;
 
 namespace Casanova.core.utils
 {
@@ -10,33 +9,49 @@ namespace Casanova.core.utils
     public class References : Node
     {
         public static PackedScene base_unit;
-        public static Dictionary<string, PackedScene> bodies = new Dictionary<string, PackedScene>();
-        public static PackedScene air_body;
         public static PackedScene main_camera;
+        public static PackedScene main_world;
         
-        public override void _Ready()
-        {
-            base_unit = ResourceLoader.Load<PackedScene>(Vars.path_main + $"/units/Unit.tscn");
-            
-            var bodies_dir = new Directory();
-            
-            bodies_dir.Open(Vars.path_type_bodies);
-            
-            bodies_dir.ListDirBegin();
+        # region core
+        public static Dictionary<string, PackedScene> bodies = new Dictionary<string, PackedScene>();
+        public static Dictionary<string, PackedScene> effects = new Dictionary<string, PackedScene>();
+        # endregion
+        
+        # region ui
+        public static Dictionary<string, PackedScene> fragments = new Dictionary<string, PackedScene>();
+        public static Dictionary<string, PackedScene> elements = new Dictionary<string, PackedScene>();
+        # endregion
 
-            var file = bodies_dir.GetNext();
-            GD.Print("file: " + file);
+        public static void LoadDirectory(Dictionary<string, PackedScene> dict, string path)
+        {
+            var dir = new Directory();
+            dir.Open(path);
+            dir.ListDirBegin();
+            
+            var file = dir.GetNext();
             while (file != string.Empty)
             {
                 if (file.EndsWith(".tscn"))
                 {
-                    GD.Print(file.Substring(file.LastIndexOf("/", StringComparison.Ordinal)).Reverse().Skip(5).Reverse().ToString());
-                    bodies[
-                        file.Substring(file.LastIndexOf("/", StringComparison.Ordinal)).Reverse().Skip(5).Reverse()
-                            .ToString()] = ResourceLoader.Load<PackedScene>(file);
+                    dict[Path.GetFileNameWithoutExtension(file)] = ResourceLoader.Load<PackedScene>(path + "/" + file);
                 }
+
+                file = dir.GetNext();
             }
-            bodies_dir.ListDirEnd();
+            dir.ListDirEnd();
+        }
+        public static void Load()
+        {
+            base_unit = ResourceLoader.Load<PackedScene>(Vars.path_main + $"/units/Unit.tscn");
+            main_camera = ResourceLoader.Load<PackedScene>(Vars.path_main + "/units/Camera.tscn");
+            main_world = ResourceLoader.Load<PackedScene>(Vars.path_world + "/World.tscn");
+            
+            LoadDirectory(bodies, Vars.path_type_bodies);
+            LoadDirectory(effects, Vars.path_type_effects);
+            
+            LoadDirectory(fragments, Vars.path_frags);
+            LoadDirectory(elements, Vars.path_elems);
+
         }
     }
 }
