@@ -9,36 +9,24 @@ namespace Casanova.core.types.bodies
 {
     public abstract class Body : RigidBody2D
     {
-        public float Acceleration;
         public Vector2 Axis;
-
-        // Declared as a fraction of 1.0f
-        protected float Bounciness = 0.98f;
 
         public CollisionPolygon2D CollisionHitbox;
         public Vector2[] CollisionHull;
         
-        public float Decelleration;
         public Vector2 InWorldPosition;
-        public float MaxSpeed;
-        public float RotationSpeed;
         public Shadow Shadow;
-
-        public float Speed;
 
         public UnitType Type;
         public Sprite Sprite;
 
+        public float Speed;
         public Vector2 Vel;
 
         public void Init(UnitType type)
         {
-            MaxSpeed = type.MaxSpeed;
-            RotationSpeed = type.RotationSpeed;
-            Acceleration = type.Acceleration;
-            Decelleration = type.Deceleration;
-            Mass = type.Mass;
-
+            Type = type;
+            
             Sprite = GetNode<Sprite>("Sprite");
             Shadow = GetNode<Shadow>("Shadow");
             CollisionHitbox = GetNode<CollisionPolygon2D>("CollisionPolygon2D");
@@ -50,6 +38,9 @@ namespace Casanova.core.types.bodies
             
             Shadow.Texture = type.ShadowTexture;
             Shadow.ShadowOffset = type.ShadowOffset;
+            
+            /* Copy Type variables to RigidBody2D */
+            Mass = Type.Mass;
         }
 
         private void ApplyFriction(float amt)
@@ -63,28 +54,29 @@ namespace Casanova.core.types.bodies
         private void ApplyMovement(Vector2 amt)
         {
             Vel += amt;
-            Vel = Vel.Clamped(MaxSpeed);
+            Vel = Vel.Clamped(Type.MaxSpeed);
         }
 
-        protected virtual void ApplyRotation(float delta)
+        protected virtual void ApplyRotation(float delta, Physics2DDirectBodyState state)
         {
-            AngularVelocity = MathU.DeltaAngle(RotationDegrees, Mathf.Rad2Deg(LinearVelocity.Angle()) + 270) * RotationSpeed * delta;
-        }
+            if (Axis == Vector2.Zero)
+                return;
 
-        protected virtual void ApplyRotationFriction(float delta)
-        {
-            AngularVelocity = Mathf.Lerp(AngularVelocity, 0, RotationSpeed * delta);
+            Transform2D xform = state.Transform.Rotated(Mathf.LerpAngle(state.Transform.Rotation, Axis.Angle() + Mathf.Deg2Rad(90), 
+                Type.RotationSpeed * delta) - state.Transform.Rotation);
+
+            state.Transform = xform;
         }
 
         protected virtual void ProcessMovement(float delta)
         {
             if (Axis == Vector2.Zero)
             {
-                ApplyFriction(Decelleration * delta);
+                ApplyFriction(Type.Deceleration * delta);
             }
             else
             {
-                ApplyMovement(Axis * delta * Acceleration);
+                ApplyMovement(Axis * delta * Type.Acceleration);
             }
 
 
@@ -96,11 +88,10 @@ namespace Casanova.core.types.bodies
         {
             ProcessMovement(state.Step);
             state.LinearVelocity = Vel;
+            state.AngularVelocity = Mathf.Lerp(state.AngularVelocity, 0f, Type.AngularDeceleration);
             
             if(Vel.Length() > 0f)
-                ApplyRotation(state.Step);
-            else
-                ApplyRotationFriction(state.Step);
+                ApplyRotation(state.Step, state);
         }
     }
 }

@@ -20,5 +20,15 @@ namespace Casanova.core.utils
 
             return delta;
         }
+        
+        public static float LerpAngle(float from, float to, float weight)
+        {
+            float num1 = (float) ((to - (double) from) % 6.28318548202515); // diff
+            float num2 = (float) (2.0 * num1 % 6.28318548202515) - num1; // circle wrap
+            
+            return from + num2 * weight;
+        }
+        
+        // weight - from / to - from
     }
 }

@@ -8,6 +8,7 @@
 collision_layer = 8
 collision_mask = 8
 mass = 82.65
+angular_damp = 80.391
 applied_torque = 50.0
 script = ExtResource( 1 )
 

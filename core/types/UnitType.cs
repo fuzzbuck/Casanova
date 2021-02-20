@@ -15,6 +15,9 @@ namespace Casanova.core.types
 
         public float Acceleration;
         public float Deceleration;
+        public float AngularDeceleration = 0.025f;
+        
+        /* Theoretical limit `1000f` */
         public float Mass;
         public string Description = "Attacks.";
         public string Body = "Body";
@@ -27,6 +30,7 @@ namespace Casanova.core.types
         public string Name = "Attacker";
         public System.Collections.Generic.Dictionary<Vector2, ParticleInfo> ParticleEffects;
         public float RotationSpeed;
+        public float MaxRotationStep;
         
         public int ShadowBlur;
         public Vector2 ShadowOffset = Vector2.Zero;

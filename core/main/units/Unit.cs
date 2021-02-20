@@ -42,6 +42,7 @@ namespace Casanova.core.main.units
             Content = GetNode<Node2D>("Content");
             Body = Utils.CreateBody(Type);
 
+            // create particle effects, skid marks, etc.
             if (Type.ParticleEffects != null)
                 foreach (var kvp in Type.ParticleEffects)
                 {
@@ -88,7 +89,9 @@ namespace Casanova.core.main.units
                     SkidMarks.Add(skidMark);
                     Content.AddChild(skidMark);
                 }
-
+            
+            
+            // instantiate
             AddChild(Body);
         }
 
