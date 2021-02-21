@@ -1,5 +1,6 @@
 ﻿using System.Security.Cryptography;
 using Casanova.core.main.units;
+using Casanova.core.main.world;
 using Casanova.core.net;
 using Casanova.core.net.server;
 using Casanova.core.net.types;
@@ -30,8 +31,7 @@ namespace Casanova.core.main
         {
             if (LocalUnit?.Body != null)
             {
-                LocalUnit.Body.Sleeping = false;
-                
+
                 if (!Vars.PersistentData.isMobile)
                     ProcessMovement();
                 else
@@ -41,7 +41,7 @@ namespace Casanova.core.main
 
         public override void _PhysicsProcess(float delta)
         {
-            if (LocalUnit != null && Client.isConnected)
+            if (LocalUnit != null && Client.IsConnected)
                 Packets.ClientHandle.Send.UnitMovement(LocalUnit.netId, LocalUnit.Body.InWorldPosition,
                     LocalUnit.Body.Axis, LocalUnit.Body.Vel, LocalUnit.Rotation);
         }
@@ -108,6 +108,17 @@ namespace Casanova.core.main
                     LocalCamera.Position = Vector2.Zero;
                 });
             });
+        }
+        
+        public static void VoidOwnership()
+        {
+            if (LocalUnit != null)
+            {
+                if(LocalCamera.GetParent() != null)
+                    LocalCamera.GetParent().RemoveChild(LocalCamera);
+
+                LocalUnit = null;
+            }
         }
     }
 }
