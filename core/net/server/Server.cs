@@ -1,5 +1,7 @@
 using System;
+using System.CodeDom;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Net;
 using System.Net.Sockets;
 using Casanova.core.content;
@@ -8,6 +10,7 @@ using Casanova.core.main.world;
 using Casanova.core.types;
 using Casanova.core.utils;
 using Godot;
+using static Casanova.core.Vars;
 
 namespace Casanova.core.net.server
 {
@@ -25,7 +28,6 @@ namespace Casanova.core.net.server
 
 
         public static bool IsHosting;
-        public static bool IsDedicated = false;
         public static int MaxClients { get; private set; }
         public static int Port { get; private set; }
 
@@ -180,8 +182,19 @@ namespace Casanova.core.net.server
                 {(int) Packets.ClientPackets.UnitMovement, Packets.ServerHandle.Receive.UnitMovement},
                 {(int) Packets.ClientPackets.ChatMessage, Packets.ServerHandle.Receive.ChatMessage}
             };
+
+            clientCommands.register(new Command("help", "", "Display all available commands", (player, args) =>
+            {
+                string final = String.Empty;
+                foreach (var cmd in clientCommands.commands)
+                {
+                    final = final + $"[color={Funcs.ColorToHex(Pals.command)}]{cmd.Value.name}[/color] [color={Funcs.ColorToHex(Pals.unimportant)}]{cmd.Value.textparam}[/color] - {cmd.Value.desc}\n";
+                }
+                GD.Print(final);
+                NetworkManager.SendMessage(NetworkManager.loc.SERVER, final.Substring(0, final.Length-1), player); // remove trailing \n
+            }));
             
-            clientCommands.register(new Command("spawn", "[amount] [typeid]", "Spawns a specified amount of specified units at the origin player units position",
+            clientCommands.register(new Command("spawn", "[amount] [typeid]", "Spawns an amount of units at the player's position",
                 (player, args) =>
                 {
                     int amt;
@@ -190,7 +203,7 @@ namespace Casanova.core.net.server
                     try
                     {
                         amt = int.Parse((string) args[0]);
-                        type = Vars.Enums.UnitTypes[int.Parse((string) args[1])];
+                        type = Enums.UnitTypes[int.Parse((string) args[1])];
                     }
                     catch (Exception e)
                     {
@@ -198,8 +211,10 @@ namespace Casanova.core.net.server
                         return;
                     }
 
-                    if (player.Unit != null && player.Unit.Body != null)
+                    if (player.Unit?.Body != null)
                     {
+                        GD.Print(player.Unit);
+                        GD.Print(player.Unit.Body);
                         var pos = player.Unit.Body.GlobalPosition;
                         var rnd = new Random();
                         pos.x += rnd.Next(-20000, 20000) / 300f;
@@ -244,6 +259,23 @@ namespace Casanova.core.net.server
                     
                     NetworkManager.SendMessage(NetworkManager.loc.SERVER, $"Slept all units.", player);
                 }));
+            clientCommands.register(new Command("destroy", "[unitid]", "Destroy the specified unit", (player, args) =>
+            {
+                Unit unit;
+
+                try
+                {
+                    unit = NetworkManager.UnitsGroup[int.Parse((string) args[0])];
+                }
+                catch (Exception e)
+                {
+                    NetworkManager.SendMessage(NetworkManager.loc.SERVER, $"[color=#e64b40]Error parsing command arguments:[/color] {e.Message}", player);
+                    return;
+                }
+                
+                NetworkManager.DestroyUnit(NetworkManager.loc.SERVER, unit);
+                NetworkManager.SendMessage(NetworkManager.loc.SERVER, $"Removed unit id {unit.netId}", player);
+            }));
         }
     }
 }
