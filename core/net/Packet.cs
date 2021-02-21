@@ -388,7 +388,7 @@ namespace Casanova.core.net
         public Player ReadPlayer()
         {
             var id = ReadShort();
-            return NetworkManager.PlayersGroup[id];
+            return NetworkManager.PlayersGroup.ContainsKey(id) ? NetworkManager.PlayersGroup[id] : null;
         }
 
         #endregion

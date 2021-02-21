@@ -10,6 +10,12 @@ namespace Casanova.core.types.bodies
     public abstract class Body : RigidBody2D
     {
         public Vector2 Axis;
+        
+        # region Networking
+        // todo: integrate this into client side prediction
+        public float DesiredRotation;
+        public Vector2 DesiredPosition;
+        # endregion
 
         public CollisionPolygon2D CollisionHitbox;
         public Vector2[] CollisionHull;
@@ -41,6 +47,8 @@ namespace Casanova.core.types.bodies
             
             /* Copy Type variables to RigidBody2D */
             Mass = Type.Mass;
+            Weight = Mass * Vars.WeightMassMultiplier;
+            Inertia = Type.Inertia;
         }
 
         private void ApplyFriction(float amt)
@@ -88,7 +96,6 @@ namespace Casanova.core.types.bodies
         {
             ProcessMovement(state.Step);
             state.LinearVelocity = Vel;
-            
             state.AngularVelocity = Mathf.Lerp(state.AngularVelocity, 0f, Type.AngularDeceleration);
             
             if(Vel.Length() > 0f)

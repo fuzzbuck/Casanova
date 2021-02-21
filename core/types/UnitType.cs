@@ -19,6 +19,9 @@ namespace Casanova.core.types
         
         /* Theoretical limit `1000f` */
         public float Mass;
+        
+        /* Angular Inertia */
+        public float Inertia;
         public string Description = "Attacks.";
         public string Body = "Body";
 

@@ -1,6 +1,7 @@
 using System;
 using System.Net;
 using System.Net.Sockets;
+using Casanova.core.main.world;
 using Godot;
 
 namespace Casanova.core.net.server
@@ -26,7 +27,7 @@ namespace Casanova.core.net.server
 
             if (Server.IsHosting)
             {
-                Packets.ServerHandle.Send.PlayerDisconnect(id);
+                Packets.ServerHandle.Send.PlayerDisconnect(NetworkManager.PlayersGroup[id]);
             }
 
             tcp.Disconnect();

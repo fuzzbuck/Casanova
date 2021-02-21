@@ -47,6 +47,8 @@ namespace Casanova.core
         public static string path_assets = "res://assets";
         public static string path_sprites = path_assets + "/sprites";
 
+        public static short WeightMassMultiplier = 150;
+
         public static State CurrentState = State.Menu;
 
         public override void _Ready()

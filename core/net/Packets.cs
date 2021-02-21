@@ -110,8 +110,7 @@ namespace Casanova.core.net
                         if (unitBody.Position.DistanceTo(pos) > Vars.Networking.unit_desync_treshold)
                         {
                             unitBody.CollisionHitbox.Disabled = true;
-                            unitBody.Position =
-                                unitBody.Position.LinearInterpolate(pos, Vars.Networking.unit_desync_interpolation);
+                            unitBody.Position = pos;
                         }
                         else
                         {
@@ -138,9 +137,9 @@ namespace Casanova.core.net
 
                 public static void PlayerDisconnect(Packet _packet)
                 {
-                    var _id = _packet.ReadShort();
+                    var _plr = _packet.ReadPlayer();
                     
-                    NetworkManager.RemovePlayer(_id);
+                    NetworkManager.DestroyPlayer(NetworkManager.loc.CLIENT, _plr);
                 }
                 
                 public static void PlayerConnect(Packet _packet)
@@ -277,7 +276,6 @@ namespace Casanova.core.net
                     var velocity = _packet.ReadVector2();
                     var rotation = _packet.ReadFloat();
                     
-                    // todo: more smooth client side prediction
                     var _plr = NetworkManager.PlayersGroup[_fromClient];
                     var unitBody = _plr.Unit.Body;
 
@@ -287,8 +285,9 @@ namespace Casanova.core.net
                     {
                         unitBody.Axis = axis;
                         unitBody.Vel = velocity;
-                        // unitBody.Rotation = rotation;
                         unitBody.Position = pos;
+                        unitBody.DesiredPosition = pos;
+                        unitBody.DesiredRotation = rotation;
                     }
 
 
@@ -332,11 +331,11 @@ namespace Casanova.core.net
                     }
                 }
                 
-                public static void PlayerDisconnect(int _id)
+                public static void PlayerDisconnect(Player _plr)
                 {
                     using (var _packet = new Packet((int) ServerPackets.PlayerDisconnect))
                     {
-                        _packet.Write(_id);
+                        _packet.Write(_plr);
                         
                         Server.SendTCPDataToAll(_packet);
                     }

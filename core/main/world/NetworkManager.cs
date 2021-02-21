@@ -152,6 +152,17 @@ namespace Casanova.core.main.world
                 PlayersGroup.Remove(_id);
             }
         }
+
+        public static void DestroyPlayer(loc loc, Player player)
+        {
+            if(player.Unit != null)
+                DestroyUnit(loc, player.Unit);
+            
+            if(loc == loc.SERVER)
+                SendMessage(loc.SERVER,$"[color=#edc774]{player.Username} has disconnected.[/color]");
+            
+            RemovePlayer(player.netId);
+        }
         
         public static Player CreatePlayer(loc loc, short _id, string _username)
         {
