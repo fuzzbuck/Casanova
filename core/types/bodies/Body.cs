@@ -88,6 +88,7 @@ namespace Casanova.core.types.bodies
         {
             ProcessMovement(state.Step);
             state.LinearVelocity = Vel;
+            
             state.AngularVelocity = Mathf.Lerp(state.AngularVelocity, 0f, Type.AngularDeceleration);
             
             if(Vel.Length() > 0f)

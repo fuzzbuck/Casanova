@@ -1,16 +1,23 @@
 ﻿using System;
+using System.Drawing;
 using System.IO;
 using System.Net;
 using Godot;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
+using Color = Godot.Color;
 using Image = Godot.Image;
+using Size = SixLabors.ImageSharp.Size;
 
 namespace Casanova.core.utils
 {
     public static class Funcs
     {
+        public static string ColorToHex(System.Drawing.Color c)
+        {
+            return ColorTranslator.ToHtml(c);
+        }
         public static string[] ParseIpString(string ip)
         {
             try

@@ -10,11 +10,10 @@ namespace Casanova.core.net.headless_server
     {
         public override void _Ready()
         {
-            isHeadless = OS.HasFeature("Server") || new Array(OS.GetCmdlineArgs()).Contains("server");
-            Server.IsDedicated = true;
+            IsHeadless = OS.HasFeature("Server") || new Array(OS.GetCmdlineArgs()).Contains("server");
 
-            GD.Print($"isHeadless: {isHeadless}");
-            if (!isHeadless)
+            GD.Print($"isHeadless: {IsHeadless}");
+            if (!IsHeadless)
                 return;
 
             Server.Start(128, defaultPort);

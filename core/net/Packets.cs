@@ -130,8 +130,10 @@ namespace Casanova.core.net
                 
                 public static void UnitRemove(Packet _packet)
                 {
-                    var _id = _packet.ReadInt();
-                    NetworkManager.RemoveUnit(_id);
+                    var _unit = _packet.ReadUnit();
+                    
+                    if(_unit != null)
+                        NetworkManager.DestroyUnit(NetworkManager.loc.CLIENT, _unit);
                 } 
 
                 public static void PlayerDisconnect(Packet _packet)
@@ -265,7 +267,7 @@ namespace Casanova.core.net
                         NetworkManager.PlayersGroup[_fromClient].Unit == null ||
                         NetworkManager.PlayersGroup[_fromClient].Unit.netId != unitNetId)
                     {
-                        GD.PrintErr("unit movement check failed");
+                        GD.PrintErr($"[player {_fromClient}] unit check failed for [unit {unitNetId}]");
                         return;
                     }
 
@@ -281,7 +283,7 @@ namespace Casanova.core.net
 
 
                     // do not update server-side if running a localserver (client = server shenanigans)
-                    if (!Client.isConnected || _plr.netId != Client.myId)
+                    if (_plr.netId != Client.myId)
                     {
                         unitBody.Axis = axis;
                         unitBody.Vel = velocity;
@@ -388,11 +390,11 @@ namespace Casanova.core.net
                     }
                 }
                 
-                public static void UnitRemove(int id)
+                public static void UnitRemove(Unit unit)
                 {
                     using (var _packet = new Packet((int) ServerPackets.UnitRemove))
                     {
-                        _packet.Write(id);
+                        _packet.Write(unit);
 
                         Server.SendTCPDataToAll(_packet);
                     }

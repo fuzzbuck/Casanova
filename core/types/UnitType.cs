@@ -30,8 +30,7 @@ namespace Casanova.core.types
         public string Name = "Attacker";
         public System.Collections.Generic.Dictionary<Vector2, ParticleInfo> ParticleEffects;
         public float RotationSpeed;
-        public float MaxRotationStep;
-        
+
         public int ShadowBlur;
         public Vector2 ShadowOffset = Vector2.Zero;
         

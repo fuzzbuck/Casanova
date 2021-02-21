@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Net;
+using System.Runtime.Remoting.Channels;
 using Casanova.core.content;
 using Casanova.core.main;
 using Casanova.core.main.world;
@@ -94,7 +96,7 @@ namespace Casanova.core
             PlayerController.LocalPlayer = null;
             PlayerController.LocalUnit = null;
 
-            Client.isConnected = false;
+            Client.IsConnected = false;
             NetworkManager.HostPlayer = null;
             NetworkManager.PlayersGroup.Clear();
             NetworkManager.UnitsGroup.Clear();
@@ -105,7 +107,7 @@ namespace Casanova.core
 
         public static void Unload()
         {
-            if (Server.IsHosting || Client.isConnected)
+            if (Server.IsHosting || Client.IsConnected)
                 Reload();
 
             // todo: save important data, do pre-exit things
@@ -139,15 +141,15 @@ namespace Casanova.core
             public static float unit_desync_treshold = 4f;
             public static float unit_desync_interpolation = 0.1f;
 
-            public static bool isHeadless = false;
+            public static bool IsHeadless = false;
             public static int defaultPort = 375;
             public static int Port = defaultPort;
         }
 
         public class Pals
         {
-            public static Color accent = new Color(255, 223, 131);
-            public static Color highlight = new Color(255, 255, 255);
+            public static System.Drawing.Color command = ColorTranslator.FromHtml("#ffbe76");
+            public static System.Drawing.Color unimportant = ColorTranslator.FromHtml("#6b6b6b");
         }
     }
 }

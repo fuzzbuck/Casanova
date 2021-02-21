@@ -119,13 +119,6 @@ namespace Casanova.ui
                                     GD.PrintErr("Can't connect to localserver!");
                                 }
                             });
-
-                            /*
-                            ThreadManager.ExecuteOnMainThread(() =>
-                            {
-                                World world = (World) tree.CurrentScene;
-                            });
-                            */
                         }
                     },
                     {

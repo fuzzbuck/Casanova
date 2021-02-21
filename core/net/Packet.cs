@@ -381,7 +381,7 @@ namespace Casanova.core.net
         public Unit ReadUnit()
         {
             var id = ReadInt();
-            return NetworkManager.UnitsGroup[id];
+            return NetworkManager.UnitsGroup.ContainsKey(id) ? NetworkManager.UnitsGroup[id] : null;
         }
         
         /// <summary>Reads a Player from the packet.</summary>

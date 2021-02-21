@@ -16,7 +16,7 @@ namespace Casanova.core.net.client
         public static TCP tcp;
         public static UDP udp;
 
-        public static bool isConnected;
+        public static bool IsConnected;
 
         
         // Connects to a server & runs the "post" Action with a bool representing whether the connection was successful
@@ -44,7 +44,7 @@ namespace Casanova.core.net.client
 
         public static void SendTCPData(Packet _packet)
         {
-            if (!isConnected)
+            if (!IsConnected)
                 return;
 
             _packet.WriteLength();
@@ -53,7 +53,7 @@ namespace Casanova.core.net.client
 
         public static void SendUDPData(Packet _packet)
         {
-            if (!isConnected)
+            if (!IsConnected)
                 return;
 
             _packet.WriteLength();
@@ -62,9 +62,9 @@ namespace Casanova.core.net.client
 
         public static void Disconnect()
         {
-            if (isConnected)
+            if (IsConnected)
             {
-                isConnected = false;
+                IsConnected = false;
                 tcp.socket.Close();
                 udp.socket.Close();
             }
@@ -96,7 +96,7 @@ namespace Casanova.core.net.client
                 {
                     socket.EndConnect(_result);
                     if (!socket.Connected) return;
-                    isConnected = true;
+                    IsConnected = true;
 
                     receivedData = new Packet();
 
@@ -161,7 +161,7 @@ namespace Casanova.core.net.client
                 while (_packetLength > 0 && _packetLength <= receivedData.UnreadLength())
                 {
                     var _packetBytes = receivedData.ReadBytes(_packetLength);
-                    if (!isConnected)
+                    if (!IsConnected)
                         continue;
 
                     ThreadManager.ExecuteOnMainThread(() =>
@@ -266,7 +266,7 @@ namespace Casanova.core.net.client
 
                 ThreadManager.ExecuteOnMainThread(() =>
                 {
-                    if (!isConnected)
+                    if (!IsConnected)
                         return;
 
                     using (var _packet = new Packet(_data))
