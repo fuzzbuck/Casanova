@@ -10,6 +10,7 @@ using Casanova.core.types;
 using Casanova.core.utils;
 using Casanova.ui;
 using Godot;
+using static Casanova.core.Vars;
 using Camera = Casanova.core.main.units.Camera;
 using Client = Casanova.core.net.client.Client;
 using Thread = System.Threading.Thread;
@@ -27,10 +28,15 @@ namespace Casanova.core.main.world
         public static Dictionary<short, Player> PlayersGroup = new Dictionary<short, Player>();
         public static Dictionary<int, Unit> UnitsGroup = new Dictionary<int, Unit>();
         
-        public static List<int> availUnitIds = Enumerable.Range(1, 50000).ToList();
+        public static List<int> availUnitIds = Enumerable.Range(1, 1000).ToList();
 
         public static Player HostPlayer = new Player(0, "server", true);
 
+
+        public static bool IsLocal()
+        {
+            return Client.IsConnected && Server.IsHosting && !Networking.IsHeadless;
+        }
         public static Unit CreateUnitInstance()
         {
             var instance = (Unit) References.base_unit.Instance();
@@ -41,8 +47,8 @@ namespace Casanova.core.main.world
 
         public static void ConfirmConnect()
         {
-            Vars.CurrentState = Vars.State.World;
-            Interface.tree.ChangeScene(Vars.path_world + "/World.tscn");
+            CurrentState = State.World;
+            Interface.tree.ChangeScene(path_world + "/World.tscn");
         }
 
         public static void DisconnectToMenu()
@@ -56,7 +62,7 @@ namespace Casanova.core.main.world
                 }
             });
 
-            Vars.Reload();
+            Reload();
         }
 
         public static void RemoveUnit(int _id)
@@ -96,6 +102,23 @@ namespace Casanova.core.main.world
                 Packets.ServerHandle.Send.UnitCreate(id, type, position, rotation);
 
             return instance;
+        }
+        
+        // called from server only
+        public static void DestroyUnit(loc loc, Unit unit) // destroys & removes the unit
+        {
+            if(loc == loc.SERVER)
+                Packets.ServerHandle.Send.UnitRemove(unit);
+            
+            /* Nullify controller player's reference for this unit */
+            if (unit.Controller != null)
+                unit.Controller.Unit = null;
+            
+            /* Server host shenanigans */
+            if(IsLocal() && unit.netId == Client.myId)
+                PlayerController.VoidOwnership();
+            
+            ThreadManager.ExecuteOnMainThread(() => { RemoveUnit(unit.netId); });
         }
 
         public static void DiminishUnitOwnership(Unit unit, Player owner)
@@ -141,7 +164,7 @@ namespace Casanova.core.main.world
             }
             else
             {
-                if (loc == loc.SERVER && !Server.IsDedicated && HostPlayer.netId == 0)
+                if (loc == loc.SERVER && !Networking.IsHeadless && HostPlayer.netId == 0)
                 {
                     willBeLocal = true;
                 }
@@ -152,7 +175,7 @@ namespace Casanova.core.main.world
 
             if (HostPlayer.netId == 0 && loc == loc.SERVER)
                 HostPlayer = player;
-
+            
             return player;
         }
 
