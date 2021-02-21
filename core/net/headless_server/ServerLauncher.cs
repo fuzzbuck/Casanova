@@ -12,7 +12,7 @@ namespace Casanova.core.net.headless_server
         {
             IsHeadless = OS.HasFeature("Server") || new Array(OS.GetCmdlineArgs()).Contains("server");
 
-            GD.Print($"isHeadless: {IsHeadless}");
+            GD.Print($"IsHeadless: {IsHeadless}");
             if (!IsHeadless)
                 return;
 
