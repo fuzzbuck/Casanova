@@ -12,3 +12,6 @@ data_*/
 
 # Temporary builds
 build/*
+
+# InteliJ Idea
+.idea/
