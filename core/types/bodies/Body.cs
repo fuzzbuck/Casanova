@@ -1,4 +1,5 @@
 using System;
+using System.Data.SqlClient;
 using System.Runtime.InteropServices;
 using Casanova.core.types.effects;
 using Casanova.core.utils;
@@ -12,8 +13,7 @@ namespace Casanova.core.types.bodies
         public Vector2 Axis;
         
         # region Networking
-        // todo: integrate this into client side prediction
-        public float DesiredRotation;
+        public float RotateBy;
         public Vector2 DesiredPosition;
         # endregion
 
@@ -70,11 +70,34 @@ namespace Casanova.core.types.bodies
             if (Axis == Vector2.Zero)
                 return;
 
-            Transform2D xform = state.Transform.Rotated(Mathf.LerpAngle(state.Transform.Rotation, Axis.Angle() + Mathf.Deg2Rad(90), 
+            Transform2D xform = state.Transform.Rotated(Mathf.LerpAngle(state.Transform.Rotation, RotateBy == 0 ? Axis.Angle() + Mathf.Deg2Rad(90) : RotateBy, 
                 Type.RotationSpeed * delta) - state.Transform.Rotation);
 
             state.Transform = xform;
         }
+
+        # region Networking
+        public virtual void ApplyNetworkPosition()
+        {
+            if (Position.DistanceTo(DesiredPosition) > Vars.Networking.unit_desync_treshold)
+            {
+                Position = DesiredPosition;
+            }
+        }
+        
+        /*
+        protected virtual void ApplyNetworkRotation(Physics2DDirectBodyState state)
+        {
+            if (RotateBy != 0 && MathU.DeltaAngle(Mathf.Rad2Deg(Transform.Rotation), Mathf.Rad2Deg(RotateBy)) >
+                Vars.Networking.unit_desync_rotation_treshold)
+            {
+                state.Transform = state.Transform.Rotated(Mathf.Tau - Transform.Rotation + RotateBy);
+                GD.Print($"[body {this}] needs to be rotated by [degrees {Mathf.Rad2Deg(RotateBy)}] -> [{Mathf.Rad2Deg(state.Transform.Rotation)}]");
+            }
+        }
+        */
+        
+        # endregion
 
         protected virtual void ProcessMovement(float delta)
         {
@@ -97,9 +120,8 @@ namespace Casanova.core.types.bodies
             ProcessMovement(state.Step);
             state.LinearVelocity = Vel;
             state.AngularVelocity = Mathf.Lerp(state.AngularVelocity, 0f, Type.AngularDeceleration);
-            
-            if(Vel.Length() > 0f)
-                ApplyRotation(state.Step, state);
+
+            ApplyRotation(state.Step, state);
         }
     }
 }

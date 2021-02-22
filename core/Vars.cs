@@ -121,7 +121,7 @@ namespace Casanova.core
             public static bool isMobile;
 
             public static string username = "unnamed";
-            public static string ip = "fuzzbuck.dev:375";
+            public static string ip = "127.0.0.1:375";
         }
 
         public class PlayerCamera
@@ -140,8 +140,11 @@ namespace Casanova.core
 
         public class Networking
         {
-            public static float unit_desync_treshold = 4f;
-            public static float unit_desync_interpolation = 0.1f;
+            /* In In-World-Units */
+            public static float unit_desync_treshold = 8f;
+
+            /* In degrees */
+            public static short unit_desync_rotation_treshold = 20;
 
             public static bool IsHeadless = false;
             public static int defaultPort = 375;

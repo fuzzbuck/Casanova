@@ -107,15 +107,11 @@ namespace Casanova.core.net
                     if (unitBody != null)
                     {
                         unitBody.Axis = axis;
-                        if (unitBody.Position.DistanceTo(pos) > Vars.Networking.unit_desync_treshold)
-                        {
-                            unitBody.CollisionHitbox.Disabled = true;
-                            unitBody.Position = pos;
-                        }
-                        else
-                        {
-                            unitBody.CollisionHitbox.Disabled = false;
-                        }
+                        unitBody.DesiredPosition = pos;
+                        unitBody.RotateBy = rotation;
+
+                        /* Rotation Interpolation is done automatically */
+                        unitBody.ApplyNetworkPosition();
                     }
                 }
                 
@@ -218,8 +214,8 @@ namespace Casanova.core.net
                     GD.Print(
                         $"{Server.Clients[_fromClient].tcp.socket.Client.RemoteEndPoint} connected successfully and is now player {_fromClient}.");
                     if (_fromClient != _clientIdCheck)
-                        GD.Print(
-                            $"Player \"{_username}\" (ID: {_fromClient}) has assumed the wrong client ID ({_clientIdCheck})!");
+                        GD.PrintErr(
+                            $"[player \"{_username}\"] (ID: {_fromClient}) has assumed the wrong [client ID ({_clientIdCheck})]!");
                     
                     
                     var player = NetworkManager.CreatePlayer(NetworkManager.loc.SERVER, _clientIdCheck, _username);
@@ -261,7 +257,7 @@ namespace Casanova.core.net
                 {
                     var unitNetId = _packet.ReadInt();
                     
-                    // check if player can control this unit
+                    /* Check if player can control this unit */
                     if (!NetworkManager.UnitsGroup.ContainsKey(unitNetId) ||
                         NetworkManager.PlayersGroup[_fromClient].Unit == null ||
                         NetworkManager.PlayersGroup[_fromClient].Unit.netId != unitNetId)
@@ -280,14 +276,14 @@ namespace Casanova.core.net
                     var unitBody = _plr.Unit.Body;
 
 
-                    // do not update server-side if running a localserver (client = server shenanigans)
+                    /* Do not update server-side if running a localserver (client = server shenanigans) */
                     if (_plr.netId != Client.myId)
                     {
                         unitBody.Axis = axis;
                         unitBody.Vel = velocity;
                         unitBody.Position = pos;
                         unitBody.DesiredPosition = pos;
-                        unitBody.DesiredRotation = rotation;
+                        unitBody.RotateBy = rotation;
                     }
 
 
@@ -364,7 +360,7 @@ namespace Casanova.core.net
                         _packet.Write(unitBody.Position);
                         _packet.Write(unitBody.Axis);
                         _packet.Write(unitBody.Vel);
-                        _packet.Write(unitBody.Rotation);
+                        _packet.Write(unitBody.Transform.Rotation);
 
                         if (controller != null)
                             Server.SendUDPDataToAll(controller.netId, _packet);
