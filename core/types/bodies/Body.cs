@@ -10,11 +10,12 @@ namespace Casanova.core.types.bodies
 {
     public abstract class Body : RigidBody2D
     {
+        private Node2D Parent;
         public Vector2 Axis;
         
         # region Networking
         public float RotateBy;
-        public Vector2 DesiredPosition;
+        public Vector2 MoveBy;
         # endregion
 
         public CollisionPolygon2D CollisionHitbox;
@@ -31,6 +32,7 @@ namespace Casanova.core.types.bodies
 
         public void Init(UnitType type)
         {
+            Parent = GetParent<Node2D>();
             Type = type;
             
             Sprite = GetNode<Sprite>("Sprite");
@@ -81,18 +83,6 @@ namespace Casanova.core.types.bodies
                 state.Transform = xform;
             }
         }
-
-        # region Networking
-        public virtual void ApplyNetworkPosition()
-        {
-            if (Position.DistanceTo(DesiredPosition) > Vars.Networking.unit_desync_treshold)
-            {
-                Position = DesiredPosition;
-            }
-        }
-
-        # endregion
-
         protected virtual void ProcessMovement(float delta)
         {
             if (Axis == Vector2.Zero)
@@ -109,9 +99,26 @@ namespace Casanova.core.types.bodies
             InWorldPosition = Position;
         }
 
+        protected virtual void ProcessNetworkMovementDesync()
+        {
+            if (MoveBy == Vector2.Zero)
+                return;
+
+            var dist = Position.DistanceTo(MoveBy);
+            
+            // GD.Print($"unclamped: {dist / Vars.Networking.unit_desync_max_dist}, dist -> {dist}, MoveBy -> {MoveBy}, Pos -> {Position}");
+            if (dist > Vars.Networking.unit_desync_treshold)
+            {
+                var weight = Math.Min(0.2f, dist / Vars.Networking.unit_desync_max_dist / Vars.Networking.unit_desync_smoothing);
+                Parent.Position = new Vector2(Mathf.Lerp(Position.x, MoveBy.x, weight), Mathf.Lerp(Position.y, MoveBy.y, weight));
+            }
+        }
+
         public override void _IntegrateForces(Physics2DDirectBodyState state)
         {
             ProcessMovement(state.Step);
+            ProcessNetworkMovementDesync();
+            
             state.LinearVelocity = Vel;
             state.AngularVelocity = Mathf.Lerp(state.AngularVelocity, 0f, Type.AngularDeceleration);
 

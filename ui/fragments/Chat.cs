@@ -74,9 +74,6 @@ namespace Casanova.ui.fragments
         {
             var message = sender != null ? $"[color=#fa9e48]<[/color]{sender.Username}[color=#fa9e48]>[/color]: {text}" : text;
             AddMessage(message);
-            
-            if(sender != null)
-                lastMessage = text;
 
             ThreadManager.ExecuteOnMainThread(() =>
             {
@@ -147,8 +144,9 @@ namespace Casanova.ui.fragments
                         }
                         else
                         {
+                            lastMessage = _lineEdit.Text;
                             Packets.ClientHandle.Send.ChatMessage(_lineEdit.Text);
-
+                            
                             _lineEdit.Text = string.Empty;
                             CancelSend();
 

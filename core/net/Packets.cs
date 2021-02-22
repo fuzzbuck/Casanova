@@ -57,7 +57,7 @@ namespace Casanova.core.net
         
         public class ClientHandle
         {
-            // handles packets sent from the server to the client
+            /* Handles packets sent from the server to the client */
             public class Receive
             {
                 public static void Welcome(Packet _packet)
@@ -107,11 +107,12 @@ namespace Casanova.core.net
                     if (unitBody != null)
                     {
                         unitBody.Axis = axis;
-                        unitBody.DesiredPosition = pos;
+                        
+                        /* Update Networking interpolation params,
+                         * Interpolation (prediction) is done automatically
+                         */
+                        unitBody.MoveBy = pos;
                         unitBody.RotateBy = rotation;
-
-                        /* Rotation Interpolation is done automatically */
-                        unitBody.ApplyNetworkPosition();
                     }
                 }
                 
@@ -193,7 +194,7 @@ namespace Casanova.core.net
                     using (var _packet = new Packet((int) ClientPackets.ChatMessage))
                     {
                         _packet.Write(_message);
-
+                        
                         Client.SendUDPData(_packet);
                     }
                 }
@@ -204,8 +205,7 @@ namespace Casanova.core.net
         {
             public class Receive
             {
-                
-                // handles packets sent to the server from the client/s
+                /* Handles packets sent to the server from the client/s */
                 public static void WelcomeConfirmation(short _fromClient, Packet _packet)
                 {
                     var _clientIdCheck = _packet.ReadShort();
@@ -282,7 +282,7 @@ namespace Casanova.core.net
                         unitBody.Axis = axis;
                         unitBody.Vel = velocity;
                         unitBody.Position = pos;
-                        unitBody.DesiredPosition = pos;
+                        unitBody.MoveBy = pos;
                         unitBody.RotateBy = rotation;
                     }
 
@@ -292,6 +292,7 @@ namespace Casanova.core.net
 
                 public static void ChatMessage(short _fromClient, Packet _packet)
                 {
+                    var plr = NetworkManager.PlayersGroup[_fromClient];
                     var message = _packet.ReadString();
 
                     var (cmdResp, cmd) = Server.clientCommands.handle(NetworkManager.PlayersGroup[_fromClient], message);
@@ -299,6 +300,7 @@ namespace Casanova.core.net
                         Send.ChatMessage(_fromClient, message);
                     else if(cmdResp == HandleResponse.BadArguments)
                         Send.ChatMessage(_fromClient, 0, $"[color=#e64b40]Invalid arguments supplied. Required arguments:[/color] {cmd.textparam}");
+                    GD.Print($"<{plr.netId}:{plr.Username}>: {message}");
                 }
             }
 

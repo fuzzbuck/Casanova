@@ -140,8 +140,14 @@ namespace Casanova.core
 
         public class Networking
         {
-            /* In In-World-Units */
-            public static float unit_desync_treshold = 8f;
+            /* Maximum distance for smoothing unit's position */
+            public static float unit_desync_treshold = 6f;
+
+            /* How smooth unit desync interpolation should be */
+            public static float unit_desync_smoothing = 5f;
+            
+            /* Maximum distance for unit desync treshold, if this is exceeded interpolation won't be smooth anymore */
+            public static float unit_desync_max_dist = 46f;
 
             /* In degrees */
             public static short unit_desync_rotation_treshold = 20;
@@ -154,7 +160,7 @@ namespace Casanova.core
         public class Pals
         {
             public static System.Drawing.Color command = ColorTranslator.FromHtml("#ffbe76");
-            public static System.Drawing.Color unimportant = ColorTranslator.FromHtml("#6b6b6b");
+            public static System.Drawing.Color unimportant = ColorTranslator.FromHtml("#bdbdbd");
         }
     }
 }

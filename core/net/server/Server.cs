@@ -8,6 +8,7 @@ using System.Net.Sockets;
 using Casanova.core.content;
 using Casanova.core.main.units;
 using Casanova.core.main.world;
+using Casanova.core.net.types;
 using Casanova.core.types;
 using Casanova.core.utils;
 using Godot;
@@ -68,13 +69,12 @@ namespace Casanova.core.net.server
                 var _client = tcpListener.EndAcceptTcpClient(_result);
                 tcpListener.BeginAcceptTcpClient(TcpConnectCallback, null);
 
-                GD.Print($"{_client.Client.RemoteEndPoint} is attempting to connect.");
+                GD.Print($"{_client.Client.RemoteEndPoint} is connecting.");
 
                 for (short i = 1; i < MaxClients; i++)
                     if (Clients[i].tcp.socket == null) // no client is assigned to this id
                     {
                         Clients[i].tcp.Connect(_client);
-                        GD.Print($"{_client.Client.RemoteEndPoint} connected as id {i}.");
                         return;
                     }
 
@@ -83,7 +83,7 @@ namespace Casanova.core.net.server
             }
             catch (Exception e)
             {
-                GD.Print($"Failed to accept connection: {e}");
+                GD.PrintErr($"Failed to accept connection from: {e}");
             }
         }
 
@@ -115,7 +115,7 @@ namespace Casanova.core.net.server
             }
             catch (Exception _ex)
             {
-                Console.WriteLine($"Error receiving UDP data: {_ex}");
+                GD.PrintErr($"Error receiving UDP data: {_ex}");
             }
         }
 
@@ -128,7 +128,7 @@ namespace Casanova.core.net.server
             }
             catch (Exception _ex)
             {
-                Console.WriteLine($"Error sending data to {_clientEndPoint} via UDP: {_ex}");
+                GD.PrintErr($"Error sending data to {_clientEndPoint} via UDP: {_ex}");
             }
         }
         
@@ -191,7 +191,6 @@ namespace Casanova.core.net.server
                 {
                     final = final + $"[color={Funcs.ColorToHex(Pals.command)}]{cmd.Value.name}[/color] [color={Funcs.ColorToHex(Pals.unimportant)}]{cmd.Value.textparam}[/color] - {cmd.Value.desc}\n";
                 }
-                GD.Print(final);
                 NetworkManager.SendMessage(NetworkManager.loc.SERVER, final.Substring(0, final.Length-1), player); // remove trailing \n
             }));
             
@@ -214,8 +213,6 @@ namespace Casanova.core.net.server
 
                     if (player.Unit?.Body != null)
                     {
-                        GD.Print(player.Unit);
-                        GD.Print(player.Unit.Body);
                         var pos = player.Unit.Body.GlobalPosition;
                         var rnd = new Random();
                         pos.x += rnd.Next(-20000, 20000) / 300f;
@@ -277,6 +274,19 @@ namespace Casanova.core.net.server
                 NetworkManager.DestroyUnit(NetworkManager.loc.SERVER, unit);
                 NetworkManager.SendMessage(NetworkManager.loc.SERVER, $"Removed unit id {unit.netId}", player);
             }));
+            clientCommands.register(new Command("players", "", "List all players",
+                (player, args) =>
+                {
+                    var msg = String.Empty;
+                    foreach (Player plr in NetworkManager.PlayersGroup.Values)
+                    {
+                        msg = msg + "id:" + plr.netId + " -> " + plr.Username + (plr.isLocal ? $" [color={Funcs.ColorToHex(Pals.unimportant)}](local)[/color] " : " ") + "\n";
+                    }
+
+                    msg = msg.Substring(0, msg.Length - 1);
+                    
+                    NetworkManager.SendMessage(NetworkManager.loc.SERVER, msg, player);
+                }));
         }
     }
 }

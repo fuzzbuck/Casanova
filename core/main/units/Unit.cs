@@ -15,7 +15,6 @@ namespace Casanova.core.main.units
         public static Body CreateBody(UnitType type)
         {
             var body = (Body) References.bodies[type.Body].Instance();
-            body.Init(type);
 
             return body;
         }
@@ -93,6 +92,7 @@ namespace Casanova.core.main.units
             
             // instantiate
             AddChild(Body);
+            Body.Init(Type);
         }
 
         public override void _PhysicsProcess(float delta)
