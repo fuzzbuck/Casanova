@@ -2,6 +2,7 @@ using System;
 using System.CodeDom;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using Casanova.core.content;
@@ -143,11 +144,11 @@ namespace Casanova.core.net.server
             for (short i = 1; i <= MaxClients; i++) Clients[i].tcp.SendData(_packet);
         }
 
-        public static void SendTCPDataToAll(short _exceptClient, Packet _packet)
+        public static void SendTCPDataToAll(short[] _exceptClients, Packet _packet)
         {
             _packet.WriteLength();
             for (short i = 1; i <= MaxClients; i++)
-                if (i != _exceptClient)
+                if (!_exceptClients.Contains(i))
                     Clients[i].tcp.SendData(_packet);
         }
 
@@ -164,11 +165,11 @@ namespace Casanova.core.net.server
             for (short i = 1; i <= MaxClients; i++) Clients[i].udp.SendData(_packet);
         }
 
-        public static void SendUDPDataToAll(short _exceptClient, Packet _packet)
+        public static void SendUDPDataToAll(short[] _exceptClients, Packet _packet)
         {
             _packet.WriteLength();
             for (short i = 1; i <= MaxClients; i++)
-                if (i != _exceptClient)
+                if (!_exceptClients.Contains(i))
                     Clients[i].udp.SendData(_packet);
         }
 
@@ -179,7 +180,7 @@ namespace Casanova.core.net.server
             handlers = new Dictionary<int, PacketHandler>
             {
                 {(int) Packets.ClientPackets.WelcomeReceived, Packets.ServerHandle.Receive.WelcomeConfirmation},
-                {(int) Packets.ClientPackets.UnitMovement, Packets.ServerHandle.Receive.UnitMovement},
+                {(int) Packets.ClientPackets.UnitMovement, Packets.ServerHandle.Receive.PlayerUnitMovement},
                 {(int) Packets.ClientPackets.ChatMessage, Packets.ServerHandle.Receive.ChatMessage}
             };
 

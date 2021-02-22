@@ -253,7 +253,7 @@ namespace Casanova.core.net
                     NetworkManager.UnitOwnership(NetworkManager.loc.SERVER, unit, player);
                 }
 
-                public static void UnitMovement(short _fromClient, Packet _packet)
+                public static void PlayerUnitMovement(short _fromClient, Packet _packet)
                 {
                     var unitNetId = _packet.ReadInt();
                     
@@ -286,7 +286,7 @@ namespace Casanova.core.net
                         unitBody.RotateBy = rotation;
                     }
 
-
+                    /* Propagate movement to all clients except the sender */
                     Send.UnitMovement(_plr.Unit, _plr);
                 }
 
@@ -346,7 +346,7 @@ namespace Casanova.core.net
                         _packet.Write(position);
                         _packet.Write(rotation);
                         
-                        Server.SendTCPDataToAll(NetworkManager.HostPlayer.netId, _packet);
+                        Server.SendTCPDataToAll(new [] {NetworkManager.HostPlayer.netId}, _packet);
                     }
                 }
 
@@ -363,10 +363,12 @@ namespace Casanova.core.net
                         _packet.Write(unitBody.Transform.Rotation);
 
                         if (controller != null)
-                            Server.SendUDPDataToAll(controller.netId, _packet);
+                            /* Propogate to all clients except the one that is controlling this unit & server */
+                            Server.SendUDPDataToAll(new [] {controller.netId, NetworkManager.HostPlayer.netId}, _packet);
                         else
                         {
-                            Server.SendUDPDataToAll(_packet);
+                            /* Propogate to all clients except server */
+                            Server.SendUDPDataToAll(new [] {NetworkManager.HostPlayer.netId}, _packet);
                         }
                     }
                 }

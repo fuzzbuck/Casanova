@@ -31,7 +31,6 @@ namespace Casanova.core.main
         {
             if (LocalUnit?.Body != null)
             {
-
                 if (!Vars.PersistentData.isMobile)
                     ProcessMovement();
                 else
@@ -41,9 +40,9 @@ namespace Casanova.core.main
 
         public override void _PhysicsProcess(float delta)
         {
-            if (LocalUnit != null && Client.IsConnected)
+            if (LocalUnit?.Body != null && Client.IsConnected)
                 Packets.ClientHandle.Send.UnitMovement(LocalUnit.netId, LocalUnit.Body.InWorldPosition,
-                    LocalUnit.Body.Axis, LocalUnit.Body.Vel, LocalUnit.Rotation);
+                    LocalUnit.Body.Axis, LocalUnit.Body.Vel, LocalUnit.Body.Transform.Rotation);
         }
 
         public void ProcessMovement()
