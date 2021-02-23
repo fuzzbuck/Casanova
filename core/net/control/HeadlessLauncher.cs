@@ -4,9 +4,9 @@ using Godot;
 using Godot.Collections;
 using static Casanova.core.Vars.Networking;
 
-namespace Casanova.core.net.headless_server
+namespace Casanova.core.net.control
 {
-    public class ServerLauncher : Node
+    public class HeadlessLauncher : Node
     {
         public override void _Ready()
         {

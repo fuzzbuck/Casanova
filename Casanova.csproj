@@ -22,6 +22,7 @@
   <ItemGroup>
     <Compile Include="core\BundleHandler.cs" />
     <Compile Include="core\content\UnitTypes.cs" />
+    <Compile Include="core\main\Events.cs" />
     <Compile Include="core\main\PlayerController.cs" />
     <Compile Include="core\main\units\Camera.cs" />
     <Compile Include="core\main\units\Tag.cs" />
@@ -31,11 +32,13 @@
     <Compile Include="core\main\world\NetworkManager.cs" />
     <Compile Include="core\main\world\World.cs" />
     <Compile Include="core\net\client\Client.cs" />
-    <Compile Include="core\net\headless_server\ServerLauncher.cs" />
+    <Compile Include="core\net\control\ClientControl.cs" />
+    <Compile Include="core\net\control\HeadlessLauncher.cs" />
     <Compile Include="core\net\Packet.cs" />
     <Compile Include="core\net\Packets.cs" />
     <Compile Include="core\net\server\Client.cs" />
     <Compile Include="core\net\server\Server.cs" />
+    <Compile Include="core\net\control\ServerControl.cs" />
     <Compile Include="core\net\ThreadManager.cs" />
     <Compile Include="core\net\types\Player.cs" />
     <Compile Include="core\types\bodies\Body.cs" />
@@ -71,7 +74,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="core\main\world\blocks" />
-    <Folder Include="core\net\headless_server" />
     <Folder Include="ui" />
     <Folder Include="ui\elements" />
     <Folder Include="ui\fragments" />

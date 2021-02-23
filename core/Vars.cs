@@ -18,6 +18,7 @@ namespace Casanova.core
 {
     public class Vars : Node
     {
+        /* All possible states for the client to be in */
         public enum State
         {
             Menu,
@@ -28,6 +29,23 @@ namespace Casanova.core
         public static BundleHandler bundleHandler = new BundleHandler("en");
         public static string ver = "build 3 ver. indev";
 
+        /* Used for logging stuff in console */
+        public static string serv_string = "<server>:";
+        public static string client_string = "<client>:";
+        public static string log_string = "<log>:";
+        
+        /* Logging options */
+        public static bool log_client = true;
+        public static bool log_server = true;
+        public static bool log_log = true; // ah yes
+
+        
+        /*
+         * Paths to important resources
+         * I didn't put them in a seperate class to save on
+         * typing too much class acccessors
+        */
+        
         public static string path_core = "res://core";
         public static string path_main = path_core + "/main";
         public static string path_world = path_main + "/world";
@@ -47,8 +65,10 @@ namespace Casanova.core
         public static string path_assets = "res://assets";
         public static string path_sprites = path_assets + "/sprites";
 
+        /* The multiplier units use when calculating their weight for collision physics (mass*WeightMassMultiplier) */
         public static short WeightMassMultiplier = 150;
 
+        /* The current client state */
         public static State CurrentState = State.Menu;
 
         public override void _Ready()
@@ -141,10 +161,10 @@ namespace Casanova.core
         public class Networking
         {
             /* Maximum distance for smoothing unit's position */
-            public static float unit_desync_treshold = 6f;
+            public static float unit_desync_treshold = 2f;
 
-            /* How smooth unit desync interpolation should be */
-            public static float unit_desync_smoothing = 5f;
+            /* How smooth unit desync interpolation should be, the higher the "smoother" but also slower */
+            public static float unit_desync_smoothing = 0.5f;
             
             /* Maximum distance for unit desync treshold, if this is exceeded interpolation won't be smooth anymore */
             public static float unit_desync_max_dist = 46f;

@@ -99,7 +99,7 @@ namespace Casanova.core.types.bodies
             InWorldPosition = Position;
         }
 
-        protected virtual void ProcessNetworkMovementDesync()
+        protected virtual void ProcessNetworkMovementDesync(Physics2DDirectBodyState state)
         {
             if (MoveBy == Vector2.Zero)
                 return;
@@ -110,14 +110,14 @@ namespace Casanova.core.types.bodies
             if (dist > Vars.Networking.unit_desync_treshold)
             {
                 var weight = Math.Min(0.2f, dist / Vars.Networking.unit_desync_max_dist / Vars.Networking.unit_desync_smoothing);
-                Parent.Position = new Vector2(Mathf.Lerp(Position.x, MoveBy.x, weight), Mathf.Lerp(Position.y, MoveBy.y, weight));
+                state.Transform = state.Transform.InterpolateWith(new Transform2D(state.Transform.Rotation, MoveBy), weight);
             }
         }
 
         public override void _IntegrateForces(Physics2DDirectBodyState state)
         {
             ProcessMovement(state.Step);
-            ProcessNetworkMovementDesync();
+            ProcessNetworkMovementDesync(state);
             
             state.LinearVelocity = Vel;
             state.AngularVelocity = Mathf.Lerp(state.AngularVelocity, 0f, Type.AngularDeceleration);

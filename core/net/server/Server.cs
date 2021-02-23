@@ -280,7 +280,7 @@ namespace Casanova.core.net.server
                     var msg = String.Empty;
                     foreach (Player plr in NetworkManager.PlayersGroup.Values)
                     {
-                        msg = msg + "id:" + plr.netId + " -> " + plr.Username + (plr.isLocal ? $" [color={Funcs.ColorToHex(Pals.unimportant)}](local)[/color] " : " ") + "\n";
+                        msg = msg + "id:" + plr.netId + " -> " + plr.Username + (plr.IsHost ? $" [color={Funcs.ColorToHex(Pals.unimportant)}](local)[/color] " : " ") + "\n";
                     }
 
                     msg = msg.Substring(0, msg.Length - 1);

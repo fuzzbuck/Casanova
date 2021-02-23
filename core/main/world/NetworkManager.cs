@@ -166,26 +166,26 @@ namespace Casanova.core.main.world
         
         public static Player CreatePlayer(loc loc, short _id, string _username)
         {
-            GD.Print($"{loc.ToString()}: Creating player with username: {_username}");
-
-            var willBeLocal = false;
+            var isHost = false;
             if (loc == loc.CLIENT && Server.IsHosting)
             {
-                willBeLocal = true;
+                isHost = true;
             }
             else
             {
                 if (loc == loc.SERVER && !Networking.IsHeadless && HostPlayer.netId == 0)
                 {
-                    willBeLocal = true;
+                    isHost = true;
                 }
             }
 
-            var player = new Player(_id, _username, willBeLocal);
+            var player = new Player(_id, _username, isHost);
             PlayersGroup[_id] = player;
 
             if (HostPlayer.netId == 0 && loc == loc.SERVER)
                 HostPlayer = player;
+            
+            GD.Print($"HostPlayer: {HostPlayer.Username}:{HostPlayer.IsHost} -> willBeLocal -> {isHost} -> loc -> {loc.ToString()}");
             
             return player;
         }

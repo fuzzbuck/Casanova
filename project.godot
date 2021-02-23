@@ -22,8 +22,11 @@ config/quit_on_go_back=false
 Vars="*res://core/Vars.cs"
 Interface="*res://ui/Interface.cs"
 PlayerController="*res://core/main/PlayerController.cs"
-ServerLauncher="*res://core/net/headless_server/ServerLauncher.cs"
 References="*res://core/utils/References.cs"
+Events="*res://core/main/Events.cs"
+HeadlessLauncher="*res://core/net/control/HeadlessLauncher.cs"
+ServerControl="*res://core/net/control/ServerControl.cs"
+ClientControl="*res://core/net/control/ClientControl.cs"
 
 [display]
 
