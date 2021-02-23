@@ -141,7 +141,7 @@ namespace Casanova.core.net
                 {
                     var _plr = _packet.ReadPlayer();
                     
-                    NetworkManager.DestroyPlayer(NetworkManager.loc.CLIENT, _plr);
+                    Events.RaisePlayerDisconnect(NetworkManager.loc.SERVER, _plr);
                 }
                 
                 public static void PlayerCreate(Packet _packet)

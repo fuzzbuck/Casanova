@@ -184,9 +184,7 @@ namespace Casanova.core.main.world
 
             if (HostPlayer.netId == 0 && loc == loc.SERVER)
                 HostPlayer = player;
-            
-            GD.Print($"HostPlayer: {HostPlayer.Username}:{HostPlayer.IsHost} -> willBeLocal -> {isHost} -> loc -> {loc.ToString()}");
-            
+
             return player;
         }
 

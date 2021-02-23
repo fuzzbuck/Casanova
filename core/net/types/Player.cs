@@ -15,5 +15,10 @@ namespace Casanova.core.net.types
             Username = _username;
             IsHost = _IsHost;
         }
+
+        public override string ToString()
+        {
+            return $"[player {netId}:{Username}]";
+        }
     }
 }

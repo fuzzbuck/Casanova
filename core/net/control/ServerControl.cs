@@ -64,7 +64,7 @@ namespace Casanova.core.net.control
                     return;
                 
                 if(log_server)
-                    GD.Print($"{serv_string} [player {player.netId}:{player.Username}] joined the server.");
+                    GD.Print($"{serv_string} {player} joined the server.");
                 NetworkManager.SendMessage(NetworkManager.loc.SERVER,$"[color=#edc774]{player.Username} has connected.[/color]");
             };
             Events.PlayerConnect += (loc, id, username, ip) =>
@@ -77,6 +77,16 @@ namespace Casanova.core.net.control
                 
                 var player = NetworkManager.CreatePlayer(NetworkManager.loc.SERVER, id, username);
                 LoadWorldData(player);
+            };
+            Events.PlayerDisconnect += (loc, player) =>
+            {
+                if (loc != NetworkManager.loc.SERVER)
+                    return;
+
+                if (log_server)
+                    GD.Print($"{serv_string} {player} has disconnected.");
+
+                NetworkManager.DestroyPlayer(loc, player);
             };
             
             // todo: add more
