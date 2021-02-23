@@ -62,6 +62,7 @@
     <Compile Include="ui\fragments\Chat.cs" />
     <Compile Include="ui\fragments\DebugLabel.cs" />
     <Compile Include="ui\fragments\EscContent.cs" />
+    <Compile Include="ui\fragments\EscOverlayContent.cs" />
     <Compile Include="ui\fragments\LoadingOverlay.cs" />
     <Compile Include="ui\fragments\MenuButtonsContainer.cs" />
     <Compile Include="ui\fragments\MobileTextInput.cs" />
