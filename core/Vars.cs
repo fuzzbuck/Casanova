@@ -8,6 +8,7 @@ using Casanova.core.main;
 using Casanova.core.main.world;
 using Casanova.core.net;
 using Casanova.core.net.server;
+using Casanova.core.net.types;
 using Casanova.core.types;
 using Casanova.core.utils;
 using Casanova.ui;
@@ -74,7 +75,6 @@ namespace Casanova.core
         public override void _Ready()
         {
             Load();
-            PlayerController.Init();
         }
 
         public override void _Process(float delta)
@@ -115,11 +115,18 @@ namespace Casanova.core
             Interface.CardsGroup.Clear();
             Interface.ButtonGroup.Clear();
 
+            if (Client.IsConnected)
+                Client.Disconnect();
+
+            if (Server.IsHosting)
+                Server.Stop();
+            
             PlayerController.LocalPlayer = null;
             PlayerController.LocalUnit = null;
 
             Client.IsConnected = false;
-            NetworkManager.HostPlayer = null;
+            NetworkManager.HostPlayer = new Player(0, "server", true);
+            
             NetworkManager.PlayersGroup.Clear();
             NetworkManager.UnitsGroup.Clear();
 

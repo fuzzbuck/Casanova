@@ -23,7 +23,7 @@ namespace Casanova.core.net.server
         public static Dictionary<short, Client> Clients = new Dictionary<short, Client>();
         public static Dictionary<int, PacketHandler> handlers;
         
-        public static CommandHandler clientCommands = new CommandHandler("/");
+        public static CommandHandler clientCommands;
 
         private static TcpListener tcpListener;
         private static UdpClient udpListener;
@@ -184,6 +184,7 @@ namespace Casanova.core.net.server
                 {(int) Packets.ClientPackets.ChatMessage, Packets.ServerHandle.Receive.ChatMessage}
             };
 
+            clientCommands = new CommandHandler("/");
             clientCommands.register(new Command("help", "", "Display all available commands", (player, args) =>
             {
                 string final = String.Empty;

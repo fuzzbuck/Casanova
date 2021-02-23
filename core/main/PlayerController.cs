@@ -21,12 +21,12 @@ namespace Casanova.core.main
 
         public static Node Focus;
         public static Vector2 Axis;
-        
         public static void Init()
         {
+            LocalCamera?.Dispose();
             LocalCamera = (Camera) References.main_camera.Instance();
         }
-        
+
         public override void _Process(float delta)
         {
             if (LocalUnit?.Body != null)
