@@ -83,7 +83,6 @@ custom_styles/focus = SubResource( 1 )
 custom_styles/normal = SubResource( 2 )
 custom_fonts/font = SubResource( 4 )
 custom_colors/font_color = Color( 1, 1, 1, 1 )
-text = "hi bros how u are???"
 max_length = 128
 context_menu_enabled = false
 script = ExtResource( 2 )
