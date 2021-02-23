@@ -51,7 +51,7 @@ custom_constants/separation = 0
 alignment = 2
 
 [node name="ChatMessage" parent="MarginContainer/Content/Messages/MessageContainer" instance=ExtResource( 4 )]
-margin_top = 336.0
+margin_top = 338.0
 margin_bottom = 372.0
 
 [node name="Sender" parent="MarginContainer/Content" instance=ExtResource( 3 )]
