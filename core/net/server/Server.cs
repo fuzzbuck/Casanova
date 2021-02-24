@@ -116,7 +116,8 @@ namespace Casanova.core.net.server
             }
             catch (Exception _ex)
             {
-                GD.PrintErr($"Error receiving UDP data: {_ex}");
+                udpListener.BeginReceive(UDPReceiveCallback, null);
+                GD.PrintErr($"Error receiving UDP data: {_ex.Message}");
             }
         }
 
