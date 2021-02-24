@@ -27,7 +27,7 @@ namespace Casanova.core.net.control
                 
                 if(log_client)
                     GD.Print($"{client_string} creating [player {id}:{name}]");
-                if (id == Client.myId)
+                if (id == Client.MyId)
                 {
                     if(log_client)
                         GD.Print($"{client_string} [player {id}:{name}] is us (local)");

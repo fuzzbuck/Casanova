@@ -89,8 +89,16 @@ namespace Casanova.ui
 
                 ThreadManager.ExecuteOnMainThread(() =>
                 {
-                    msg.SetMessage(text);
-                    msg.SetTime(time);
+                    try
+                    {
+                        msg.SetMessage(text);
+                        msg.SetTime(time);
+                    }
+                    catch (Exception e)
+                    {
+                        if(Vars.log_log)
+                            GD.PrintErr("<log>: can't access disposed " + typeof(InformalMessage) + " -> " + e.Message);
+                    }
                 });
 
                 return msg;

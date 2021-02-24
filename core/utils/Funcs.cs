@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Net;
 using Godot;
 using SixLabors.ImageSharp;
@@ -18,21 +19,28 @@ namespace Casanova.core.utils
         {
             return ColorTranslator.ToHtml(c);
         }
+
+        public static IPEndPoint HostToIp(string hostname, int port)
+        {
+            var addresses = Dns.GetHostAddresses(hostname);
+            if (addresses.Length > 0)
+                return new IPEndPoint(addresses[0], port);
+
+            return null;
+        }
         public static string[] ParseIpString(string ip)
         {
             try
             {
+                /* No port specified, use default */
+                if (!ip.Contains(":")) 
+                    return new string[] {ip, Vars.Networking.defaultPort.ToString()};
+
                 var addy = ip.Split(":");
                 var port = Vars.Networking.defaultPort;
 
                 if (addy.Length > 1 && int.TryParse(addy[1], out var newport))
                     port = newport;
-
-                if (!IPAddress.TryParse(addy[0], out var address))
-                {
-                    var ips = Dns.GetHostAddresses(addy[0]);
-                    if (ips.Length > 0) addy[0] = ips[0].ToString().Split(":")[0];
-                }
 
                 return new[] {addy[0], port.ToString()};
             }

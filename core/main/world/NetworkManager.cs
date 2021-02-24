@@ -115,7 +115,7 @@ namespace Casanova.core.main.world
                 unit.Controller.Unit = null;
             
             /* Server host shenanigans */
-            if(IsLocal() && unit.netId == Client.myId)
+            if(IsLocal() && unit == PlayerController.LocalUnit)
                 PlayerController.VoidOwnership();
             
             ThreadManager.ExecuteOnMainThread(() => { RemoveUnit(unit.netId); });
@@ -140,7 +140,7 @@ namespace Casanova.core.main.world
             }
             else
             {
-                if (newOwner.netId == Client.myId)
+                if (newOwner.netId == Client.MyId)
                     PlayerController.TakeOwnership(unit);
             }
         }

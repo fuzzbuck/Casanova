@@ -1,6 +1,8 @@
 using System;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading.Tasks;
+using Casanova.core.utils;
 using Casanova.ui;
 using Godot;
 
@@ -8,37 +10,39 @@ namespace Casanova.core.net.client
 {
     public class Client
     {
+        public static int ConnectTimeout = 3000;
         public static int dataBufferSize = 4096;
 
-        public static string ip = "127.0.0.1";
-        public static int port = 6969;
-        public static short myId = 0;
-        public static TCP tcp;
-        public static UDP udp;
+        public static string Hostname = "127.0.0.1";
+        public static int Port = 375;
+        public static short MyId = 0;
+        public static TCP Tcp;
+        public static UDP Udp;
 
         public static bool IsConnected;
 
         
         // Connects to a server & runs the "post" Action with a bool representing whether the connection was successful
-        public static void ConnectToServer(string _ip, int _port, Action<bool> post)
+        public static void ConnectToServer(string _hostname, int _port, Action<bool> post)
         {
-            GD.Print($"Attempting connection to {_ip}:{_port}");
+            if(Vars.log_log)
+                GD.Print($"{Vars.client_string} attempting connection to {_hostname}:{_port}");
             try
             {
-                ip = _ip;
-                port = _port;
+                Hostname = _hostname;
+                Port = _port;
 
-                tcp = new TCP();
-                udp = new UDP();
+                Tcp = new TCP();
+                Udp = new UDP();
                 
-                tcp.Connect();
+                Tcp.Connect();
                 post.Invoke(true);
             }
             catch (Exception e)
             {
                 Disconnect();
                 post.Invoke(false);
-                throw new Exception("An error occured while connecting to the server: " + e.Message);
+                throw new Exception(e.Message);
             }
         }
 
@@ -48,7 +52,7 @@ namespace Casanova.core.net.client
                 return;
 
             _packet.WriteLength();
-            tcp.SendData(_packet);
+            Tcp.SendData(_packet);
         }
 
         public static void SendUDPData(Packet _packet)
@@ -57,7 +61,7 @@ namespace Casanova.core.net.client
                 return;
 
             _packet.WriteLength();
-            udp.SendData(_packet);
+            Udp.SendData(_packet);
         }
 
         public static void Disconnect()
@@ -65,8 +69,8 @@ namespace Casanova.core.net.client
             if (IsConnected)
             {
                 IsConnected = false;
-                tcp.socket.Close();
-                udp.socket.Close();
+                Tcp.socket.Close();
+                Udp.socket.Close();
             }
         }
 
@@ -87,9 +91,24 @@ namespace Casanova.core.net.client
                 };
 
                 receiveBuffer = new byte[dataBufferSize];
-                socket.BeginConnect(ip, port, ConnectCallback, socket);
+                
+                Task result = socket.ConnectAsync(Hostname, Port);
+                Task.WaitAny(new[] {result}, ConnectTimeout);
+
+                if (!socket.Connected)
+                {
+                    Disconnect();
+                    throw new Exception("Timeout! the server might be down or overloaded.");
+                }
+                
+                IsConnected = true;
+                receivedData = new Packet();
+
+                stream = socket.GetStream();
+                stream.BeginRead(receiveBuffer, 0, dataBufferSize, ReceiveCallback, null);
             }
 
+            /*
             private void ConnectCallback(IAsyncResult _result)
             {
                 try
@@ -105,10 +124,10 @@ namespace Casanova.core.net.client
                 }
                 catch (Exception e)
                 {
-                    Interface.Utils.CreateInformalMessage(e.Message, 10);
                     Disconnect();
                 }
             }
+            */
 
             public void SendData(Packet _packet)
             {
@@ -205,7 +224,7 @@ namespace Casanova.core.net.client
 
             public UDP()
             {
-                endPoint = new IPEndPoint(IPAddress.Parse(ip), port);
+                endPoint = Funcs.HostToIp(Hostname, Port);
             }
 
             public void Connect(int _localPort)
@@ -226,7 +245,7 @@ namespace Casanova.core.net.client
             {
                 try
                 {
-                    _packet.InsertShort(myId);
+                    _packet.InsertShort(MyId);
                     socket.BeginSend(_packet.ToArray(), _packet.Length(), null, null);
                 }
                 catch (Exception _ex)

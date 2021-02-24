@@ -56,11 +56,11 @@ namespace Casanova.ui.fragments
                 {
                     if (success)
                     {
-                        GD.Print($"Connected to {Vars.PersistentData.ip} with username {Vars.PersistentData.username}");
+                        /* Nice. */
                     }
                     else
                     {
-                        GD.Print($"Connection to {Vars.PersistentData.ip} failed.");
+                        /* Not so nice.. */
                     }
                 });
             }

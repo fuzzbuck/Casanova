@@ -69,8 +69,8 @@ namespace Casanova.core.net
                 {
                     var _myId = _packet.ReadShort();
 
-                    Client.myId = _myId;
-                    Client.udp.Connect(((IPEndPoint) Client.tcp.socket.Client.LocalEndPoint).Port);
+                    Client.MyId = _myId;
+                    Client.Udp.Connect(((IPEndPoint) Client.Tcp.socket.Client.LocalEndPoint).Port);
 
                     // create world, etc.
                     NetworkManager.ConfirmConnect();
@@ -170,7 +170,7 @@ namespace Casanova.core.net
                 {
                     using (var _packet = new Packet((int) ClientPackets.WelcomeReceived))
                     {
-                        _packet.Write(Client.myId);
+                        _packet.Write(Client.MyId);
                         _packet.Write(_username);
 
                         Client.SendUDPData(_packet);

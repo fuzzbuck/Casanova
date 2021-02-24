@@ -40,14 +40,16 @@ namespace Casanova.core.net.server
 
             InitializeServerData();
 
-            tcpListener = new TcpListener(IPAddress.Any, Port);
+            tcpListener = new TcpListener(IPAddress.None, Port);
             tcpListener.Start();
             tcpListener.BeginAcceptTcpClient(TcpConnectCallback, null);
 
             udpListener = new UdpClient(Port);
             udpListener.BeginReceive(UDPReceiveCallback, null);
 
-            GD.Print($"Server started on {tcpListener.LocalEndpoint}:");
+            if(log_server)
+                GD.Print($"{serv_string} started on {tcpListener.LocalEndpoint}");
+
             IsHosting = true;
         }
 
@@ -69,8 +71,6 @@ namespace Casanova.core.net.server
                 var _client = tcpListener.EndAcceptTcpClient(_result);
                 tcpListener.BeginAcceptTcpClient(TcpConnectCallback, null);
 
-                GD.Print($"{_client.Client.RemoteEndPoint} is connecting.");
-
                 for (short i = 1; i < MaxClients; i++)
                     if (Clients[i].tcp.socket == null) // no client is assigned to this id
                     {
@@ -79,7 +79,8 @@ namespace Casanova.core.net.server
                     }
 
                 // no free ids, server reached MaxClients
-                GD.Print($"{_client.Client.RemoteEndPoint} failed to connect! Max Clients reached.");
+                if(log_server)
+                    GD.Print($"{serv_string} {_client.Client.RemoteEndPoint} failed to connect! Max Clients reached.");
             }
             catch (Exception e)
             {
