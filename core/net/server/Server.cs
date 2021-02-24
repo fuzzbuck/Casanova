@@ -55,7 +55,8 @@ namespace Casanova.core.net.server
 
         public static void Stop()
         {
-            GD.Print($"Server stopped on port {Port}.");
+            if(log_server)
+                GD.Print($"{serv_string} stopped on port {Port}.");
 
             tcpListener.Stop();
             udpListener.Close();
@@ -80,11 +81,12 @@ namespace Casanova.core.net.server
 
                 // no free ids, server reached MaxClients
                 if(log_server)
-                    GD.Print($"{serv_string} {_client.Client.RemoteEndPoint} failed to connect! Max Clients reached.");
+                    GD.Print($"{serv_string} {_client.Client.RemoteEndPoint} failed to connect! MaxClients reached.");
             }
             catch (Exception e)
             {
-                GD.PrintErr($"Failed to accept connection from: {e}");
+                if(log_log)
+                    GD.PrintErr($"{log_string} failed to accept connection: {e.Message}");
             }
         }
 
@@ -116,8 +118,21 @@ namespace Casanova.core.net.server
             }
             catch (Exception _ex)
             {
-                udpListener.BeginReceive(UDPReceiveCallback, null);
-                GD.PrintErr($"Error receiving UDP data: {_ex.Message}");
+                try
+                {
+                    udpListener.BeginReceive(UDPReceiveCallback, null);
+                }
+                catch (Exception _badEx)
+                {
+                    if (!log_log)
+                        return;
+                    
+                    GD.PrintErr($"{log_string} {_badEx.Message}");
+                    GD.PrintErr($"{log_string} Error! UDP can't start receiving data again! Terminating.");
+                }
+                
+                if(log_log)
+                    GD.PrintErr($"{log_string} Error receiving UDP data: {_ex.Message}");
             }
         }
 
@@ -130,7 +145,8 @@ namespace Casanova.core.net.server
             }
             catch (Exception _ex)
             {
-                GD.PrintErr($"Error sending data to {_clientEndPoint} via UDP: {_ex}");
+                if(log_log)
+                    GD.PrintErr($"{log_string} Error sending data to {_clientEndPoint} via UDP: {_ex}");
             }
         }
         

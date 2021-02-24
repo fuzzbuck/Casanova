@@ -135,9 +135,9 @@ namespace Casanova.core.net.client
                 {
                     if (socket != null) stream.BeginWrite(_packet.ToArray(), 0, _packet.Length(), null, null);
                 }
-                catch (Exception _ex)
+                catch (Exception)
                 {
-                    GD.Print($"Error sending data to server via TCP: {_ex}");
+                    // ignored (?) could need to disconnect so [todo]
                 }
             }
 
@@ -158,9 +158,8 @@ namespace Casanova.core.net.client
                     receivedData.Reset(HandleData(_data));
                     stream.BeginRead(receiveBuffer, 0, dataBufferSize, ReceiveCallback, null);
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
-                    GD.Print($"Error receiving TCP data; {e}");
                     Disconnect();
                 }
             }

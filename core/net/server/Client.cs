@@ -3,6 +3,7 @@ using System.Net;
 using System.Net.Sockets;
 using Casanova.core.main.world;
 using Godot;
+using static Casanova.core.Vars;
 
 namespace Casanova.core.net.server
 {
@@ -23,7 +24,8 @@ namespace Casanova.core.net.server
 
         private void Disconnect()
         {
-            GD.Print($"{tcp.socket.Client.RemoteEndPoint} has disconnected.");
+            if(log_log)
+                GD.Print($"{log_string} {tcp.socket.Client.RemoteEndPoint} has disconnected");
 
             if (Server.IsHosting)
             {
@@ -73,7 +75,8 @@ namespace Casanova.core.net.server
                 }
                 catch (Exception _ex)
                 {
-                    Console.WriteLine($"Error sending data to player {id} via TCP: {_ex}");
+                    if(log_log)
+                        GD.PrintErr($"{log_string} error sending data to player {id} via TCP: {_ex.Message}");
                 }
             }
 
@@ -96,7 +99,8 @@ namespace Casanova.core.net.server
                 }
                 catch (Exception _ex)
                 {
-                    Console.WriteLine($"Error receiving TCP data: {_ex}, disconnecting.");
+                    if(log_log)
+                        GD.PrintErr($"{log_string} error receiving TCP data: {_ex.Message}, disconnecting.");
                     Server.Clients[id].Disconnect();
                 }
             }
@@ -143,6 +147,7 @@ namespace Casanova.core.net.server
                 receiveBuffer = null;
                 socket = null;
             }
+            
         }
 
         public class UDP
@@ -183,7 +188,8 @@ namespace Casanova.core.net.server
                     }
                 });
             }
-
+            
+         
             public void Disconnect()
             {
                 endPoint = null;

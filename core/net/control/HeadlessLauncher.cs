@@ -2,6 +2,7 @@ using Casanova.core.net.server;
 using Casanova.core.utils;
 using Godot;
 using Godot.Collections;
+using static Casanova.core.Vars;
 using static Casanova.core.Vars.Networking;
 
 namespace Casanova.core.net.control
@@ -10,9 +11,12 @@ namespace Casanova.core.net.control
     {
         public override void _Ready()
         {
-            IsHeadless = OS.HasFeature("Server") || new Array(OS.GetCmdlineArgs()).Contains("server");
+            var cmdArgs = new Array(OS.GetCmdlineArgs());
+            IsHeadless = OS.HasFeature("Server") || cmdArgs.Contains("server");
 
-            GD.Print($"IsHeadless: {IsHeadless}");
+            if(log_log)
+                GD.Print($"{log_string} IsHeadless: {IsHeadless}");
+            
             if (!IsHeadless)
                 return;
 
