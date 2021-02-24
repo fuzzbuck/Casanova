@@ -106,12 +106,8 @@ namespace Casanova.core.types.bodies
 
             var dist = Position.DistanceTo(MoveBy);
             
-            // GD.Print($"unclamped: {dist / Vars.Networking.unit_desync_max_dist}, dist -> {dist}, MoveBy -> {MoveBy}, Pos -> {Position}");
-            if (dist > Vars.Networking.unit_desync_treshold)
-            {
-                var weight = Math.Min(0.2f, dist / Vars.Networking.unit_desync_max_dist / Vars.Networking.unit_desync_smoothing);
-                state.Transform = state.Transform.InterpolateWith(new Transform2D(state.Transform.Rotation, MoveBy), weight);
-            }
+            var weight = Math.Min(0.2f, dist / Vars.Networking.unit_desync_max_dist / Vars.Networking.unit_desync_smoothing);
+            state.Transform = state.Transform.InterpolateWith(new Transform2D(state.Transform.Rotation, MoveBy), weight);
         }
 
         public override void _IntegrateForces(Physics2DDirectBodyState state)

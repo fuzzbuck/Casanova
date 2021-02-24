@@ -167,9 +167,6 @@ namespace Casanova.core
 
         public class Networking
         {
-            /* Maximum distance for smoothing unit's position */
-            public static float unit_desync_treshold = 2f;
-
             /* How smooth unit desync interpolation should be, the higher the "smoother" but also slower */
             public static float unit_desync_smoothing = 0.5f;
             
