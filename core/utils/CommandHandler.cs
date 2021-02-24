@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
+using Casanova.core.net.server;
 using Casanova.core.net.types;
 using Godot;
 
@@ -8,7 +10,7 @@ namespace Casanova.core.utils
 {
     public enum HandleResponse
     {
-        Executed, BadPrefix, BadArguments, NonExistent
+        Executed, BadPrefix, BadArguments, NonExistent, NoPermission
     }
     public class CommandHandler
     {
@@ -41,6 +43,9 @@ namespace Casanova.core.utils
 
             if (command != null)
             {
+                if (!command.VerifyExec(caller))
+                    return (HandleResponse.NoPermission, command);
+                
                 var textparams = new string[]{};
 
                 if (command.textparam.Length > 0)
@@ -51,7 +56,7 @@ namespace Casanova.core.utils
                         return (HandleResponse.BadArguments, command);
                 }
 
-                if (command.verifyParams(String.Join(" ", textparams)))
+                if (command.VerifyParams(String.Join(" ", textparams)))
                 {
                     command.action.Invoke(caller, textparams);
                     return (HandleResponse.Executed, command);
@@ -83,9 +88,30 @@ namespace Casanova.core.utils
             action = _action;
         }
 
-        public bool verifyParams(string textparams)
+
+        public bool VerifyParams(string textparams)
         {
             return (textparams.Length == 0 || textparams.Trim().Count(i => i == ' ') == textparam.Trim().Count(i => i == ' '));
+        }
+
+        public virtual bool VerifyExec(Player player = null)
+        {
+            return true;
+        }
+    }
+
+    public class AdminCommand : Command
+    {
+        public AdminCommand(string _name, string _textparam, string _desc, Action<Player, object[]> _action) : base(_name, _textparam, _desc, _action)
+        { }
+
+        public override bool VerifyExec(Player player = null)
+        {
+            if (player != null && player.IsHost)
+                return true;
+
+            Server.SendNoPermission(player);
+            return false;
         }
     }
 }

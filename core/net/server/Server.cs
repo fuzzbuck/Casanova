@@ -192,9 +192,10 @@ namespace Casanova.core.net.server
         }
 
 
-        private static void SendNoPermission(Player player)
+        public static void SendNoPermission(Player player)
         {
-            NetworkManager.SendMessage(NetworkManager.loc.SERVER, $"[color={Funcs.ColorToHex(Pals.unimportant)}]You need to be an admin to execute this command![/color]", player);
+            if(player != null)
+                NetworkManager.SendMessage(NetworkManager.loc.SERVER, $"[color={Funcs.ColorToHex(Pals.unimportant)}]You need to be an admin to execute this command![/color]", player);
         }
         private static void InitializeServerData()
         {
@@ -218,14 +219,9 @@ namespace Casanova.core.net.server
                 NetworkManager.SendMessage(NetworkManager.loc.SERVER, final.Substring(0, final.Length-1), player); // remove trailing \n
             }));
             
-            clientCommands.register(new Command("spawn", "[amount] [typeid]", "Spawns an amount of units at the player's position",
+            clientCommands.register(new AdminCommand("spawn", "[amount] [typeid]", "Spawns an amount of units at the player's position",
                 (player, args) =>
                 {
-                    if (!player.IsHost)
-                    {
-                        SendNoPermission(player);
-                        return;
-                    }
 
                     int amt;
                     UnitType type;
@@ -258,15 +254,9 @@ namespace Casanova.core.net.server
                     NetworkManager.SendMessage(NetworkManager.loc.SERVER, $"You need to be alive to use this command.", player);
                 }));
             
-            clientCommands.register(new Command("ownership", "[unitid]", "Take the ownership of the specified unit",
+            clientCommands.register(new AdminCommand("ownership", "[unitid]", "Take the ownership of the specified unit",
                 (player, args) =>
                 {
-                    if (!player.IsHost)
-                    {
-                        SendNoPermission(player);
-                        return;
-                    }
-                    
                     Unit unit;
                     try
                     {
@@ -282,15 +272,9 @@ namespace Casanova.core.net.server
                     NetworkManager.SendMessage(NetworkManager.loc.SERVER, $"Taken ownership of unit id {unit.netId}", player);
                 }));
             
-            clientCommands.register(new Command("sleep", "", "Sleep all units' collision systems (debug purpose)",
+            clientCommands.register(new AdminCommand("sleep", "", "Sleep all units' collision systems (debug purpose)",
                 (player, args) =>
                 {
-                    if (!player.IsHost)
-                    {
-                        SendNoPermission(player);
-                        return;
-                    }
-                    
                     foreach (Unit unit in NetworkManager.UnitsGroup.Values)
                     {
                         unit.Body.Sleeping = true;
@@ -298,14 +282,8 @@ namespace Casanova.core.net.server
                     
                     NetworkManager.SendMessage(NetworkManager.loc.SERVER, $"Slept all units.", player);
                 }));
-            clientCommands.register(new Command("destroy", "[unitid]", "Destroy the specified unit", (player, args) =>
+            clientCommands.register(new AdminCommand("destroy", "[unitid]", "Destroy the specified unit", (player, args) =>
             {
-                if (!player.IsHost)
-                {
-                    SendNoPermission(player);
-                    return;
-                }
-                
                 Unit unit;
                 try
                 {
@@ -320,7 +298,7 @@ namespace Casanova.core.net.server
                 NetworkManager.DestroyUnit(NetworkManager.loc.SERVER, unit);
                 NetworkManager.SendMessage(NetworkManager.loc.SERVER, $"Removed unit id {unit.netId}", player);
             }));
-            clientCommands.register(new Command("players", "", "List all players",
+            clientCommands.register(new AdminCommand("players", "", "List all players",
                 (player, args) =>
                 {
                     var msg = String.Empty;
