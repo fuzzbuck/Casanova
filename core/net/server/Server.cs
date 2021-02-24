@@ -40,7 +40,7 @@ namespace Casanova.core.net.server
 
             InitializeServerData();
 
-            tcpListener = new TcpListener(IPAddress.None, Port);
+            tcpListener = new TcpListener(IPAddress.Any, Port);
             tcpListener.Start();
             tcpListener.BeginAcceptTcpClient(TcpConnectCallback, null);
 
