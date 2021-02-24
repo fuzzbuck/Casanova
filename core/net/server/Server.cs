@@ -175,6 +175,11 @@ namespace Casanova.core.net.server
                     Clients[i].udp.SendData(_packet);
         }
 
+
+        private static void SendNoPermission(Player player)
+        {
+            NetworkManager.SendMessage(NetworkManager.loc.SERVER, $"[color={Funcs.ColorToHex(Pals.unimportant)}]You need to be an admin to execute this command![/color]", player);
+        }
         private static void InitializeServerData()
         {
             for (short i = 1; i < MaxClients + 1; i++) Clients.Add(i, new Client(i));
@@ -200,6 +205,12 @@ namespace Casanova.core.net.server
             clientCommands.register(new Command("spawn", "[amount] [typeid]", "Spawns an amount of units at the player's position",
                 (player, args) =>
                 {
+                    if (!player.IsHost)
+                    {
+                        SendNoPermission(player);
+                        return;
+                    }
+
                     int amt;
                     UnitType type;
 
@@ -234,8 +245,13 @@ namespace Casanova.core.net.server
             clientCommands.register(new Command("ownership", "[unitid]", "Take the ownership of the specified unit",
                 (player, args) =>
                 {
+                    if (!player.IsHost)
+                    {
+                        SendNoPermission(player);
+                        return;
+                    }
+                    
                     Unit unit;
-
                     try
                     {
                         unit = NetworkManager.UnitsGroup[int.Parse((string) args[0])];
@@ -253,6 +269,12 @@ namespace Casanova.core.net.server
             clientCommands.register(new Command("sleep", "", "Sleep all units' collision systems (debug purpose)",
                 (player, args) =>
                 {
+                    if (!player.IsHost)
+                    {
+                        SendNoPermission(player);
+                        return;
+                    }
+                    
                     foreach (Unit unit in NetworkManager.UnitsGroup.Values)
                     {
                         unit.Body.Sleeping = true;
@@ -262,8 +284,13 @@ namespace Casanova.core.net.server
                 }));
             clientCommands.register(new Command("destroy", "[unitid]", "Destroy the specified unit", (player, args) =>
             {
+                if (!player.IsHost)
+                {
+                    SendNoPermission(player);
+                    return;
+                }
+                
                 Unit unit;
-
                 try
                 {
                     unit = NetworkManager.UnitsGroup[int.Parse((string) args[0])];
@@ -283,7 +310,7 @@ namespace Casanova.core.net.server
                     var msg = String.Empty;
                     foreach (Player plr in NetworkManager.PlayersGroup.Values)
                     {
-                        msg = msg + "id:" + plr.netId + " -> " + plr.Username + (plr.IsHost ? $" [color={Funcs.ColorToHex(Pals.unimportant)}](local)[/color] " : " ") + "\n";
+                        msg = msg + " - id:" + plr.netId + " -> " + plr.Username + (plr.IsHost ? $" [color={Funcs.ColorToHex(Pals.unimportant)}](admin)[/color] " : " ") + "\n";
                     }
 
                     msg = msg.Substring(0, msg.Length - 1);

@@ -1,10 +1,18 @@
+using System;
+using System.Collections.Specialized;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Casanova.core.content;
 using Casanova.core.main;
 using Casanova.core.main.units;
 using Casanova.core.main.world;
+using Casanova.core.net.server;
 using Casanova.core.net.types;
+using Casanova.core.utils;
 using Godot;
 using static Casanova.core.Vars;
+using Thread = System.Threading.Thread;
 
 namespace Casanova.core.net.control
 {
@@ -92,9 +100,82 @@ namespace Casanova.core.net.control
             // todo: add more
         }
 
+        
+        /* Server only commands */
+        public static CommandHandler handler = new CommandHandler("");
+        public static void InitCommands()
+        {
+            handler.register(new Command("status", "", "Display the status of the server", (_, args) =>
+            {
+                GD.Print($"Listening on port {Server.Port}\n - {Engine.IterationsPerSecond} fps\n - {NetworkManager.PlayersGroup.Count} players\n - {NetworkManager.UnitsGroup.Count} units\n - Host => {(Networking.IsHeadless ? "HEADLESS SERVER" : NetworkManager.HostPlayer.ToString())}");
+            }));
+            
+            handler.register(new Command("players", "", "List all players", (_, args) =>
+            {
+                var msg = $"{NetworkManager.PlayersGroup.Count} players:\n";
+                foreach (Player plr in NetworkManager.PlayersGroup.Values)
+                {
+                    msg = msg + " - " + plr + "\n";
+                }
+                msg = msg.Substring(0, msg.Length - 1);
+                    
+                GD.Print(msg);
+            }));
+            
+            handler.register(new Command("help", "", "Display all available commands", (_, args) =>
+            {
+                string final = $"{handler.commands.Count} commands:\n";
+                foreach (var cmd in handler.commands)
+                {
+                    final = final + $" - {cmd.Value.name} {cmd.Value.textparam} - {cmd.Value.desc}\n";
+                }
+                
+                GD.Print(final);
+            }));
+            
+            handler.register(new Command("admin", "[id]", "Give or remove (toggle) the specified player id's 'host' (administrative powers)", (_, args) =>
+            {
+                short id;
+                if (!short.TryParse((string) args[0], out id))
+                {
+                    GD.PrintErr($"That argument is not a {typeof(short)}!");
+                    return;
+                }
+                var player = NetworkManager.FindPlayer(id);
+                if (player != null)
+                {
+                    player.IsHost = !player.IsHost;
+                    GD.Print($"{player} => {(player.IsHost ? "has been promoted" : "has been demoted")}");
+                    NetworkManager.SendMessage(NetworkManager.loc.SERVER, player.IsHost ? $"[color={Funcs.ColorToHex(Pals.command)}]You have been promoted![/color]" : $"[color={Funcs.ColorToHex(Pals.unimportant)}]You have been demoted.[/color]");
+                }
+                else
+                {
+                    GD.PrintErr($"Can't find a player with id '{args[0]}'!");
+                }
+            }));
+        }
+
+        public static void ReadCmd()
+        {
+            new Thread(() =>
+            {
+                while (true)
+                {
+                    var line = Console.ReadLine();
+                    var (cmdResp, cmd) = handler.handle(line);
+                    if(cmdResp == HandleResponse.BadArguments)
+                        GD.PrintErr($"Invalid arguments supplied. Required arguments: {cmd.textparam}");
+                }
+            }).Start();
+        }
+
         public override void _Ready()
         {
             InitEvents();
+            InitCommands();
+#pragma warning disable 4014
+            ReadCmd();
+#pragma warning restore 4014
         }
     }
 }

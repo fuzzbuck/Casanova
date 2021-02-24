@@ -145,6 +145,13 @@ namespace Casanova.core.main.world
             }
         }
 
+        public static Player FindPlayer(short _id)
+        {
+            if (PlayersGroup.ContainsKey(_id))
+                return PlayersGroup[_id];
+            
+            return null;
+        }
         public static void RemovePlayer(short _id)
         {
             if (PlayersGroup.ContainsKey(_id))

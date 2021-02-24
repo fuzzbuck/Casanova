@@ -25,15 +25,15 @@ namespace Casanova.core.utils
             prefix = _prefix;
         }
 
-        public (HandleResponse, Command) handle(Player caller, string msg)
+        public (HandleResponse, Command) handle(string msg, Player caller = null)
         {
-            if (!msg.StartsWith(prefix))
+            if (!msg.StartsWith(prefix) && prefix != String.Empty)
                 return (HandleResponse.BadPrefix, null);
             
             Command command = null;
             foreach (var cmd in commands.Values)
             {
-                if (msg.IndexOf(cmd.name, StringComparison.CurrentCultureIgnoreCase) == 1)
+                if (msg.IndexOf(cmd.name, StringComparison.CurrentCultureIgnoreCase) == prefix.Length)
                 {
                     command = cmd;
                 }

@@ -261,7 +261,7 @@ namespace Casanova.core.net
                     var plr = NetworkManager.PlayersGroup[_fromClient];
                     var message = _packet.ReadString();
 
-                    var (cmdResp, cmd) = Server.clientCommands.handle(NetworkManager.PlayersGroup[_fromClient], message);
+                    var (cmdResp, cmd) = Server.clientCommands.handle(message, NetworkManager.PlayersGroup[_fromClient]);
                     if(cmdResp == HandleResponse.NonExistent || cmdResp == HandleResponse.BadPrefix)
                         Send.ChatMessage(_fromClient, message);
                     else if(cmdResp == HandleResponse.BadArguments)
