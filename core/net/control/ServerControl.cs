@@ -13,6 +13,7 @@ using Casanova.core.utils;
 using Godot;
 using static Casanova.core.Vars;
 using Thread = System.Threading.Thread;
+using World = Casanova.core.main.world.World;
 
 namespace Casanova.core.net.control
 {
@@ -55,7 +56,7 @@ namespace Casanova.core.net.control
             }
 
             // create unit for this player with id of 0 (id=0 means auto-assign new id)
-            var unit = NetworkManager.CreateUnit(NetworkManager.loc.SERVER, 0, UnitTypes.explorer);
+            var unit = NetworkManager.CreateUnit(NetworkManager.loc.SERVER, 0, World.rules.Mode == Gamemode.Editor ? Enums.UnitTypes[editor_unit] : Enums.UnitTypes[default_unit]);
                     
             // this player will take ownership of this unit
             NetworkManager.UnitOwnership(NetworkManager.loc.SERVER, unit, player);

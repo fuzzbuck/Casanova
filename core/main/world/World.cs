@@ -14,10 +14,8 @@ namespace Casanova.core.main.world
         public override void _Ready()
         {
             if (rules == null)
-            {
                 rules = new Rules();
-            }
-            
+   
             instance = this;
             tree = GetTree();
             

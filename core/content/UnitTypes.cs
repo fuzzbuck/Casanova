@@ -119,20 +119,19 @@ namespace Casanova.core.content
             {
                 Name = "Ghost",
                 Description = "A special unit used for editing & spectating.",
-                MaxSpeed = 120f,
-                Acceleration = 550f,
+                MaxSpeed = 200f,
+                Acceleration = 1000f,
                 Rotates = false,
                 Mass = 1f,
-                Inertia = 1f,
-                Deceleration = 550f,
-                AngularDeceleration = 0.1f,
-                Health = 500f,
+                Inertia = 0f,
+                Deceleration = 1000f,
+                Health = float.MaxValue - float.MaxValue/2,
                 CollisionShape = new []
                 {
                     new Vector2(0, 0),
                     new Vector2(0, 0),
                 },
-                ShadowOffset = new Vector2(0, 0),
+                ShadowBlur = -1,
                 Body = "Air"
             };
         }

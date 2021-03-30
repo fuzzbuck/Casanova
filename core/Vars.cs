@@ -14,6 +14,7 @@ using Casanova.core.utils;
 using Casanova.ui;
 using Godot;
 using Client = Casanova.core.net.client.Client;
+using World = Casanova.core.main.world.World;
 
 namespace Casanova.core
 {
@@ -33,6 +34,8 @@ namespace Casanova.core
             Freeplay,
             Editor
         }
+        public static int default_unit = 1; // explorer
+        public static int editor_unit = 2; // ghost
 
         public static BundleHandler bundleHandler = new BundleHandler("en");
         public static string ver = "build 3 ver. indev";
@@ -136,6 +139,8 @@ namespace Casanova.core
             
             NetworkManager.PlayersGroup.Clear();
             NetworkManager.UnitsGroup.Clear();
+
+            World.rules = null;
 
             CurrentState = State.Menu;
             Interface.tree.ChangeScene(path_frags + "/Menu.tscn");

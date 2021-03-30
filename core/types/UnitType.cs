@@ -47,6 +47,8 @@ namespace Casanova.core.types
         {
             // this can stay here instead of References.cs since it is loaded on launch time
             SpriteTexture = ResourceLoader.Load<Texture>(Vars.path_sprites + $"/units/{spriteName}");
+            SpriteTexture.Flags = 1;
+            
             Id = UnitTypes.Count;
 
             UnitTypes.Add(UnitTypes.Count, this);
