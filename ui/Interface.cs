@@ -2,6 +2,7 @@ using System;
 using Casanova.core;
 using Casanova.core.net;
 using Casanova.core.net.server;
+using Casanova.core.types;
 using Casanova.core.utils;
 using Casanova.ui.elements;
 using Casanova.ui.fragments;
@@ -9,6 +10,7 @@ using Godot;
 using Godot.Collections;
 using Client = Casanova.core.net.client.Client;
 using Label = Casanova.ui.elements.Label;
+using World = Casanova.core.main.world.World;
 
 namespace Casanova.ui
 {
@@ -113,24 +115,26 @@ namespace Casanova.ui
                 new System.Collections.Generic.Dictionary<int, Action>
                 {
                     {
+                        /* PLAY TEST */
                         0, () =>
                         {
                             Server.Start(8, Vars.Networking.defaultPort);
-                            Client.ConnectToServer("127.0.0.1", Vars.Networking.Port, success =>
-                            {
-                                if (success)
-                                {
-                                    GD.Print($"Connected to localserver.");
-                                }
-                                else
-                                {
-                                    GD.PrintErr("Can't connect to localserver!");
-                                }
-                            });
+                            Client.ConnectToServer("127.0.0.1", Vars.Networking.Port, _ => {});
                         }
                     },
                     {
+                        /* SERVER JOIN */
                         1, () => { Utils.SpawnOverlayFragment("ServerJoin"); }
+                    },
+                    /* WORLD EDITOR */
+                    {
+                        2, () =>
+                        {
+                            Vars.CurrentState = Vars.State.Editor;
+                            Server.Start(8, Vars.Networking.defaultPort);
+                            Client.ConnectToServer("127.0.0.1", Vars.Networking.Port, _ => {});
+                            World.rules = new Rules {Mode = Vars.Gamemode.Editor};
+                        }
                     }
                 };
 

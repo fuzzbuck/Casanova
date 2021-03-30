@@ -117,8 +117,9 @@ namespace Casanova.core.types.bodies
             
             state.LinearVelocity = Vel;
             state.AngularVelocity = Mathf.Lerp(state.AngularVelocity, 0f, Type.AngularDeceleration);
-
-            ApplyRotation(state.Step, state);
+            
+            if(Type.Rotates)
+                ApplyRotation(state.Step, state);
         }
     }
 }

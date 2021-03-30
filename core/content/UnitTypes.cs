@@ -1,3 +1,4 @@
+using System;
 using Casanova.core.types;
 using Casanova.core.types.effects;
 using Casanova.core.utils;
@@ -14,12 +15,15 @@ namespace Casanova.core.content
 
         // air units
         public static UnitType crimson;
+        
+        // special units
+        public static UnitType ghost;
 
         public static void Init()
         {
             
             #region effects
-            
+
             var rocketEngineCurve = new Curve();
             rocketEngineCurve.AddPoint(new Vector2(1, 0.5f));
             rocketEngineCurve.AddPoint(new Vector2(0.5f, 0.75f));
@@ -47,7 +51,7 @@ namespace Casanova.core.content
                 Opacity = 75,
                 Curve = rocketEngineCurve
             };
-            
+
             #endregion
 
             explorer = new UnitType("explorer.png")
@@ -110,6 +114,27 @@ namespace Casanova.core.content
                     {new Vector2(-4.5f, 4.5f), crimsonSkid}
                 }
             };
+            
+            ghost = new UnitType("ghost.png")
+            {
+                Name = "Ghost",
+                Description = "A special unit used for editing & spectating.",
+                MaxSpeed = 120f,
+                Acceleration = 550f,
+                Rotates = false,
+                Mass = 1f,
+                Inertia = 1f,
+                Deceleration = 550f,
+                AngularDeceleration = 0.1f,
+                Health = 500f,
+                CollisionShape = new []
+                {
+                    new Vector2(0, 0),
+                    new Vector2(0, 0),
+                },
+                ShadowOffset = new Vector2(0, 0),
+                Body = "Air"
+            };
         }
 
         public static void Load()
@@ -120,6 +145,10 @@ namespace Casanova.core.content
                 if (type.ShadowBlur > 0)
                 {
                     type.ShadowTexture = Funcs.BlurTexture(type.SpriteTexture, type.ShadowBlur);
+                }
+                else if (type.ShadowBlur < 0)
+                {
+                    type.ShadowTexture = null;
                 }
                 else
                 {

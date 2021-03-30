@@ -32,6 +32,8 @@ namespace Casanova.core.types
 
         public string Name = "Attacker";
         public System.Collections.Generic.Dictionary<Vector2, ParticleInfo> ParticleEffects;
+
+        public bool Rotates = true;
         public float RotationSpeed;
 
         public int ShadowBlur;

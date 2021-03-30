@@ -13,6 +13,7 @@ using Casanova.core.types;
 using Casanova.core.utils;
 using Godot;
 using static Casanova.core.Vars;
+using World = Casanova.core.main.world.World;
 
 namespace Casanova.core.net.server
 {
@@ -310,6 +311,11 @@ namespace Casanova.core.net.server
                     msg = msg.Substring(0, msg.Length - 1);
                     
                     NetworkManager.SendMessage(NetworkManager.loc.SERVER, msg, player);
+                }));
+            clientCommands.register(new AdminCommand("rules", "", "List the rules",
+                (player, args) =>
+                {
+                    NetworkManager.SendMessage(NetworkManager.loc.SERVER, World.rules.ToString(), player);
                 }));
         }
     }

@@ -13,6 +13,7 @@ using Casanova.ui;
 using Casanova.ui.fragments;
 using Godot;
 using Client = Casanova.core.net.client.Client;
+using World = Casanova.core.main.world.World;
 
 namespace Casanova.core.net
 {
@@ -35,7 +36,8 @@ namespace Casanova.core.net
             UnitOwnership,
             UnitRemove,
             ChatMessage,
-            InformalMessage
+            InformalMessage,
+            WorldData
         }
 
         /// <summary>Sent from client to server.</summary>
@@ -57,7 +59,8 @@ namespace Casanova.core.net
             {(int) ServerPackets.UnitOwnership, ClientHandle.Receive.UnitOwnership},
             {(int) ServerPackets.UnitRemove, ClientHandle.Receive.UnitRemove},
             {(int) ServerPackets.ChatMessage, ClientHandle.Receive.ChatMessage},
-            {(int) ServerPackets.InformalMessage, ClientHandle.Receive.InformalMessage}
+            {(int) ServerPackets.InformalMessage, ClientHandle.Receive.InformalMessage},
+            {(int) ServerPackets.WorldData, ClientHandle.Receive.WorldData}
         };
         
         public class ClientHandle
@@ -82,6 +85,12 @@ namespace Casanova.core.net
                     var _msg = _packet.ReadString();
                     if(_msg != String.Empty)
                         Interface.Utils.CreateInformalMessage($"{_msg}", 10);
+                }
+                
+                public static void WorldData(Packet _packet)
+                {
+                    var rules = _packet.ReadRules();
+                    World.instance.SetRules(rules);
                 }
 
                 public static void UnitCreate(Packet _packet)
@@ -218,6 +227,7 @@ namespace Casanova.core.net
                             $"[player \"{_username}\"] (ID: {_fromClient}) has assumed the wrong [client ID ({_clientIdCheck})]!");
                     
                     Events.RaisePlayerConnect(NetworkManager.loc.SERVER, _fromClient, _username, Server.Clients[_fromClient].tcp.socket.Client.RemoteEndPoint);
+                    Send.WorldData(_fromClient);
                 }
 
                 public static void PlayerUnitMovement(short _fromClient, Packet _packet)
@@ -278,6 +288,16 @@ namespace Casanova.core.net
                     using (var _packet = new Packet((int) ServerPackets.Welcome))
                     {
                         _packet.Write(_toClient);
+
+                        Server.SendTCPData(_toClient, _packet);
+                    }
+                }
+
+                public static void WorldData(short _toClient)
+                {
+                    using (var _packet = new Packet((int) ServerPackets.WorldData))
+                    {
+                        _packet.Write(World.rules);
 
                         Server.SendTCPData(_toClient, _packet);
                     }

@@ -24,7 +24,14 @@ namespace Casanova.core
         {
             Menu,
             World,
+            Editor,
             Tutorial
+        }
+
+        public enum Gamemode
+        {
+            Freeplay,
+            Editor
         }
 
         public static BundleHandler bundleHandler = new BundleHandler("en");

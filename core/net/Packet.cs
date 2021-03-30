@@ -215,6 +215,13 @@ namespace Casanova.core.net
         {
             Write(_value.netId);
         }
+        
+        /// <summary>Adds a Rules object to the packet.</summary>
+        /// <param name="_value">The Rules object to add.</param>
+        public void Write(Rules _value)
+        {
+            Write(_value.Mode.ToString());
+        }
 
         #endregion
 
@@ -389,6 +396,16 @@ namespace Casanova.core.net
         {
             var id = ReadShort();
             return NetworkManager.PlayersGroup.ContainsKey(id) ? NetworkManager.PlayersGroup[id] : null;
+        }
+
+        /// <summary>Reads a Rules object from the packet.</summary>
+        public Rules ReadRules()
+        {
+            var mode = ReadString();
+            return new Rules
+            {
+                Mode = (Vars.Gamemode) Enum.Parse(typeof(Vars.Gamemode), mode)
+            };
         }
 
         #endregion

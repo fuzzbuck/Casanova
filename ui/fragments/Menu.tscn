@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=2]
+[gd_scene load_steps=34 format=2]
 
 [ext_resource path="res://ui/fragments/CardsContainer.cs" type="Script" id=1]
 [ext_resource path="res://ui/fragments/MenuButtonsContainer.cs" type="Script" id=2]
@@ -10,6 +10,7 @@
 [ext_resource path="res://assets/sprites/interface/header.png" type="Texture" id=8]
 [ext_resource path="res://assets/sprites/interface/icon.png" type="Texture" id=9]
 [ext_resource path="res://ui/elements/FlatButton.tscn" type="PackedScene" id=10]
+[ext_resource path="res://assets/sprites/interface/editor_map.png" type="Texture" id=11]
 
 [sub_resource type="Shader" id=1]
 code = "shader_type canvas_item;
@@ -329,6 +330,114 @@ tracks/1/keys = {
 "values": [ Color( 1, 1, 1, 1 ), Color( 0.972549, 0.87451, 0.494118, 1 ) ]
 }
 
+[sub_resource type="Animation" id=19]
+length = 0.25
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.2 ),
+"transitions": PoolRealArray( 0.450625, 0.466517 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 1 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath(".:rect_rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.2 ),
+"transitions": PoolRealArray( 0.450625, 0.482968 ),
+"update": 0,
+"values": [ -160.0, 0.0 ]
+}
+
+[sub_resource type="Animation" id=20]
+length = 0.25
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.2 ),
+"transitions": PoolRealArray( 0.108819, 0.933033 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 1 ), Color( 1, 1, 1, 0 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath(".:rect_rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.2 ),
+"transitions": PoolRealArray( 0.31864, 0.34151 ),
+"update": 0,
+"values": [ 0.0, 30.0 ]
+}
+
+[sub_resource type="Animation" id=21]
+length = 0.5
+tracks/0/type = "value"
+tracks/0/path = NodePath("Icon:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.5 ),
+"transitions": PoolRealArray( 0.378929, 0.25 ),
+"update": 0,
+"values": [ Color( 0.972549, 0.87451, 0.494118, 1 ), Color( 1, 1, 1, 1 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Info:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.5 ),
+"transitions": PoolRealArray( 0.5, 0.406126 ),
+"update": 0,
+"values": [ Color( 0.972549, 0.87451, 0.494118, 1 ), Color( 1, 1, 1, 1 ) ]
+}
+
+[sub_resource type="Animation" id=22]
+length = 0.5
+tracks/0/type = "value"
+tracks/0/path = NodePath("Icon:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.5 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 1 ), Color( 0.972549, 0.87451, 0.494118, 1 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Info:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.5 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 1 ), Color( 0.972549, 0.87451, 0.494118, 1 ) ]
+}
+
 [node name="Control" type="Control"]
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -487,8 +596,8 @@ custom_constants/separation = 60
 alignment = 1
 
 [node name="Test" type="Panel" parent="Cards/Container"]
-margin_left = 210.0
-margin_right = 510.0
+margin_left = 30.0
+margin_right = 330.0
 margin_bottom = 415.0
 rect_min_size = Vector2( 300, 415 )
 custom_styles/panel = SubResource( 5 )
@@ -573,8 +682,8 @@ __meta__ = {
 }
 
 [node name="ServerJoin" type="Panel" parent="Cards/Container"]
-margin_left = 570.0
-margin_right = 870.0
+margin_left = 390.0
+margin_right = 690.0
 margin_bottom = 415.0
 rect_min_size = Vector2( 300, 415 )
 custom_styles/panel = SubResource( 5 )
@@ -651,6 +760,92 @@ anims/hover = SubResource( 17 )
 anims/unhover = SubResource( 18 )
 
 [node name="Detector" type="Panel" parent="Cards/Container/ServerJoin"]
+modulate = Color( 1, 1, 1, 0 )
+anchor_right = 1.0
+anchor_bottom = 1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Editor" type="Panel" parent="Cards/Container"]
+margin_left = 750.0
+margin_right = 1050.0
+margin_bottom = 415.0
+rect_min_size = Vector2( 300, 415 )
+custom_styles/panel = SubResource( 5 )
+__meta__ = {
+"_edit_ik_": true
+}
+
+[node name="Icon" type="TextureRect" parent="Cards/Container/Editor"]
+modulate = Color( 0.972549, 0.87451, 0.494118, 1 )
+anchor_right = 1.0
+margin_left = 6.0
+margin_top = 6.0
+margin_right = -6.0
+margin_bottom = 205.0
+texture = ExtResource( 11 )
+expand = true
+stretch_mode = 6
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Info" type="Panel" parent="Cards/Container/Editor"]
+modulate = Color( 0.972549, 0.87451, 0.494118, 1 )
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 6.0
+margin_top = -210.0
+margin_right = -6.0
+margin_bottom = -6.0
+custom_styles/panel = SubResource( 7 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Cards/Container/Editor/Info"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_top = 31.0
+margin_bottom = 3.05176e-05
+custom_constants/separation = 25
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="EditorTitle" type="Label" parent="Cards/Container/Editor/Info/VBoxContainer"]
+margin_right = 288.0
+margin_bottom = 51.0
+custom_fonts/font = SubResource( 9 )
+custom_colors/font_color = Color( 0.129412, 0.156863, 0.227451, 1 )
+text = "Editor"
+align = 1
+valign = 1
+
+[node name="EditorDesc" type="Label" parent="Cards/Container/Editor/Info/VBoxContainer"]
+margin_top = 76.0
+margin_right = 288.0
+margin_bottom = 127.0
+custom_fonts/font = SubResource( 10 )
+custom_colors/font_color = Color( 0.113725, 0.152941, 0.243137, 1 )
+text = "Create & Edit worlds in an
+interactive environment"
+align = 1
+valign = 2
+clip_text = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Cards/Container/Editor"]
+anims/enter = SubResource( 19 )
+anims/exit = SubResource( 20 )
+anims/hover = SubResource( 21 )
+anims/unhover = SubResource( 22 )
+
+[node name="Detector" type="Panel" parent="Cards/Container/Editor"]
 modulate = Color( 1, 1, 1, 0 )
 anchor_right = 1.0
 anchor_bottom = 1.0

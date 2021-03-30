@@ -55,7 +55,7 @@ namespace Casanova.core.net.control
             }
 
             // create unit for this player with id of 0 (id=0 means auto-assign new id)
-            var unit = NetworkManager.CreateUnit(NetworkManager.loc.SERVER, 0, UnitTypes.crimson);
+            var unit = NetworkManager.CreateUnit(NetworkManager.loc.SERVER, 0, UnitTypes.explorer);
                     
             // this player will take ownership of this unit
             NetworkManager.UnitOwnership(NetworkManager.loc.SERVER, unit, player);

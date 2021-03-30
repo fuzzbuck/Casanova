@@ -120,13 +120,14 @@ __meta__ = {
 
 [node name="Label" parent="HBox" instance=ExtResource( 2 )]
 margin_top = 8.0
-margin_right = 113.0
+margin_right = 148.0
 margin_bottom = 42.0
+rect_scale = Vector2( 1, 1 )
 text = "Preview:"
 
 [node name="Preview" type="RichTextLabel" parent="HBox"]
-margin_left = 133.0
-margin_right = 1233.0
+margin_left = 168.0
+margin_right = 1268.0
 margin_bottom = 50.0
 rect_min_size = Vector2( 1100, 50 )
 custom_styles/focus = SubResource( 6 )
