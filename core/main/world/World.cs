@@ -1,5 +1,6 @@
 using Casanova.core.content;
 using Casanova.core.main.units;
+using Casanova.core.main.world.blocks;
 using Casanova.core.types;
 using Godot;
 
@@ -34,6 +35,13 @@ namespace Casanova.core.main.world
             unit.Body.GlobalRotation = rotation;
             
             return unit;
+        }
+
+        public Block AddBlock(Block block, Vector2 position)
+        {
+            GetNode("Terrain").GetNode<Node2D>("Blocks").AddChild(block);
+            block.GlobalPosition = position;
+            return block;
         }
     }
 }

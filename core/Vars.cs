@@ -34,7 +34,7 @@ namespace Casanova.core
             Freeplay,
             Editor
         }
-        public static int default_unit = 1; // explorer
+        public static int default_unit = 0; // explorer
         public static int editor_unit = 2; // ghost
 
         public static BundleHandler bundleHandler = new BundleHandler("en");
@@ -166,15 +166,15 @@ namespace Casanova.core
         public class PlayerCamera
         {
             public static bool rotates_with_player = false;
-            public static float min_zoom_distance = 0.44f;
-            public static float max_zoom_distance = 2f;
+            public static float min_zoom_distance = 0.5f;
+            public static float max_zoom_distance = 0.9f;
             public static float mobile_zoom_offset_multiplier = 0.2f;
 
             public static float mobile_cam_distance_treshold = 16f;
             public static float zoom_sensitivity = 2f;
             public static float zoom_speed = 0.02f;
             public static float drag_sensitivity = 0.2f;
-            public static float smoothness = 0.034f;
+            public static float smoothness = 0.014f;
         }
 
         public class Networking

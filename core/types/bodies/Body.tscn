@@ -1,8 +1,9 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://core/types/bodies/Body.cs" type="Script" id=1]
 [ext_resource path="res://assets/sprites/units/explorer.png" type="Texture" id=2]
 [ext_resource path="res://core/types/effects/Shadow.cs" type="Script" id=3]
+[ext_resource path="res://assets/sprites/world/round-shadow.png" type="Texture" id=4]
 
 [sub_resource type="PhysicsMaterial" id=1]
 friction = 0.25
@@ -53,3 +54,7 @@ texture = ExtResource( 2 )
 position = Vector2( 0, 2.65 )
 scale = Vector2( 0.3, 0.3 )
 polygon = PoolVector2Array( 26, 22, 26, -25, -26, -25, -26, 21 )
+
+[node name="Light2D" type="Light2D" parent="."]
+texture = ExtResource( 4 )
+texture_scale = 0.7

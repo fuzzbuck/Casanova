@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Casanova.core.content;
 using Casanova.core.main.units;
+using Casanova.core.main.world.blocks;
 using Casanova.core.net;
 using Casanova.core.net.server;
 using Casanova.core.net.types;
@@ -76,7 +77,6 @@ namespace Casanova.core.main.world
             }
         }
 
-        
         // called from server or client
         public static Unit CreateUnit(loc loc, int id=0, UnitType type=null, Vector2 position = new Vector2(), float rotation=0)
         {

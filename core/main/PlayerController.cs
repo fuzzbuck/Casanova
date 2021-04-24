@@ -48,6 +48,8 @@ namespace Casanova.core.main
         public void ProcessMovement()
         {
             if (Focus == null) LocalUnit.Body.Axis = Axis;
+            if(!Vars.PersistentData.isMobile)
+                LocalCamera.Position = LocalUnit.Body.Position;
         }
 
         public void ProcessMobileMovement()
@@ -84,6 +86,18 @@ namespace Casanova.core.main
             }
         }
 
+        
+        public override void _UnhandledInput(InputEvent @event) //todo :remove this and replace with better thing
+        {
+            if (@event is InputEventMouseButton eventMouse && @event.IsPressed())
+            {
+                if (eventMouse.ButtonIndex == (int) ButtonList.Left)
+                {
+                    
+                }
+            }
+        }
+
         public static void TakeOwnership(Unit unit)
         {
             ThreadManager.ExecuteOnMainThread(() =>
@@ -92,7 +106,7 @@ namespace Casanova.core.main
                     LocalCamera.GetParent().RemoveChild(LocalCamera);   // wow godot very nice
 
                 if(!Vars.PersistentData.isMobile)
-                    unit.Body.AddChild(LocalCamera);
+                    unit.AddChild(LocalCamera);
                 else
                 {
                     unit.AddChild(LocalCamera);

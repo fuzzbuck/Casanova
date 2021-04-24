@@ -1,10 +1,16 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=20 format=2]
 
 [ext_resource path="res://ui/fragments/DebugLabel.tscn" type="PackedScene" id=1]
+[ext_resource path="res://assets/sprites/world/round-shadow.png" type="Texture" id=2]
+[ext_resource path="res://core/main/world/blocks/Block.tscn" type="PackedScene" id=3]
 [ext_resource path="res://environment.tres" type="Environment" id=4]
 [ext_resource path="res://core/main/world/World.cs" type="Script" id=5]
+[ext_resource path="res://core/main/world/floors/BigFloor.tscn" type="PackedScene" id=6]
 [ext_resource path="res://ui/fragments/Chat.tscn" type="PackedScene" id=7]
 [ext_resource path="res://ui/fragments/MobileUnderhead.tscn" type="PackedScene" id=8]
+[ext_resource path="res://assets/sprites/special/99a679f1-03c2-41d2-959a-8e9994d9d241.png" type="Texture" id=9]
+[ext_resource path="res://assets/sprites/special/delliriant.png" type="Texture" id=10]
+[ext_resource path="res://assets/sprites/special/untitled.png" type="Texture" id=11]
 
 [sub_resource type="Shader" id=1]
 code = "shader_type canvas_item;
@@ -73,6 +79,194 @@ shader = SubResource( 1 )
 shader_param/OCTAVES = 4
 shader_param/perlin = SubResource( 3 )
 
+[sub_resource type="Shader" id=5]
+code = "//SHADER ORIGINALY CREADED BY \"ehj1\" FROM SHADERTOY
+//PORTED AND MODIFYED TO GODOT BY AHOPNESS (@ahopness)
+//
+//SHADERTOY LINK : https://www.shadertoy.com/view/ldXGW4
+
+shader_type canvas_item;
+render_mode blend_mix;
+
+// change these values to 0.0 to turn off individual effects
+uniform float vertJerkOpt :hint_range(0,1) = 1.0;
+uniform float vertMovementOpt :hint_range(0,1) = 1.0;
+uniform float bottomStaticOpt :hint_range(0,5) = 1.0;
+uniform float scalinesOpt :hint_range(0,6) = 1.0;
+uniform float rgbOffsetOpt :hint_range(0,2) = 1.0;
+uniform float horzFuzzOpt :hint_range(0,5) = 1.0;
+
+varying float time;
+
+// Noise generation functions borrowed from: 
+// https://github.com/ashima/webgl-noise/blob/master/src/noise2D.glsl
+
+void vertex(){
+	time = TIME;
+}
+
+vec3 mod289vec3(vec3 x){
+	return x - floor(x * (1.0 / 289.0)) * 289.0;
+}
+
+vec2 mod289vec2(vec2 x){
+	return x - floor(x * (1.0 / 289.0)) * 289.0;
+}
+
+vec3 permute(vec3 x){
+	return mod289vec3(((x*34.0)+1.0)*x);
+}
+
+float snoise(vec2 v){
+	const vec4 C = vec4(0.211324865405187,  // (3.0-sqrt(3.0))/6.0
+						0.366025403784439,  // 0.5*(sqrt(3.0)-1.0)
+						-0.577350269189626, // -1.0 + 2.0 * C.x
+						0.024390243902439); // 1.0 / 41.0
+	// First corner
+	vec2 i  = floor(v + dot(v, C.yy) );
+	vec2 x0 = v -   i + dot(i, C.xx);
+	
+	// Other corners
+	vec2 i1;
+	//i1.x = step( x0.y, x0.x ); // x0.x > x0.y ? 1.0 : 0.0
+	//i1.y = 1.0 - i1.x;
+	i1 = (x0.x > x0.y) ? vec2(1.0, 0.0) : vec2(0.0, 1.0);
+	// x0 = x0 - 0.0 + 0.0 * C.xx ;
+	// x1 = x0 - i1 + 1.0 * C.xx ;
+	// x2 = x0 - 1.0 + 2.0 * C.xx ;
+	vec4 x12 = x0.xyxy + C.xxzz;
+	x12.xy -= i1;
+	
+	// Permutations
+	i = mod289vec2(i); // Avoid truncation effects in permutation
+	vec3 p = permute( permute( i.y + vec3(0.0, i1.y, 1.0 ))
+	+ i.x + vec3(0.0, i1.x, 1.0 ));
+	
+	vec3 m = max(0.5 - vec3(dot(x0,x0), dot(x12.xy,x12.xy), dot(x12.zw,x12.zw)), 0.0);
+	m = m*m ;
+	m = m*m ;
+	
+	// Gradients: 41 points uniformly over a line, mapped onto a diamond.
+	// The ring size 17*17 = 289 is close to a multiple of 41 (41*7 = 287)
+	
+	vec3 x = 2.0 * fract(p * C.www) - 1.0;
+	vec3 h = abs(x) - 0.5;
+	vec3 ox = floor(x + 0.5);
+	vec3 a0 = x - ox;
+	
+	// Normalise gradients implicitly by scaling m
+	// Approximation of: m *= inversesqrt( a0*a0 + h*h );
+	m *= 1.79284291400159 - 0.85373472095314 * ( a0*a0 + h*h );
+	
+	// Compute final noise value at P
+	vec3 g;
+	g.x  = a0.x  * x0.x  + h.x  * x0.y;
+	g.yz = a0.yz * x12.xz + h.yz * x12.yw;
+	return 130.0 * dot(m, g);
+}
+
+float staticV(vec2 uv){
+	float staticHeight = snoise(vec2(9.0,float(time)*1.2+3.0))*0.3+5.0;
+	float staticAmount = snoise(vec2(1.0,time*1.2-6.0))*0.1+0.3;
+	float staticStrength = snoise(vec2(-9.75,time*0.6-3.0))*2.0+2.0;
+	return (1.0-step(snoise(vec2(5.0*pow(time,2.0)+pow(uv.x*7.0,1.2),pow((mod(time,100.0)+100.0)*uv.y*0.3+3.0,staticHeight))),staticAmount))*staticStrength;
+}
+
+
+void fragment(){
+	vec2 uv =  UV.xy;
+	uv.y = (uv.y - 1.0) * -1.0;
+	
+	float jerkOffset = (1.0-step(snoise(vec2(TIME*1.3,5.0)),0.8))*0.05;
+	
+	float fuzzOffset = snoise(vec2(TIME*15.0,uv.y*80.0))*0.003;
+	float largeFuzzOffset = snoise(vec2(TIME*1.0,uv.y*25.0))*0.004;
+	
+	float vertMovementOn = (1.0-step(snoise(vec2(TIME*0.2,8.0)),0.4))*vertMovementOpt;
+	float vertJerk = (1.0-step(snoise(vec2(TIME*1.5,5.0)),0.6))*vertJerkOpt;
+	float vertJerk2 = (1.0-step(snoise(vec2(TIME*5.5,5.0)),0.2))*vertJerkOpt;
+	float yOffset = abs(sin(TIME)*4.0)*vertMovementOn+vertJerk*vertJerk2*0.3;
+	float _y = mod(uv.y+yOffset,1.0);
+	
+	
+	float xOffset = (fuzzOffset + largeFuzzOffset) * horzFuzzOpt;
+	
+	float staticVal = 0.0;
+	
+	for (float y = -1.0; y <= 1.0; y += 1.0) {
+		float maxDist = 5.0/200.0;
+		float dist = y/200.0;
+		staticVal += staticV(vec2(uv.x,uv.y+dist))*(maxDist-abs(dist))*1.5;
+	}
+	
+	staticVal *= bottomStaticOpt;
+	
+	float red = texture(SCREEN_TEXTURE, vec2(uv.x + xOffset -0.01*rgbOffsetOpt,_y)).r+staticVal;
+	float green = texture(SCREEN_TEXTURE, vec2(uv.x + xOffset,_y)).g+staticVal;
+	float blue = texture(SCREEN_TEXTURE, vec2(uv.x + xOffset +0.01*rgbOffsetOpt,_y)).b+staticVal;
+	
+	vec3 color = vec3(red,green,blue);
+	float scanline = sin(uv.y*800.0)*0.04*scalinesOpt;
+	color -= scanline;
+	
+	COLOR = vec4(color,1.0);
+}"
+
+[sub_resource type="ShaderMaterial" id=6]
+shader = SubResource( 5 )
+shader_param/vertJerkOpt = 1.0
+shader_param/vertMovementOpt = 1.0
+shader_param/bottomStaticOpt = 1.0
+shader_param/scalinesOpt = 1.0
+shader_param/rgbOffsetOpt = 1.0
+shader_param/horzFuzzOpt = 1.0
+
+[sub_resource type="Shader" id=7]
+code = "//SHADER ORIGINALY CREADED BY \"abelcamarena\" FROM SHADERTOY
+//PORTED AND MODIFYED TO GODOT BY AHOPNESS (@ahopness)
+//
+//SHADERTOY LINK : https://www.shadertoy.com/view/tsKGDm
+
+shader_type canvas_item;
+
+uniform float SCREEN_WIDTH = 320.; // Lower num - bigger pixels (this will be the screen width)
+uniform float COLOR_FACTOR :hint_range(0., 10.) = 4.;   // Higher num - higher colors quality
+//uniform float DITHERING_STRENTH :hint_range(0., .07) = 0.005; // Be carefull with this one, dithering can get messy really easily
+
+//const mat4 ditherTable = mat4(
+//	vec4(-4.0, 0.0, -3.0, 1.0),
+//	vec4(2.0, -2.0, 3.0, -1.0),
+//	vec4(-3.0, 1.0, -4.0, 0.0),
+//	vec4(3.0, -1.0, 2.0, -2.0)
+//);
+
+void fragment(){                  
+	// Reduce pixels            
+	vec2 size = SCREEN_WIDTH * SCREEN_PIXEL_SIZE.xy/SCREEN_PIXEL_SIZE.x;
+	vec2 coor = floor( UV * size) ;
+	vec2 uv = coor / size;   
+	uv.y = (uv.y - 1.0) * -1.0;
+	
+	// Get source color
+	vec3 col = texture(SCREEN_TEXTURE, uv).xyz;     
+	
+	// Dithering - CURRECTLY NOT WORKING IN 3.2.3
+	//int row = int( coor.x ) % 4;
+	//int column = int( coor.y ) % 4;
+	//col += ditherTable[row][column] * DITHERING_STRENTH;
+	
+	// Reduce colors    
+	col = floor(col * COLOR_FACTOR) / COLOR_FACTOR;    
+	
+	// Output to screen
+	COLOR = vec4(col,1.);
+}"
+
+[sub_resource type="ShaderMaterial" id=8]
+shader = SubResource( 7 )
+shader_param/SCREEN_WIDTH = 320.0
+shader_param/COLOR_FACTOR = 4.0
+
 [node name="World" type="Node2D"]
 script = ExtResource( 5 )
 
@@ -115,6 +309,2979 @@ __meta__ = {
 
 [node name="Floors" type="Node2D" parent="Terrain"]
 
+[node name="Sprite" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 64, 64 )
+
+[node name="Sprite2" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 192, 64 )
+
+[node name="Sprite3" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 192, 192 )
+
+[node name="Sprite4" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 64, 192 )
+
+[node name="Sprite5" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -192, 64 )
+
+[node name="Sprite6" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -64, 64 )
+
+[node name="Sprite7" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -64, 192 )
+
+[node name="Sprite8" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -192, 192 )
+
+[node name="Sprite9" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -192, -192 )
+
+[node name="Sprite10" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -64, -192 )
+
+[node name="Sprite11" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -64, -64 )
+
+[node name="Sprite12" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -192, -64 )
+
+[node name="Sprite13" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 64, -192 )
+
+[node name="Sprite217" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1344, 64 )
+
+[node name="Sprite218" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1472, 64 )
+
+[node name="Sprite219" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1600, 64 )
+
+[node name="Sprite220" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1728, 64 )
+
+[node name="Sprite221" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1856, 64 )
+
+[node name="Sprite222" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1984, 64 )
+
+[node name="Sprite223" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -2112, 64 )
+
+[node name="Sprite224" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -2240, 64 )
+
+[node name="Sprite225" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -2368, 64 )
+
+[node name="Sprite233" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -3264, 192 )
+
+[node name="Sprite234" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -3264, 320 )
+
+[node name="Sprite235" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -3392, 320 )
+
+[node name="Sprite236" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -3520, 320 )
+
+[node name="Sprite237" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -3648, 320 )
+
+[node name="Sprite238" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -3648, 448 )
+
+[node name="Sprite239" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -3648, 192 )
+
+[node name="Sprite240" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -3648, 64 )
+
+[node name="Sprite241" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -3520, 64 )
+
+[node name="Sprite242" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -3392, 64 )
+
+[node name="Sprite243" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -3264, 448 )
+
+[node name="Sprite244" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -3264, 576 )
+
+[node name="Sprite245" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -3648, 576 )
+
+[node name="Sprite226" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -2496, 64 )
+
+[node name="Sprite232" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -3264, 64 )
+
+[node name="Sprite14" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 192, -192 )
+
+[node name="Sprite15" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 192, -64 )
+
+[node name="Sprite16" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 64, -64 )
+
+[node name="Sprite17" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -448, -192 )
+
+[node name="Sprite18" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -320, -192 )
+
+[node name="Sprite19" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -320, -64 )
+
+[node name="Sprite20" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -448, -64 )
+
+[node name="Sprite21" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -448, 64 )
+
+[node name="Sprite22" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -320, 64 )
+
+[node name="Sprite23" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -320, 192 )
+
+[node name="Sprite24" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -448, 192 )
+
+[node name="Sprite25" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 832, 64 )
+
+[node name="Sprite26" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 960, 64 )
+
+[node name="Sprite27" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 960, 192 )
+
+[node name="Sprite28" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 832, 192 )
+
+[node name="Sprite29" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 576, 64 )
+
+[node name="Sprite30" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 704, 64 )
+
+[node name="Sprite31" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 704, 192 )
+
+[node name="Sprite32" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 576, 192 )
+
+[node name="Sprite33" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 576, -192 )
+
+[node name="Sprite34" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 704, -192 )
+
+[node name="Sprite35" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 704, -64 )
+
+[node name="Sprite36" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 576, -64 )
+
+[node name="Sprite37" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 832, -192 )
+
+[node name="Sprite38" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 960, -192 )
+
+[node name="Sprite39" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 960, -64 )
+
+[node name="Sprite40" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 832, -64 )
+
+[node name="Sprite41" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 320, -192 )
+
+[node name="Sprite42" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 448, -192 )
+
+[node name="Sprite43" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 448, -64 )
+
+[node name="Sprite44" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 320, -64 )
+
+[node name="Sprite45" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 320, 64 )
+
+[node name="Sprite46" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 448, 64 )
+
+[node name="Sprite47" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 448, 192 )
+
+[node name="Sprite48" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 320, 192 )
+
+[node name="Sprite49" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 832, -448 )
+
+[node name="Sprite50" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 960, -448 )
+
+[node name="Sprite51" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 960, -320 )
+
+[node name="Sprite52" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 832, -320 )
+
+[node name="Sprite53" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 576, -448 )
+
+[node name="Sprite54" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 704, -448 )
+
+[node name="Sprite55" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 704, -320 )
+
+[node name="Sprite56" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 576, -320 )
+
+[node name="Sprite57" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 576, -704 )
+
+[node name="Sprite58" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 704, -704 )
+
+[node name="Sprite59" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 704, -576 )
+
+[node name="Sprite60" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 576, -576 )
+
+[node name="Sprite61" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 832, -704 )
+
+[node name="Sprite62" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 960, -704 )
+
+[node name="Sprite63" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 960, -576 )
+
+[node name="Sprite64" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 832, -576 )
+
+[node name="Sprite65" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 320, -704 )
+
+[node name="Sprite66" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 448, -704 )
+
+[node name="Sprite67" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 448, -576 )
+
+[node name="Sprite68" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 320, -576 )
+
+[node name="Sprite69" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 320, -448 )
+
+[node name="Sprite70" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 448, -448 )
+
+[node name="Sprite71" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 448, -320 )
+
+[node name="Sprite72" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 320, -320 )
+
+[node name="Sprite73" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 64, -448 )
+
+[node name="Sprite74" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 192, -448 )
+
+[node name="Sprite75" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 192, -320 )
+
+[node name="Sprite76" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 64, -320 )
+
+[node name="Sprite77" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -192, -448 )
+
+[node name="Sprite78" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -64, -448 )
+
+[node name="Sprite79" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -64, -320 )
+
+[node name="Sprite80" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -192, -320 )
+
+[node name="Sprite81" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -192, -704 )
+
+[node name="Sprite82" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -64, -704 )
+
+[node name="Sprite83" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -64, -576 )
+
+[node name="Sprite84" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -192, -576 )
+
+[node name="Sprite85" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 64, -704 )
+
+[node name="Sprite86" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 192, -704 )
+
+[node name="Sprite87" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 192, -576 )
+
+[node name="Sprite88" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 64, -576 )
+
+[node name="Sprite89" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -448, -704 )
+
+[node name="Sprite90" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -320, -704 )
+
+[node name="Sprite91" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -320, -576 )
+
+[node name="Sprite92" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -448, -576 )
+
+[node name="Sprite93" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -448, -448 )
+
+[node name="Sprite94" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -320, -448 )
+
+[node name="Sprite95" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -320, -320 )
+
+[node name="Sprite96" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -448, -320 )
+
+[node name="Sprite97" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 64, 576 )
+
+[node name="Sprite98" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 192, 576 )
+
+[node name="Sprite99" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 192, 704 )
+
+[node name="Sprite100" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 64, 704 )
+
+[node name="Sprite101" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -192, 576 )
+
+[node name="Sprite102" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -64, 576 )
+
+[node name="Sprite103" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -64, 704 )
+
+[node name="Sprite104" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -192, 704 )
+
+[node name="Sprite105" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -192, 320 )
+
+[node name="Sprite106" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -64, 320 )
+
+[node name="Sprite107" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -64, 448 )
+
+[node name="Sprite108" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -192, 448 )
+
+[node name="Sprite109" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 64, 320 )
+
+[node name="Sprite110" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 192, 320 )
+
+[node name="Sprite111" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 192, 448 )
+
+[node name="Sprite112" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 64, 448 )
+
+[node name="Sprite113" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -448, 320 )
+
+[node name="Sprite114" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -320, 320 )
+
+[node name="Sprite115" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -320, 448 )
+
+[node name="Sprite116" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -448, 448 )
+
+[node name="Sprite117" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -448, 576 )
+
+[node name="Sprite118" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -320, 576 )
+
+[node name="Sprite119" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -320, 704 )
+
+[node name="Sprite120" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -448, 704 )
+
+[node name="Sprite121" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 832, 576 )
+
+[node name="Sprite122" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 960, 576 )
+
+[node name="Sprite123" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 960, 704 )
+
+[node name="Sprite124" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 832, 704 )
+
+[node name="Sprite125" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 576, 576 )
+
+[node name="Sprite126" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 704, 576 )
+
+[node name="Sprite127" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 704, 704 )
+
+[node name="Sprite128" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 576, 704 )
+
+[node name="Sprite129" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 576, 320 )
+
+[node name="Sprite130" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 704, 320 )
+
+[node name="Sprite131" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 704, 448 )
+
+[node name="Sprite132" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 576, 448 )
+
+[node name="Sprite133" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 832, 320 )
+
+[node name="Sprite134" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 960, 320 )
+
+[node name="Sprite135" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 960, 448 )
+
+[node name="Sprite136" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 832, 448 )
+
+[node name="Sprite137" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 320, 320 )
+
+[node name="Sprite138" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 448, 320 )
+
+[node name="Sprite139" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 448, 448 )
+
+[node name="Sprite140" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 320, 448 )
+
+[node name="Sprite141" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 320, 576 )
+
+[node name="Sprite142" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 448, 576 )
+
+[node name="Sprite143" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 448, 704 )
+
+[node name="Sprite144" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 320, 704 )
+
+[node name="Sprite145" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -704, -448 )
+
+[node name="Sprite146" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -576, -448 )
+
+[node name="Sprite147" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -576, -320 )
+
+[node name="Sprite148" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -704, -320 )
+
+[node name="Sprite149" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -960, -448 )
+
+[node name="Sprite150" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -832, -448 )
+
+[node name="Sprite151" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -832, -320 )
+
+[node name="Sprite152" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -960, -320 )
+
+[node name="Sprite153" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -960, -704 )
+
+[node name="Sprite154" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -832, -704 )
+
+[node name="Sprite155" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -832, -576 )
+
+[node name="Sprite156" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -960, -576 )
+
+[node name="Sprite157" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -704, -704 )
+
+[node name="Sprite158" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -576, -704 )
+
+[node name="Sprite159" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -576, -576 )
+
+[node name="Sprite160" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -704, -576 )
+
+[node name="Sprite161" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1216, -704 )
+
+[node name="Sprite162" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1088, -704 )
+
+[node name="Sprite163" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1088, -576 )
+
+[node name="Sprite164" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1216, -576 )
+
+[node name="Sprite165" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1216, -448 )
+
+[node name="Sprite166" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1088, -448 )
+
+[node name="Sprite167" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1088, -320 )
+
+[node name="Sprite168" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1216, -320 )
+
+[node name="Sprite169" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -704, 64 )
+
+[node name="Sprite170" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -576, 64 )
+
+[node name="Sprite171" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -576, 192 )
+
+[node name="Sprite172" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -704, 192 )
+
+[node name="Sprite173" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -960, 64 )
+
+[node name="Sprite174" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -832, 64 )
+
+[node name="Sprite175" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -832, 192 )
+
+[node name="Sprite176" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -960, 192 )
+
+[node name="Sprite177" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -960, -192 )
+
+[node name="Sprite178" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -832, -192 )
+
+[node name="Sprite179" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -832, -64 )
+
+[node name="Sprite180" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -960, -64 )
+
+[node name="Sprite181" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -704, -192 )
+
+[node name="Sprite182" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -576, -192 )
+
+[node name="Sprite183" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -576, -64 )
+
+[node name="Sprite184" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -704, -64 )
+
+[node name="Sprite185" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1216, -192 )
+
+[node name="Sprite186" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1088, -192 )
+
+[node name="Sprite187" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1088, -64 )
+
+[node name="Sprite188" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1216, -64 )
+
+[node name="Sprite189" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1216, 64 )
+
+[node name="Sprite190" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1088, 64 )
+
+[node name="Sprite191" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1088, 192 )
+
+[node name="Sprite192" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1216, 192 )
+
+[node name="Sprite193" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -704, 576 )
+
+[node name="Sprite194" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -576, 576 )
+
+[node name="Sprite195" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -576, 704 )
+
+[node name="Sprite196" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -704, 704 )
+
+[node name="Sprite197" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -960, 576 )
+
+[node name="Sprite198" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -832, 576 )
+
+[node name="Sprite199" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -832, 704 )
+
+[node name="Sprite200" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -960, 704 )
+
+[node name="Sprite201" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -960, 320 )
+
+[node name="Sprite202" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -832, 320 )
+
+[node name="Sprite203" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -832, 448 )
+
+[node name="Sprite204" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -960, 448 )
+
+[node name="Sprite205" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -704, 320 )
+
+[node name="Sprite206" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -576, 320 )
+
+[node name="Sprite207" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -576, 448 )
+
+[node name="Sprite208" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -704, 448 )
+
+[node name="Sprite209" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1216, 320 )
+
+[node name="Sprite210" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1088, 320 )
+
+[node name="Sprite211" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1088, 448 )
+
+[node name="Sprite212" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1216, 448 )
+
+[node name="Sprite213" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1216, 576 )
+
+[node name="Sprite214" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1088, 576 )
+
+[node name="Sprite215" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1088, 704 )
+
+[node name="Sprite216" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1216, 704 )
+
+[node name="Sprite227" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1472, 576 )
+
+[node name="Sprite228" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1344, 576 )
+
+[node name="Sprite229" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1344, 704 )
+
+[node name="Sprite230" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1472, 704 )
+
+[node name="Sprite231" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1728, 576 )
+
+[node name="Sprite246" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1600, 576 )
+
+[node name="Sprite247" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1600, 704 )
+
+[node name="Sprite248" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1728, 704 )
+
+[node name="Sprite249" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1728, 320 )
+
+[node name="Sprite250" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1600, 320 )
+
+[node name="Sprite251" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1600, 448 )
+
+[node name="Sprite252" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1728, 448 )
+
+[node name="Sprite253" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1472, 320 )
+
+[node name="Sprite254" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1344, 320 )
+
+[node name="Sprite255" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1344, 448 )
+
+[node name="Sprite256" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1472, 448 )
+
+[node name="Sprite257" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1984, 320 )
+
+[node name="Sprite258" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1856, 320 )
+
+[node name="Sprite259" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1856, 448 )
+
+[node name="Sprite260" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1984, 448 )
+
+[node name="Sprite261" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1984, 576 )
+
+[node name="Sprite262" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1856, 576 )
+
+[node name="Sprite263" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1856, 704 )
+
+[node name="Sprite264" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1984, 704 )
+
+[node name="Sprite265" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1472, 1088 )
+
+[node name="Sprite266" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1344, 1088 )
+
+[node name="Sprite267" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1344, 1216 )
+
+[node name="Sprite268" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1472, 1216 )
+
+[node name="Sprite269" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1728, 1088 )
+
+[node name="Sprite270" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1600, 1088 )
+
+[node name="Sprite271" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1600, 1216 )
+
+[node name="Sprite272" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1728, 1216 )
+
+[node name="Sprite273" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1728, 832 )
+
+[node name="Sprite274" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1600, 832 )
+
+[node name="Sprite275" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1600, 960 )
+
+[node name="Sprite276" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1728, 960 )
+
+[node name="Sprite277" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1472, 832 )
+
+[node name="Sprite278" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1344, 832 )
+
+[node name="Sprite279" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1344, 960 )
+
+[node name="Sprite280" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1472, 960 )
+
+[node name="Sprite281" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1984, 832 )
+
+[node name="Sprite282" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1856, 832 )
+
+[node name="Sprite283" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1856, 960 )
+
+[node name="Sprite284" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1984, 960 )
+
+[node name="Sprite285" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1984, 1088 )
+
+[node name="Sprite286" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1856, 1088 )
+
+[node name="Sprite287" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1856, 1216 )
+
+[node name="Sprite288" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1984, 1216 )
+
+[node name="Sprite289" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -704, 1088 )
+
+[node name="Sprite290" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -576, 1088 )
+
+[node name="Sprite291" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -576, 1216 )
+
+[node name="Sprite292" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -704, 1216 )
+
+[node name="Sprite293" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -960, 1088 )
+
+[node name="Sprite294" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -832, 1088 )
+
+[node name="Sprite295" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -832, 1216 )
+
+[node name="Sprite296" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -960, 1216 )
+
+[node name="Sprite297" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -960, 832 )
+
+[node name="Sprite298" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -832, 832 )
+
+[node name="Sprite299" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -832, 960 )
+
+[node name="Sprite300" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -960, 960 )
+
+[node name="Sprite301" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -704, 832 )
+
+[node name="Sprite302" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -576, 832 )
+
+[node name="Sprite303" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -576, 960 )
+
+[node name="Sprite304" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -704, 960 )
+
+[node name="Sprite305" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1216, 832 )
+
+[node name="Sprite306" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1088, 832 )
+
+[node name="Sprite307" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1088, 960 )
+
+[node name="Sprite308" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1216, 960 )
+
+[node name="Sprite309" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1216, 1088 )
+
+[node name="Sprite310" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1088, 1088 )
+
+[node name="Sprite311" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1088, 1216 )
+
+[node name="Sprite312" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1216, 1216 )
+
+[node name="Sprite313" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 64, 1088 )
+
+[node name="Sprite314" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 192, 1088 )
+
+[node name="Sprite315" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 192, 1216 )
+
+[node name="Sprite316" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 64, 1216 )
+
+[node name="Sprite317" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -192, 1088 )
+
+[node name="Sprite318" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -64, 1088 )
+
+[node name="Sprite319" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -64, 1216 )
+
+[node name="Sprite320" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -192, 1216 )
+
+[node name="Sprite321" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -192, 832 )
+
+[node name="Sprite322" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -64, 832 )
+
+[node name="Sprite323" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -64, 960 )
+
+[node name="Sprite324" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -192, 960 )
+
+[node name="Sprite325" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 64, 832 )
+
+[node name="Sprite326" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 192, 832 )
+
+[node name="Sprite327" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 192, 960 )
+
+[node name="Sprite328" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 64, 960 )
+
+[node name="Sprite329" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -448, 832 )
+
+[node name="Sprite330" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -320, 832 )
+
+[node name="Sprite331" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -320, 960 )
+
+[node name="Sprite332" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -448, 960 )
+
+[node name="Sprite333" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -448, 1088 )
+
+[node name="Sprite334" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -320, 1088 )
+
+[node name="Sprite335" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -320, 1216 )
+
+[node name="Sprite336" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -448, 1216 )
+
+[node name="Sprite337" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -704, -960 )
+
+[node name="Sprite338" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -576, -960 )
+
+[node name="Sprite339" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -576, -832 )
+
+[node name="Sprite340" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -704, -832 )
+
+[node name="Sprite341" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -960, -960 )
+
+[node name="Sprite342" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -832, -960 )
+
+[node name="Sprite343" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -832, -832 )
+
+[node name="Sprite344" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -960, -832 )
+
+[node name="Sprite345" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -960, -1216 )
+
+[node name="Sprite346" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -832, -1216 )
+
+[node name="Sprite347" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -832, -1088 )
+
+[node name="Sprite348" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -960, -1088 )
+
+[node name="Sprite349" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -704, -1216 )
+
+[node name="Sprite350" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -576, -1216 )
+
+[node name="Sprite351" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -576, -1088 )
+
+[node name="Sprite352" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -704, -1088 )
+
+[node name="Sprite353" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1216, -1216 )
+
+[node name="Sprite354" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1088, -1216 )
+
+[node name="Sprite355" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1088, -1088 )
+
+[node name="Sprite356" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1216, -1088 )
+
+[node name="Sprite357" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1216, -960 )
+
+[node name="Sprite358" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1088, -960 )
+
+[node name="Sprite359" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1088, -832 )
+
+[node name="Sprite360" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1216, -832 )
+
+[node name="Sprite361" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -704, -1472 )
+
+[node name="Sprite362" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -576, -1472 )
+
+[node name="Sprite363" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -576, -1344 )
+
+[node name="Sprite364" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -704, -1344 )
+
+[node name="Sprite365" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -960, -1472 )
+
+[node name="Sprite366" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -832, -1472 )
+
+[node name="Sprite367" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -832, -1344 )
+
+[node name="Sprite368" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -960, -1344 )
+
+[node name="Sprite369" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -960, -1728 )
+
+[node name="Sprite370" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -832, -1728 )
+
+[node name="Sprite371" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -832, -1600 )
+
+[node name="Sprite372" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -960, -1600 )
+
+[node name="Sprite373" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -704, -1728 )
+
+[node name="Sprite374" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -576, -1728 )
+
+[node name="Sprite375" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -576, -1600 )
+
+[node name="Sprite376" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -704, -1600 )
+
+[node name="Sprite377" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1216, -1728 )
+
+[node name="Sprite378" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1088, -1728 )
+
+[node name="Sprite379" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1088, -1600 )
+
+[node name="Sprite380" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1216, -1600 )
+
+[node name="Sprite381" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1216, -1472 )
+
+[node name="Sprite382" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1088, -1472 )
+
+[node name="Sprite383" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1088, -1344 )
+
+[node name="Sprite384" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1216, -1344 )
+
+[node name="Sprite385" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -704, -1984 )
+
+[node name="Sprite386" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -576, -1984 )
+
+[node name="Sprite387" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -576, -1856 )
+
+[node name="Sprite388" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -704, -1856 )
+
+[node name="Sprite389" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -960, -1984 )
+
+[node name="Sprite390" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -832, -1984 )
+
+[node name="Sprite391" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -832, -1856 )
+
+[node name="Sprite392" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -960, -1856 )
+
+[node name="Sprite393" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -960, -2240 )
+
+[node name="Sprite394" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -832, -2240 )
+
+[node name="Sprite395" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -832, -2112 )
+
+[node name="Sprite396" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -960, -2112 )
+
+[node name="Sprite397" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -704, -2240 )
+
+[node name="Sprite398" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -576, -2240 )
+
+[node name="Sprite399" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -576, -2112 )
+
+[node name="Sprite400" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -704, -2112 )
+
+[node name="Sprite401" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1216, -2240 )
+
+[node name="Sprite402" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1088, -2240 )
+
+[node name="Sprite403" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1088, -2112 )
+
+[node name="Sprite404" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1216, -2112 )
+
+[node name="Sprite405" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1216, -1984 )
+
+[node name="Sprite406" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1088, -1984 )
+
+[node name="Sprite407" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1088, -1856 )
+
+[node name="Sprite408" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1216, -1856 )
+
+[node name="Sprite409" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1472, -1984 )
+
+[node name="Sprite410" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1344, -1984 )
+
+[node name="Sprite411" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1344, -1856 )
+
+[node name="Sprite412" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1472, -1856 )
+
+[node name="Sprite413" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1728, -1984 )
+
+[node name="Sprite414" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1600, -1984 )
+
+[node name="Sprite415" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1600, -1856 )
+
+[node name="Sprite416" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1728, -1856 )
+
+[node name="Sprite417" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1728, -2240 )
+
+[node name="Sprite418" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1600, -2240 )
+
+[node name="Sprite419" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1600, -2112 )
+
+[node name="Sprite420" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1728, -2112 )
+
+[node name="Sprite421" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1472, -2240 )
+
+[node name="Sprite422" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1344, -2240 )
+
+[node name="Sprite423" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1344, -2112 )
+
+[node name="Sprite424" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1472, -2112 )
+
+[node name="Sprite425" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1984, -2240 )
+
+[node name="Sprite426" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1856, -2240 )
+
+[node name="Sprite427" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1856, -2112 )
+
+[node name="Sprite428" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1984, -2112 )
+
+[node name="Sprite429" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1984, -1984 )
+
+[node name="Sprite430" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1856, -1984 )
+
+[node name="Sprite431" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1856, -1856 )
+
+[node name="Sprite432" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1984, -1856 )
+
+[node name="Sprite433" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1472, -1472 )
+
+[node name="Sprite434" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1344, -1472 )
+
+[node name="Sprite435" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1344, -1344 )
+
+[node name="Sprite436" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1472, -1344 )
+
+[node name="Sprite437" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1728, -1472 )
+
+[node name="Sprite438" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1600, -1472 )
+
+[node name="Sprite439" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1600, -1344 )
+
+[node name="Sprite440" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1728, -1344 )
+
+[node name="Sprite441" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1728, -1728 )
+
+[node name="Sprite442" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1600, -1728 )
+
+[node name="Sprite443" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1600, -1600 )
+
+[node name="Sprite444" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1728, -1600 )
+
+[node name="Sprite445" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1472, -1728 )
+
+[node name="Sprite446" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1344, -1728 )
+
+[node name="Sprite447" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1344, -1600 )
+
+[node name="Sprite448" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1472, -1600 )
+
+[node name="Sprite449" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1984, -1728 )
+
+[node name="Sprite450" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1856, -1728 )
+
+[node name="Sprite451" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1856, -1600 )
+
+[node name="Sprite452" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1984, -1600 )
+
+[node name="Sprite453" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1984, -1472 )
+
+[node name="Sprite454" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1856, -1472 )
+
+[node name="Sprite455" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1856, -1344 )
+
+[node name="Sprite456" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1984, -1344 )
+
+[node name="Sprite457" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1472, -960 )
+
+[node name="Sprite458" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1344, -960 )
+
+[node name="Sprite459" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1344, -832 )
+
+[node name="Sprite460" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1472, -832 )
+
+[node name="Sprite461" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1728, -960 )
+
+[node name="Sprite462" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1600, -960 )
+
+[node name="Sprite463" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1600, -832 )
+
+[node name="Sprite464" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1728, -832 )
+
+[node name="Sprite465" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1728, -1216 )
+
+[node name="Sprite466" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1600, -1216 )
+
+[node name="Sprite467" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1600, -1088 )
+
+[node name="Sprite468" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1728, -1088 )
+
+[node name="Sprite469" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1472, -1216 )
+
+[node name="Sprite470" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1344, -1216 )
+
+[node name="Sprite471" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1344, -1088 )
+
+[node name="Sprite472" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1472, -1088 )
+
+[node name="Sprite473" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1984, -1216 )
+
+[node name="Sprite474" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1856, -1216 )
+
+[node name="Sprite475" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1856, -1088 )
+
+[node name="Sprite476" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1984, -1088 )
+
+[node name="Sprite477" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1984, -960 )
+
+[node name="Sprite478" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1856, -960 )
+
+[node name="Sprite479" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1856, -832 )
+
+[node name="Sprite480" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1984, -832 )
+
+[node name="Sprite481" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1472, -448 )
+
+[node name="Sprite482" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1344, -448 )
+
+[node name="Sprite483" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1344, -320 )
+
+[node name="Sprite484" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1472, -320 )
+
+[node name="Sprite485" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1728, -448 )
+
+[node name="Sprite486" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1600, -448 )
+
+[node name="Sprite487" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1600, -320 )
+
+[node name="Sprite488" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1728, -320 )
+
+[node name="Sprite489" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1728, -704 )
+
+[node name="Sprite490" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1600, -704 )
+
+[node name="Sprite491" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1600, -576 )
+
+[node name="Sprite492" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1728, -576 )
+
+[node name="Sprite493" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1472, -704 )
+
+[node name="Sprite494" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1344, -704 )
+
+[node name="Sprite495" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1344, -576 )
+
+[node name="Sprite496" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1472, -576 )
+
+[node name="Sprite497" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1984, -704 )
+
+[node name="Sprite498" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1856, -704 )
+
+[node name="Sprite499" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1856, -576 )
+
+[node name="Sprite500" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1984, -576 )
+
+[node name="Sprite501" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1984, -448 )
+
+[node name="Sprite502" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1856, -448 )
+
+[node name="Sprite503" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1856, -320 )
+
+[node name="Sprite504" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -1984, -320 )
+
+[node name="Sprite505" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 832, -960 )
+
+[node name="Sprite506" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 960, -960 )
+
+[node name="Sprite507" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 960, -832 )
+
+[node name="Sprite508" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 832, -832 )
+
+[node name="Sprite509" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 576, -960 )
+
+[node name="Sprite510" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 704, -960 )
+
+[node name="Sprite511" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 704, -832 )
+
+[node name="Sprite512" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 576, -832 )
+
+[node name="Sprite513" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 576, -1216 )
+
+[node name="Sprite514" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 704, -1216 )
+
+[node name="Sprite515" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 704, -1088 )
+
+[node name="Sprite516" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 576, -1088 )
+
+[node name="Sprite517" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 832, -1216 )
+
+[node name="Sprite518" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 960, -1216 )
+
+[node name="Sprite519" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 960, -1088 )
+
+[node name="Sprite520" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 832, -1088 )
+
+[node name="Sprite521" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 320, -1216 )
+
+[node name="Sprite522" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 448, -1216 )
+
+[node name="Sprite523" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 448, -1088 )
+
+[node name="Sprite524" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 320, -1088 )
+
+[node name="Sprite525" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 320, -960 )
+
+[node name="Sprite526" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 448, -960 )
+
+[node name="Sprite527" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 448, -832 )
+
+[node name="Sprite528" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 320, -832 )
+
+[node name="Sprite529" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 832, -1472 )
+
+[node name="Sprite530" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 960, -1472 )
+
+[node name="Sprite531" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 960, -1344 )
+
+[node name="Sprite532" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 832, -1344 )
+
+[node name="Sprite533" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 576, -1472 )
+
+[node name="Sprite534" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 704, -1472 )
+
+[node name="Sprite535" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 704, -1344 )
+
+[node name="Sprite536" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 576, -1344 )
+
+[node name="Sprite537" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 576, -1728 )
+
+[node name="Sprite538" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 704, -1728 )
+
+[node name="Sprite539" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 704, -1600 )
+
+[node name="Sprite540" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 576, -1600 )
+
+[node name="Sprite541" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 832, -1728 )
+
+[node name="Sprite542" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 960, -1728 )
+
+[node name="Sprite543" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 960, -1600 )
+
+[node name="Sprite544" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 832, -1600 )
+
+[node name="Sprite545" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 320, -1728 )
+
+[node name="Sprite546" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 448, -1728 )
+
+[node name="Sprite547" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 448, -1600 )
+
+[node name="Sprite548" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 320, -1600 )
+
+[node name="Sprite549" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 320, -1472 )
+
+[node name="Sprite550" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 448, -1472 )
+
+[node name="Sprite551" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 448, -1344 )
+
+[node name="Sprite552" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 320, -1344 )
+
+[node name="Sprite553" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 832, -1984 )
+
+[node name="Sprite554" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 960, -1984 )
+
+[node name="Sprite555" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 960, -1856 )
+
+[node name="Sprite556" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 832, -1856 )
+
+[node name="Sprite557" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 576, -1984 )
+
+[node name="Sprite558" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 704, -1984 )
+
+[node name="Sprite559" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 704, -1856 )
+
+[node name="Sprite560" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 576, -1856 )
+
+[node name="Sprite561" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 576, -2240 )
+
+[node name="Sprite562" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 704, -2240 )
+
+[node name="Sprite563" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 704, -2112 )
+
+[node name="Sprite564" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 576, -2112 )
+
+[node name="Sprite565" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 832, -2240 )
+
+[node name="Sprite566" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 960, -2240 )
+
+[node name="Sprite567" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 960, -2112 )
+
+[node name="Sprite568" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 832, -2112 )
+
+[node name="Sprite569" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 320, -2240 )
+
+[node name="Sprite570" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 448, -2240 )
+
+[node name="Sprite571" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 448, -2112 )
+
+[node name="Sprite572" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 320, -2112 )
+
+[node name="Sprite573" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 320, -1984 )
+
+[node name="Sprite574" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 448, -1984 )
+
+[node name="Sprite575" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 448, -1856 )
+
+[node name="Sprite576" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 320, -1856 )
+
+[node name="Sprite577" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 64, -1984 )
+
+[node name="Sprite578" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 192, -1984 )
+
+[node name="Sprite579" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 192, -1856 )
+
+[node name="Sprite580" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 64, -1856 )
+
+[node name="Sprite581" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -192, -1984 )
+
+[node name="Sprite582" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -64, -1984 )
+
+[node name="Sprite583" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -64, -1856 )
+
+[node name="Sprite584" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -192, -1856 )
+
+[node name="Sprite585" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -192, -2240 )
+
+[node name="Sprite586" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -64, -2240 )
+
+[node name="Sprite587" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -64, -2112 )
+
+[node name="Sprite588" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -192, -2112 )
+
+[node name="Sprite589" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 64, -2240 )
+
+[node name="Sprite590" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 192, -2240 )
+
+[node name="Sprite591" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 192, -2112 )
+
+[node name="Sprite592" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 64, -2112 )
+
+[node name="Sprite593" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -448, -2240 )
+
+[node name="Sprite594" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -320, -2240 )
+
+[node name="Sprite595" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -320, -2112 )
+
+[node name="Sprite596" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -448, -2112 )
+
+[node name="Sprite597" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -448, -1984 )
+
+[node name="Sprite598" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -320, -1984 )
+
+[node name="Sprite599" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -320, -1856 )
+
+[node name="Sprite600" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( -448, -1856 )
+
+[node name="Sprite601" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1600, -1984 )
+
+[node name="Sprite602" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1728, -1984 )
+
+[node name="Sprite603" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1728, -1856 )
+
+[node name="Sprite604" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1600, -1856 )
+
+[node name="Sprite605" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1344, -1984 )
+
+[node name="Sprite606" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1472, -1984 )
+
+[node name="Sprite607" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1472, -1856 )
+
+[node name="Sprite608" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1344, -1856 )
+
+[node name="Sprite609" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1344, -2240 )
+
+[node name="Sprite610" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1472, -2240 )
+
+[node name="Sprite611" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1472, -2112 )
+
+[node name="Sprite612" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1344, -2112 )
+
+[node name="Sprite613" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1600, -2240 )
+
+[node name="Sprite614" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1728, -2240 )
+
+[node name="Sprite615" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1728, -2112 )
+
+[node name="Sprite616" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1600, -2112 )
+
+[node name="Sprite617" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1088, -2240 )
+
+[node name="Sprite618" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1216, -2240 )
+
+[node name="Sprite619" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1216, -2112 )
+
+[node name="Sprite620" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1088, -2112 )
+
+[node name="Sprite621" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1088, -1984 )
+
+[node name="Sprite622" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1216, -1984 )
+
+[node name="Sprite623" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1216, -1856 )
+
+[node name="Sprite624" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1088, -1856 )
+
+[node name="Sprite625" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1600, -1472 )
+
+[node name="Sprite626" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1728, -1472 )
+
+[node name="Sprite627" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1728, -1344 )
+
+[node name="Sprite628" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1600, -1344 )
+
+[node name="Sprite629" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1344, -1472 )
+
+[node name="Sprite630" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1472, -1472 )
+
+[node name="Sprite631" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1472, -1344 )
+
+[node name="Sprite632" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1344, -1344 )
+
+[node name="Sprite633" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1344, -1728 )
+
+[node name="Sprite634" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1472, -1728 )
+
+[node name="Sprite635" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1472, -1600 )
+
+[node name="Sprite636" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1344, -1600 )
+
+[node name="Sprite637" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1600, -1728 )
+
+[node name="Sprite638" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1728, -1728 )
+
+[node name="Sprite639" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1728, -1600 )
+
+[node name="Sprite640" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1600, -1600 )
+
+[node name="Sprite641" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1088, -1728 )
+
+[node name="Sprite642" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1216, -1728 )
+
+[node name="Sprite643" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1216, -1600 )
+
+[node name="Sprite644" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1088, -1600 )
+
+[node name="Sprite645" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1088, -1472 )
+
+[node name="Sprite646" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1216, -1472 )
+
+[node name="Sprite647" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1216, -1344 )
+
+[node name="Sprite648" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1088, -1344 )
+
+[node name="Sprite649" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1600, -960 )
+
+[node name="Sprite650" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1728, -960 )
+
+[node name="Sprite651" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1728, -832 )
+
+[node name="Sprite652" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1600, -832 )
+
+[node name="Sprite653" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1344, -960 )
+
+[node name="Sprite654" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1472, -960 )
+
+[node name="Sprite655" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1472, -832 )
+
+[node name="Sprite656" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1344, -832 )
+
+[node name="Sprite657" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1344, -1216 )
+
+[node name="Sprite658" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1472, -1216 )
+
+[node name="Sprite659" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1472, -1088 )
+
+[node name="Sprite660" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1344, -1088 )
+
+[node name="Sprite661" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1600, -1216 )
+
+[node name="Sprite662" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1728, -1216 )
+
+[node name="Sprite663" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1728, -1088 )
+
+[node name="Sprite664" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1600, -1088 )
+
+[node name="Sprite665" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1088, -1216 )
+
+[node name="Sprite666" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1216, -1216 )
+
+[node name="Sprite667" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1216, -1088 )
+
+[node name="Sprite668" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1088, -1088 )
+
+[node name="Sprite669" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1088, -960 )
+
+[node name="Sprite670" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1216, -960 )
+
+[node name="Sprite671" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1216, -832 )
+
+[node name="Sprite672" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1088, -832 )
+
+[node name="Sprite673" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1600, -448 )
+
+[node name="Sprite674" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1728, -448 )
+
+[node name="Sprite675" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1728, -320 )
+
+[node name="Sprite676" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1600, -320 )
+
+[node name="Sprite677" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1344, -448 )
+
+[node name="Sprite678" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1472, -448 )
+
+[node name="Sprite679" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1472, -320 )
+
+[node name="Sprite680" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1344, -320 )
+
+[node name="Sprite681" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1344, -704 )
+
+[node name="Sprite682" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1472, -704 )
+
+[node name="Sprite683" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1472, -576 )
+
+[node name="Sprite684" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1344, -576 )
+
+[node name="Sprite685" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1600, -704 )
+
+[node name="Sprite686" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1728, -704 )
+
+[node name="Sprite687" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1728, -576 )
+
+[node name="Sprite688" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1600, -576 )
+
+[node name="Sprite689" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1088, -704 )
+
+[node name="Sprite690" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1216, -704 )
+
+[node name="Sprite691" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1216, -576 )
+
+[node name="Sprite692" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1088, -576 )
+
+[node name="Sprite693" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1088, -448 )
+
+[node name="Sprite694" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1216, -448 )
+
+[node name="Sprite695" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1216, -320 )
+
+[node name="Sprite696" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1088, -320 )
+
+[node name="Sprite697" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1600, 64 )
+
+[node name="Sprite698" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1728, 64 )
+
+[node name="Sprite699" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1728, 192 )
+
+[node name="Sprite700" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1600, 192 )
+
+[node name="Sprite701" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1344, 64 )
+
+[node name="Sprite702" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1472, 64 )
+
+[node name="Sprite703" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1472, 192 )
+
+[node name="Sprite704" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1344, 192 )
+
+[node name="Sprite705" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1344, -192 )
+
+[node name="Sprite706" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1472, -192 )
+
+[node name="Sprite707" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1472, -64 )
+
+[node name="Sprite708" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1344, -64 )
+
+[node name="Sprite709" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1600, -192 )
+
+[node name="Sprite710" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1728, -192 )
+
+[node name="Sprite711" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1728, -64 )
+
+[node name="Sprite712" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1600, -64 )
+
+[node name="Sprite713" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1088, -192 )
+
+[node name="Sprite714" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1216, -192 )
+
+[node name="Sprite715" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1216, -64 )
+
+[node name="Sprite716" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1088, -64 )
+
+[node name="Sprite717" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1088, 64 )
+
+[node name="Sprite718" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1216, 64 )
+
+[node name="Sprite719" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1216, 192 )
+
+[node name="Sprite720" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1088, 192 )
+
+[node name="Sprite721" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1600, 576 )
+
+[node name="Sprite722" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1728, 576 )
+
+[node name="Sprite723" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1728, 704 )
+
+[node name="Sprite724" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1600, 704 )
+
+[node name="Sprite725" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1344, 576 )
+
+[node name="Sprite726" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1472, 576 )
+
+[node name="Sprite727" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1472, 704 )
+
+[node name="Sprite728" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1344, 704 )
+
+[node name="Sprite729" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1344, 320 )
+
+[node name="Sprite730" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1472, 320 )
+
+[node name="Sprite731" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1472, 448 )
+
+[node name="Sprite732" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1344, 448 )
+
+[node name="Sprite733" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1600, 320 )
+
+[node name="Sprite734" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1728, 320 )
+
+[node name="Sprite735" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1728, 448 )
+
+[node name="Sprite736" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1600, 448 )
+
+[node name="Sprite737" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1088, 320 )
+
+[node name="Sprite738" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1216, 320 )
+
+[node name="Sprite739" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1216, 448 )
+
+[node name="Sprite740" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1088, 448 )
+
+[node name="Sprite741" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1088, 576 )
+
+[node name="Sprite742" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1216, 576 )
+
+[node name="Sprite743" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1216, 704 )
+
+[node name="Sprite744" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1088, 704 )
+
+[node name="Sprite745" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 832, 1088 )
+
+[node name="Sprite746" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 960, 1088 )
+
+[node name="Sprite747" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 960, 1216 )
+
+[node name="Sprite748" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 832, 1216 )
+
+[node name="Sprite749" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 576, 1088 )
+
+[node name="Sprite750" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 704, 1088 )
+
+[node name="Sprite751" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 704, 1216 )
+
+[node name="Sprite752" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 576, 1216 )
+
+[node name="Sprite753" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 576, 832 )
+
+[node name="Sprite754" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 704, 832 )
+
+[node name="Sprite755" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 704, 960 )
+
+[node name="Sprite756" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 576, 960 )
+
+[node name="Sprite757" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 832, 832 )
+
+[node name="Sprite758" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 960, 832 )
+
+[node name="Sprite759" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 960, 960 )
+
+[node name="Sprite760" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 832, 960 )
+
+[node name="Sprite761" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 320, 832 )
+
+[node name="Sprite762" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 448, 832 )
+
+[node name="Sprite763" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 448, 960 )
+
+[node name="Sprite764" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 320, 960 )
+
+[node name="Sprite765" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 320, 1088 )
+
+[node name="Sprite766" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 448, 1088 )
+
+[node name="Sprite767" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 448, 1216 )
+
+[node name="Sprite768" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 320, 1216 )
+
+[node name="Sprite769" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1600, 1088 )
+
+[node name="Sprite770" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1728, 1088 )
+
+[node name="Sprite771" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1728, 1216 )
+
+[node name="Sprite772" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1600, 1216 )
+
+[node name="Sprite773" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1344, 1088 )
+
+[node name="Sprite774" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1472, 1088 )
+
+[node name="Sprite775" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1472, 1216 )
+
+[node name="Sprite776" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1344, 1216 )
+
+[node name="Sprite777" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1344, 832 )
+
+[node name="Sprite778" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1472, 832 )
+
+[node name="Sprite779" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1472, 960 )
+
+[node name="Sprite780" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1344, 960 )
+
+[node name="Sprite781" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1600, 832 )
+
+[node name="Sprite782" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1728, 832 )
+
+[node name="Sprite783" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1728, 960 )
+
+[node name="Sprite784" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1600, 960 )
+
+[node name="Sprite785" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1088, 832 )
+
+[node name="Sprite786" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1216, 832 )
+
+[node name="Sprite787" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1216, 960 )
+
+[node name="Sprite788" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1088, 960 )
+
+[node name="Sprite789" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1088, 1088 )
+
+[node name="Sprite790" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1216, 1088 )
+
+[node name="Sprite791" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1216, 1216 )
+
+[node name="Sprite792" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1088, 1216 )
+
+[node name="Sprite793" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2368, 1088 )
+
+[node name="Sprite794" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2496, 1088 )
+
+[node name="Sprite795" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2496, 1216 )
+
+[node name="Sprite796" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2368, 1216 )
+
+[node name="Sprite797" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2112, 1088 )
+
+[node name="Sprite798" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2240, 1088 )
+
+[node name="Sprite799" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2240, 1216 )
+
+[node name="Sprite800" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2112, 1216 )
+
+[node name="Sprite801" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2112, 832 )
+
+[node name="Sprite802" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2240, 832 )
+
+[node name="Sprite803" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2240, 960 )
+
+[node name="Sprite804" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2112, 960 )
+
+[node name="Sprite805" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2368, 832 )
+
+[node name="Sprite806" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2496, 832 )
+
+[node name="Sprite807" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2496, 960 )
+
+[node name="Sprite808" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2368, 960 )
+
+[node name="Sprite809" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1856, 832 )
+
+[node name="Sprite810" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1984, 832 )
+
+[node name="Sprite811" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1984, 960 )
+
+[node name="Sprite812" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1856, 960 )
+
+[node name="Sprite813" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1856, 1088 )
+
+[node name="Sprite814" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1984, 1088 )
+
+[node name="Sprite815" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1984, 1216 )
+
+[node name="Sprite816" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1856, 1216 )
+
+[node name="Sprite817" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2368, 576 )
+
+[node name="Sprite818" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2496, 576 )
+
+[node name="Sprite819" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2496, 704 )
+
+[node name="Sprite820" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2368, 704 )
+
+[node name="Sprite821" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2112, 576 )
+
+[node name="Sprite822" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2240, 576 )
+
+[node name="Sprite823" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2240, 704 )
+
+[node name="Sprite824" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2112, 704 )
+
+[node name="Sprite825" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2112, 320 )
+
+[node name="Sprite826" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2240, 320 )
+
+[node name="Sprite827" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2240, 448 )
+
+[node name="Sprite828" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2112, 448 )
+
+[node name="Sprite829" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2368, 320 )
+
+[node name="Sprite830" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2496, 320 )
+
+[node name="Sprite831" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2496, 448 )
+
+[node name="Sprite832" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2368, 448 )
+
+[node name="Sprite833" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1856, 320 )
+
+[node name="Sprite834" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1984, 320 )
+
+[node name="Sprite835" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1984, 448 )
+
+[node name="Sprite836" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1856, 448 )
+
+[node name="Sprite837" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1856, 576 )
+
+[node name="Sprite838" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1984, 576 )
+
+[node name="Sprite839" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1984, 704 )
+
+[node name="Sprite840" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1856, 704 )
+
+[node name="Sprite841" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2368, 64 )
+
+[node name="Sprite842" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2496, 64 )
+
+[node name="Sprite843" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2496, 192 )
+
+[node name="Sprite844" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2368, 192 )
+
+[node name="Sprite845" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2112, 64 )
+
+[node name="Sprite846" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2240, 64 )
+
+[node name="Sprite847" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2240, 192 )
+
+[node name="Sprite848" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2112, 192 )
+
+[node name="Sprite849" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2112, -192 )
+
+[node name="Sprite850" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2240, -192 )
+
+[node name="Sprite851" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2240, -64 )
+
+[node name="Sprite852" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2112, -64 )
+
+[node name="Sprite853" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2368, -192 )
+
+[node name="Sprite854" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2496, -192 )
+
+[node name="Sprite855" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2496, -64 )
+
+[node name="Sprite856" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2368, -64 )
+
+[node name="Sprite857" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1856, -192 )
+
+[node name="Sprite858" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1984, -192 )
+
+[node name="Sprite859" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1984, -64 )
+
+[node name="Sprite860" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1856, -64 )
+
+[node name="Sprite861" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1856, 64 )
+
+[node name="Sprite862" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1984, 64 )
+
+[node name="Sprite863" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1984, 192 )
+
+[node name="Sprite864" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1856, 192 )
+
+[node name="Sprite865" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2368, -448 )
+
+[node name="Sprite866" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2496, -448 )
+
+[node name="Sprite867" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2496, -320 )
+
+[node name="Sprite868" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2368, -320 )
+
+[node name="Sprite869" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2112, -448 )
+
+[node name="Sprite870" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2240, -448 )
+
+[node name="Sprite871" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2240, -320 )
+
+[node name="Sprite872" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2112, -320 )
+
+[node name="Sprite873" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2112, -704 )
+
+[node name="Sprite874" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2240, -704 )
+
+[node name="Sprite875" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2240, -576 )
+
+[node name="Sprite876" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2112, -576 )
+
+[node name="Sprite877" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2368, -704 )
+
+[node name="Sprite878" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2496, -704 )
+
+[node name="Sprite879" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2496, -576 )
+
+[node name="Sprite880" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2368, -576 )
+
+[node name="Sprite881" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1856, -704 )
+
+[node name="Sprite882" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1984, -704 )
+
+[node name="Sprite883" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1984, -576 )
+
+[node name="Sprite884" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1856, -576 )
+
+[node name="Sprite885" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1856, -448 )
+
+[node name="Sprite886" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1984, -448 )
+
+[node name="Sprite887" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1984, -320 )
+
+[node name="Sprite888" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1856, -320 )
+
+[node name="Sprite889" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2368, -960 )
+
+[node name="Sprite890" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2496, -960 )
+
+[node name="Sprite891" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2496, -832 )
+
+[node name="Sprite892" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2368, -832 )
+
+[node name="Sprite893" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2112, -960 )
+
+[node name="Sprite894" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2240, -960 )
+
+[node name="Sprite895" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2240, -832 )
+
+[node name="Sprite896" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2112, -832 )
+
+[node name="Sprite897" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2112, -1216 )
+
+[node name="Sprite898" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2240, -1216 )
+
+[node name="Sprite899" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2240, -1088 )
+
+[node name="Sprite900" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2112, -1088 )
+
+[node name="Sprite901" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2368, -1216 )
+
+[node name="Sprite902" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2496, -1216 )
+
+[node name="Sprite903" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2496, -1088 )
+
+[node name="Sprite904" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2368, -1088 )
+
+[node name="Sprite905" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1856, -1216 )
+
+[node name="Sprite906" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1984, -1216 )
+
+[node name="Sprite907" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1984, -1088 )
+
+[node name="Sprite908" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1856, -1088 )
+
+[node name="Sprite909" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1856, -960 )
+
+[node name="Sprite910" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1984, -960 )
+
+[node name="Sprite911" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1984, -832 )
+
+[node name="Sprite912" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1856, -832 )
+
+[node name="Sprite913" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2368, -1472 )
+
+[node name="Sprite914" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2496, -1472 )
+
+[node name="Sprite915" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2496, -1344 )
+
+[node name="Sprite916" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2368, -1344 )
+
+[node name="Sprite917" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2112, -1472 )
+
+[node name="Sprite918" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2240, -1472 )
+
+[node name="Sprite919" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2240, -1344 )
+
+[node name="Sprite920" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2112, -1344 )
+
+[node name="Sprite921" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2112, -1728 )
+
+[node name="Sprite922" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2240, -1728 )
+
+[node name="Sprite923" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2240, -1600 )
+
+[node name="Sprite924" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2112, -1600 )
+
+[node name="Sprite925" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2368, -1728 )
+
+[node name="Sprite926" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2496, -1728 )
+
+[node name="Sprite927" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2496, -1600 )
+
+[node name="Sprite928" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2368, -1600 )
+
+[node name="Sprite929" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1856, -1728 )
+
+[node name="Sprite930" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1984, -1728 )
+
+[node name="Sprite931" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1984, -1600 )
+
+[node name="Sprite932" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1856, -1600 )
+
+[node name="Sprite933" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1856, -1472 )
+
+[node name="Sprite934" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1984, -1472 )
+
+[node name="Sprite935" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1984, -1344 )
+
+[node name="Sprite936" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1856, -1344 )
+
+[node name="Sprite937" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2368, -1984 )
+
+[node name="Sprite938" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2496, -1984 )
+
+[node name="Sprite939" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2496, -1856 )
+
+[node name="Sprite940" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2368, -1856 )
+
+[node name="Sprite941" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2112, -1984 )
+
+[node name="Sprite942" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2240, -1984 )
+
+[node name="Sprite943" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2240, -1856 )
+
+[node name="Sprite944" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2112, -1856 )
+
+[node name="Sprite945" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2112, -2240 )
+
+[node name="Sprite946" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2240, -2240 )
+
+[node name="Sprite947" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2240, -2112 )
+
+[node name="Sprite948" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2112, -2112 )
+
+[node name="Sprite949" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2368, -2240 )
+
+[node name="Sprite950" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2496, -2240 )
+
+[node name="Sprite951" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2496, -2112 )
+
+[node name="Sprite952" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 2368, -2112 )
+
+[node name="Sprite953" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1856, -2240 )
+
+[node name="Sprite954" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1984, -2240 )
+
+[node name="Sprite955" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1984, -2112 )
+
+[node name="Sprite956" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1856, -2112 )
+
+[node name="Sprite957" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1856, -1984 )
+
+[node name="Sprite958" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1984, -1984 )
+
+[node name="Sprite959" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1984, -1856 )
+
+[node name="Sprite960" parent="Terrain/Floors" instance=ExtResource( 6 )]
+position = Vector2( 1856, -1856 )
+
 [node name="Blocks" type="Node2D" parent="Terrain"]
 
+[node name="Block" parent="Terrain/Blocks" instance=ExtResource( 3 )]
+position = Vector2( 32, 0 )
+
+[node name="Block2" parent="Terrain/Blocks" instance=ExtResource( 3 )]
+position = Vector2( 32, 32 )
+
+[node name="Block3" parent="Terrain/Blocks" instance=ExtResource( 3 )]
+position = Vector2( 32, 64 )
+
+[node name="Block13" parent="Terrain/Blocks" instance=ExtResource( 3 )]
+position = Vector2( -16, 96 )
+
+[node name="Block14" parent="Terrain/Blocks" instance=ExtResource( 3 )]
+position = Vector2( -64, 112 )
+
+[node name="Block15" parent="Terrain/Blocks" instance=ExtResource( 3 )]
+position = Vector2( 32, 112 )
+
+[node name="Block16" parent="Terrain/Blocks" instance=ExtResource( 3 )]
+position = Vector2( 16, 144 )
+
+[node name="Block17" parent="Terrain/Blocks" instance=ExtResource( 3 )]
+position = Vector2( -48, 144 )
+
+[node name="Block18" parent="Terrain/Blocks" instance=ExtResource( 3 )]
+position = Vector2( -16, 192 )
+
+[node name="Block19" parent="Terrain/Blocks" instance=ExtResource( 3 )]
+position = Vector2( -80, 176 )
+
+[node name="Block20" parent="Terrain/Blocks" instance=ExtResource( 3 )]
+position = Vector2( 48, 176 )
+
+[node name="Block4" parent="Terrain/Blocks" instance=ExtResource( 3 )]
+position = Vector2( -64, 64 )
+
+[node name="Block5" parent="Terrain/Blocks" instance=ExtResource( 3 )]
+position = Vector2( -64, 32 )
+
+[node name="Block6" parent="Terrain/Blocks" instance=ExtResource( 3 )]
+position = Vector2( -64, 0 )
+
+[node name="Block7" parent="Terrain/Blocks" instance=ExtResource( 3 )]
+position = Vector2( -64, -32 )
+
+[node name="Block8" parent="Terrain/Blocks" instance=ExtResource( 3 )]
+position = Vector2( -64, -64 )
+
+[node name="Block9" parent="Terrain/Blocks" instance=ExtResource( 3 )]
+position = Vector2( -32, -64 )
+
+[node name="Block10" parent="Terrain/Blocks" instance=ExtResource( 3 )]
+position = Vector2( 0, -64 )
+
+[node name="Block11" parent="Terrain/Blocks" instance=ExtResource( 3 )]
+position = Vector2( 32, -64 )
+
+[node name="Block12" parent="Terrain/Blocks" instance=ExtResource( 3 )]
+position = Vector2( 32, -32 )
+
 [node name="Labels" type="Node2D" parent="Terrain"]
+
+[node name="Shadow" type="Node2D" parent="Terrain"]
+visible = false
+
+[node name="Light2D" type="Light2D" parent="Terrain/Shadow"]
+texture = ExtResource( 2 )
+texture_scale = 35.64
+energy = 1.19
+mode = 1
+
+[node name="Decals" type="Node2D" parent="."]
+
+[node name="foofighter" type="Sprite" parent="Decals"]
+position = Vector2( 688, -48 )
+texture = ExtResource( 9 )
+
+[node name="delliriant" type="Sprite" parent="Decals"]
+position = Vector2( -160, -1296 )
+texture = ExtResource( 10 )
+
+[node name="shader" type="Sprite" parent="Decals/delliriant"]
+material = SubResource( 6 )
+texture = ExtResource( 10 )
+
+[node name="4k" type="Sprite" parent="Decals"]
+position = Vector2( -3664, -1632 )
+texture = ExtResource( 11 )
+
+[node name="shdaer" type="Sprite" parent="Decals/4k"]
+material = SubResource( 8 )
+position = Vector2( -16, 16 )
+scale = Vector2( 1.70634, 3.01412 )
+texture = ExtResource( 10 )

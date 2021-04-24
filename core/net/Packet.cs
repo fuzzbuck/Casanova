@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Casanova.core.main.units;
 using Casanova.core.main.world;
+using Casanova.core.main.world.blocks;
 using Casanova.core.net.types;
 using Casanova.core.types;
 using Godot;
